@@ -8,6 +8,9 @@ namespace DDLParser
     {
         private static void Main()
         {
+
+            //TODO: implement capturing the input and output folder names for reading the files.
+
             ParseDDL();
             Console.Read();
         }
@@ -15,16 +18,6 @@ namespace DDLParser
 
         private static void ParseDDL()
         {
-            //    var rawDdl = @"CREATE TABLE HUB_POLICY
-            //    (
-            //        POLICY_HK BINARY() NOT NULL,
-            //        LOAD_TIMESTAMP TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            //        RECORD_SOURCE VARCHAR(100) NULL,
-            //    POLICY_NUMBER VARCHAR(50) NULL
-            //        );
-
-            //    ALTER TABLE HUB_POLICY
-            //        ADD PRIMARY KEY(POLICY_HK);";
 
 
             var rawDdl = @"CREATE TABLE HUB_POLICY 
@@ -46,6 +39,10 @@ ADD PRIMARY KEY (POLICY_HK);";
                 if (!string.IsNullOrWhiteSpace(sqlStatement))
                     if (sqlStatement.Contains("CREATE TABLE HUB_POLICY", StringComparison.OrdinalIgnoreCase))
                         GenerateOutputHubPolicyFile(sqlStatement);
+                    else
+                    {
+                        Console.WriteLine("only create table templates supported for now");
+                    }
         }
 
         private static List<string> SplitSql(string str)
@@ -57,8 +54,10 @@ ADD PRIMARY KEY (POLICY_HK);";
         {
             var createTable = new CreateTable
             {
-                TableName = GetCreateDdlStatementTableName(str).Trim(),
+                TableName = GetCreateDdlStatementTableName(str),
                 Columns = GetDdlStatementColumns(str),
+                //TODO: Get mapping details, how to determine the mapping
+
                 LoadTimestamp = "LOAD_TIMESTAMP",
                 PolicyHk = "POLICY_HK",
                 PolicyNumber = "POLICY_NUMBER",
@@ -95,7 +94,7 @@ ADD PRIMARY KEY (POLICY_HK);";
                 var columnName = column.Substring(0, pTo);
                 var columnDataType = column.Substring(pTo).Trim();
 
-                var columnDetail = new ColumnDetail {DataType = columnDataType, Name = columnName};
+                var columnDetail = new ColumnDetail { DataType = columnDataType, Name = columnName };
 
                 columnDetails.Add(columnDetail);
             }
@@ -110,7 +109,7 @@ ADD PRIMARY KEY (POLICY_HK);";
             string result = null;
             if (pFrom >= 0 && str.Length > pFrom) result = str.Substring(pFrom, pTo - pFrom);
 
-            return result;
+            return result.Trim();
         }
     }
 }
