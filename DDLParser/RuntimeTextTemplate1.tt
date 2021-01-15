@@ -1,0 +1,35 @@
+﻿<#@ template language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+
+
+{%- set metadata_yaml -%}
+source_model: '<#= CreateTable.TableName #>'
+src_pk: '<#= CreateTable.PolicyHk #>'
+src_nk: '<#= CreateTable.PolicyNumber #>'
+src_ldts: '<#= CreateTable.LoadTimestamp #>'
+src_source: '<#= CreateTable.RecordSource #>'
+{%- endset -%}
+ 
+{% set metadata_dict = fromyaml(metadata_yaml) -%}
+{% set source_model = metadata_dict['source_model'] -%}
+{% set src_pk = metadata_dict['src_pk'] -%}
+{% set src_nk = metadata_dict['src_nk'] -%}
+{% set src_ldts = metadata_dict['src_ldts'] -%}
+{% set src_source = metadata_dict['src_source'] -%}
+ 
+{{ dbtvault.hub(src_pk=src_pk, 
+                src_nk=src_nk, 
+                src_ldts=src_ldts,
+                src_source=src_source, 
+                source_model=source_model) }}
+
+
+-----TODO: remove this writing the following is a temp implementation, 
+<#
+    foreach (var column in CreateTable.Columns)
+    {#>
+          <#= column.Name +" "+ column.DataType #>
+<# }#>
