@@ -37,8 +37,21 @@ ADD PRIMARY KEY (POLICY_HK);";
             // Debug.Assert(sqlStatements.Count == 3);
             foreach (var sqlStatement in sqlStatements)
                 if (!string.IsNullOrWhiteSpace(sqlStatement))
-                    if (sqlStatement.Contains("CREATE TABLE HUB_POLICY", StringComparison.OrdinalIgnoreCase))
-                        GenerateOutputHubPolicyFile(sqlStatement);
+                    if (sqlStatement.Contains("CREATE TABLE HUB", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (sqlStatement.Contains("CREATE TABLE HUB_POLICY"))
+                        {
+                            GenerateOutputHubPolicyFile(sqlStatement);
+                        }
+                        else if (sqlStatement.Contains("CREATE TABLE HUB_VEHICLE"))
+                        {
+
+                        }
+                        else if (sqlStatement.Contains("CREATE TABLE HUB_COVERAGE"))
+                        {
+
+                        }
+                    }
                     else
                     {
                         Console.WriteLine("only create table templates supported for now");
@@ -66,7 +79,7 @@ ADD PRIMARY KEY (POLICY_HK);";
             var runtimeTextTemplate1 = new RuntimeTextTemplate1(createTable);
 
             var content = runtimeTextTemplate1.TransformText();
-            System.IO.File.WriteAllText("hub_policy.sql", content);
+            System.IO.File.WriteAllText(createTable.TableName+$".sql", content);
             Console.WriteLine("File Generated");
         }
 

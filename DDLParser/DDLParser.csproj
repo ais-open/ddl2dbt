@@ -20,12 +20,21 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>RuntimeTextTemplate1.tt</DependentUpon>
     </Compile>
+    <Compile Update="Templates\HubVehicleTemplate.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>HubVehicleTemplate.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
     <None Update="RuntimeTextTemplate1.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>RuntimeTextTemplate1.cs</LastGenOutput>
+    </None>
+    <None Update="Templates\HubVehicleTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>HubVehicleTemplate.cs</LastGenOutput>
     </None>
   </ItemGroup>
 
