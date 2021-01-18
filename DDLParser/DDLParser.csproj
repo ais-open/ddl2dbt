@@ -25,6 +25,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>HubVehicleTemplate.tt</DependentUpon>
     </Compile>
+    <Compile Update="Templates\LinkTemplate.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>LinkTemplate.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -35,6 +40,10 @@
     <None Update="Templates\HubVehicleTemplate.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>HubVehicleTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="Templates\LinkTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>LinkTemplate.cs</LastGenOutput>
     </None>
   </ItemGroup>
 

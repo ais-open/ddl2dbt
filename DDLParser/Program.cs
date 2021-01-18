@@ -1,13 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using DDLParser.Templates;
 
 namespace DDLParser
 {
     internal class Program
     {
-        private static void Main()
+        private static void Main(string[] args)
         {
+            //if (!File.Exists(args[0]))
+            //{
+            //    Console.WriteLine("file not found");
+            //}
 
             //TODO: implement capturing the input and output folder names for reading the files.
 
@@ -31,8 +37,11 @@ POLICY_NUMBER        VARCHAR(50) NULL
 ALTER TABLE HUB_POLICY
 ADD PRIMARY KEY (POLICY_HK);";
 
-            rawDdl = rawDdl.Replace(Environment.NewLine, "");
-            var sqlStatements = SplitSql(rawDdl);
+
+
+             rawDdl = File.ReadAllText("D:\\madhu\\GeicoDDLTransformers\\docs\\Policy Phase 1 v0.13.52 DDL.ddl");
+
+            var sqlStatements = BuildDdlStatementsCollection(rawDdl);
 
             // Debug.Assert(sqlStatements.Count == 3);
             foreach (var sqlStatement in sqlStatements)
@@ -41,16 +50,25 @@ ADD PRIMARY KEY (POLICY_HK);";
                     {
                         if (sqlStatement.Contains("CREATE TABLE HUB_POLICY"))
                         {
-                            GenerateOutputHubPolicyFile(sqlStatement);
+                            // GenerateOutputHubPolicyFile(sqlStatement, sqlStatements);
                         }
-                        else if (sqlStatement.Contains("CREATE TABLE HUB_VEHICLE"))
-                        {
+                        //else if (sqlStatement.Contains("CREATE TABLE HUB_VEHICLE"))
+                        //{
 
-                        }
-                        else if (sqlStatement.Contains("CREATE TABLE HUB_COVERAGE"))
-                        {
+                        //}
+                        //else if (sqlStatement.Contains("CREATE TABLE HUB_COVERAGE"))
+                        //{
 
+                        //}
+                    }
+                    else if (sqlStatement.Contains("CREATE TABLE LNK", StringComparison.OrdinalIgnoreCase))
+                    {
+
+                        if (sqlStatement.Contains("CREATE TABLE LNK_POLICY_INSURES_VEHICLE"))
+                        {
+                            GenerateLinkFile(sqlStatement, sqlStatements);
                         }
+
                     }
                     else
                     {
@@ -58,29 +76,90 @@ ADD PRIMARY KEY (POLICY_HK);";
                     }
         }
 
-        private static List<string> SplitSql(string str)
+        private static List<string> BuildDdlStatementsCollection(string str)
         {
-            return str.Split(";").ToList();
+            str = str.Replace(Environment.NewLine, " ");
+            var sqlStatements = str.Split(";", StringSplitOptions.RemoveEmptyEntries).ToList();
+            sqlStatements.ForEach(e => e.Trim());
+            return sqlStatements;
         }
 
-        private static void GenerateOutputHubPolicyFile(string str)
+        private static void GenerateOutputHubPolicyFile(string sqlStatement, List<string> sqlStatements)
         {
-            var createTable = new CreateTable
+            var tableName = GetCreateDdlStatementTableName(sqlStatement);
+            var foreignKeys = GetForeignKeys(sqlStatements, tableName);
+            var createTable = new HubTableMetadata
             {
-                TableName = GetCreateDdlStatementTableName(str),
-                Columns = GetDdlStatementColumns(str),
-                //TODO: Get mapping details, how to determine the mapping
-
+                TableName = tableName,
+                Columns = GetDdlStatementColumns(sqlStatement),
+                PrimaryKey = GetPrimaryKey(sqlStatements, tableName),
                 LoadTimestamp = "LOAD_TIMESTAMP",
+                RecordSource = "RECORD_SOURCE",
                 PolicyHk = "POLICY_HK",
                 PolicyNumber = "POLICY_NUMBER",
-                RecordSource = "RECORD_SOURCE"
+                SourceModel = "stg_???"
             };
-            var runtimeTextTemplate1 = new RuntimeTextTemplate1(createTable);
 
+            var runtimeTextTemplate1 = new RuntimeTextTemplate1(createTable);
             var content = runtimeTextTemplate1.TransformText();
-            System.IO.File.WriteAllText(createTable.TableName+$".sql", content);
+            File.WriteAllText(createTable.TableName + $".sql", content);
             Console.WriteLine("File Generated");
+        }
+
+        private static void GenerateLinkFile(string sqlStatement, List<string> sqlStatements)
+        {
+            var tableName = GetCreateDdlStatementTableName(sqlStatement);
+         
+            var linkTableMetadata = new LinkTableMetadata()
+            {
+                TableName = tableName,
+                Columns = GetDdlStatementColumns(sqlStatement),
+                SrcPk = GetPrimaryKey(sqlStatements, tableName),
+                SrcLdts = "LOAD_TIMESTAMP",
+                SrcSource = "RECORD_SOURCE",
+                SourceModel = "stg_???",
+                SrcFk = GetForeignKeys(sqlStatements, tableName)
+        };
+
+            var linkTemplate = new LinkTemplate(linkTableMetadata);
+            var content = linkTemplate.TransformText();
+            File.WriteAllText(linkTableMetadata.TableName + $".sql", content);
+            Console.WriteLine("File Generated");
+        }
+
+        private static string GetPrimaryKey(List<string> sqlStatements, string tableName)
+        {
+            string primaryKeyStatement = sqlStatements.SingleOrDefault(e => e.Contains($"ALTER TABLE {tableName} ADD PRIMARY KEY"));
+            string primaryKey = "";
+
+            if (!string.IsNullOrWhiteSpace(primaryKeyStatement))
+            {
+                var pFrom = primaryKeyStatement.IndexOf("(", StringComparison.Ordinal) + 1;
+                var pTo = primaryKeyStatement.IndexOf(")", StringComparison.Ordinal);
+                primaryKey = primaryKeyStatement.Substring(pFrom, pTo - pFrom);
+            }
+
+            return primaryKey;
+        }
+
+
+        private static List<string> GetForeignKeys(List<string> sqlStatements, string tableName)
+        {
+            var foreignKeyStatements = sqlStatements.Where(e => e.Contains($"ALTER TABLE {tableName}") && e.Contains("FOREIGN KEY"));
+            List<string> foreignKeys = new List<string>();
+
+            foreach (var foreignKeyStatement in foreignKeyStatements)
+            {
+                if (!string.IsNullOrWhiteSpace(foreignKeyStatement))
+                {
+                    var pFrom = foreignKeyStatement.IndexOf("(", StringComparison.Ordinal) + 1;
+                    var pTo = foreignKeyStatement.IndexOf(")", StringComparison.Ordinal);
+                    var foreignKey = foreignKeyStatement.Substring(pFrom, pTo - pFrom);
+                    foreignKeys.Add(foreignKey);
+                }
+            }
+
+            return foreignKeys;
         }
 
         private static List<ColumnDetail> GetDdlStatementColumns(string str)
@@ -123,6 +202,17 @@ ADD PRIMARY KEY (POLICY_HK);";
             if (pFrom >= 0 && str.Length > pFrom) result = str.Substring(pFrom, pTo - pFrom);
 
             return result.Trim();
+        }
+
+        private static string GetPrimaryKey(string str, string tableName)
+        {
+            str = "ALTER TABLE HUB_POLICY ADD PRIMARY KEY (POLICY_HK)";
+
+            //var alterTableStr= $"Hello, {name}! Today is {date.DayOfWeek}, it's {date:HH:mm} now."
+            //G
+
+            return "";
+
         }
     }
 }

@@ -6,9 +6,9 @@ namespace DDLParser
 {
     public partial class RuntimeTextTemplate1
     {
-        public CreateTable CreateTable;
+        public HubTableMetadata CreateTable;
 
-        public RuntimeTextTemplate1(CreateTable createTable)
+        public RuntimeTextTemplate1(HubTableMetadata createTable)
         {
             CreateTable = createTable;
         }
