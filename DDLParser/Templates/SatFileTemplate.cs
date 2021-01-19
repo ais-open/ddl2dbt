@@ -18,7 +18,7 @@ namespace DDLParser.Templates
     /// Class to produce the template output
     /// </summary>
     
-    #line 1 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
+    #line 1 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "16.0.0.0")]
     public partial class SatFileTemplate : SatFileTemplateBase
     {
@@ -31,49 +31,49 @@ namespace DDLParser.Templates
             this.Write("{{ config(tags = [\'policy\'], materialized = \'table\') }}\r\n\r\n{%- set metadata_yaml " +
                     "-%}\r\nsource_model: \'");
             
-            #line 9 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
+            #line 9 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(SatTableMetadata.SourceModel));
             
             #line default
             #line hidden
             this.Write("\'\r\nsrc_pk: \'");
             
-            #line 10 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
+            #line 10 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(SatTableMetadata.SrcPk));
             
             #line default
             #line hidden
             this.Write("\'\r\nsrc_hashdiff: \'");
             
-            #line 11 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
+            #line 11 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(SatTableMetadata.SrcHashDiff));
             
             #line default
             #line hidden
             this.Write("\'\r\nsrc_eff: \'");
             
-            #line 12 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
+            #line 12 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(SatTableMetadata.SrcEff));
             
             #line default
             #line hidden
             this.Write("\'\r\nsrc_ldts: \'");
             
-            #line 13 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
+            #line 13 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(SatTableMetadata.SrcLdts));
             
             #line default
             #line hidden
             this.Write("\'\r\nsrc_source: \'");
             
-            #line 14 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
+            #line 14 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(SatTableMetadata.SrcSource));
             
             #line default
             #line hidden
             this.Write("\'\r\nsrc_payload:\r\n");
             
-            #line 16 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
+            #line 16 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
  foreach (string column in SatTableMetadata.SrcPayload)
    { 
             
@@ -81,14 +81,14 @@ namespace DDLParser.Templates
             #line hidden
             this.Write("  - \'");
             
-            #line 18 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
+            #line 18 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(column));
             
             #line default
             #line hidden
             this.Write("\'\r\n");
             
-            #line 19 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
+            #line 19 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
  }   // end of foreach
 
             

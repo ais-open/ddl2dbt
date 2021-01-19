@@ -5,10 +5,7 @@
 <#@ import namespace="System.Collections.Generic" #>
 {%- set metadata_yaml -%}
 source_model: '<#= CreateTable.TableName #>'
-<# if (CreateTable.srcPk != null)
-    { #>
 src_pk: '<#= CreateTable.srcPk #>'
-<# } #>
 src_nk: <# if (CreateTable.srcNk.Count == 1)
         { #>'<# 
         foreach (var key in CreateTable.srcNk)

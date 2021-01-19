@@ -35,31 +35,16 @@ namespace DDLParser.Templates
             
             #line default
             #line hidden
-            this.Write("\'\r\n");
+            this.Write("\'\r\nsrc_pk: \'");
             
             #line 8 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
- if (CreateTable.srcPk != null)
-    { 
-            
-            #line default
-            #line hidden
-            this.Write("src_pk: \'");
-            
-            #line 10 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(CreateTable.srcPk));
             
             #line default
             #line hidden
-            this.Write("\'\r\n");
+            this.Write("\'\r\nsrc_nk: ");
             
-            #line 11 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
- } 
-            
-            #line default
-            #line hidden
-            this.Write("src_nk: ");
-            
-            #line 12 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
+            #line 9 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
  if (CreateTable.srcNk.Count == 1)
         { 
             
@@ -67,7 +52,7 @@ namespace DDLParser.Templates
             #line hidden
             this.Write("\'");
             
-            #line 13 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
+            #line 10 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
  
         foreach (var key in CreateTable.srcNk)
         {
@@ -75,26 +60,26 @@ namespace DDLParser.Templates
             #line default
             #line hidden
             
-            #line 15 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
+            #line 12 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(key));
             
             #line default
             #line hidden
             
-            #line 15 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
+            #line 12 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
  }
             
             #line default
             #line hidden
             this.Write("\'\r\n");
             
-            #line 16 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
+            #line 13 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
  } 
             
             #line default
             #line hidden
             
-            #line 16 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
+            #line 13 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
  else
         { 
             
@@ -102,7 +87,7 @@ namespace DDLParser.Templates
             #line hidden
             this.Write("\r\n");
             
-            #line 19 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
+            #line 16 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
 
     foreach (var key in CreateTable.srcNk)
     {
@@ -111,34 +96,34 @@ namespace DDLParser.Templates
             #line hidden
             this.Write("    - \'");
             
-            #line 22 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
+            #line 19 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(key));
             
             #line default
             #line hidden
             this.Write("\'\r\n");
             
-            #line 23 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
+            #line 20 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
  }
             
             #line default
             #line hidden
             
-            #line 24 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
+            #line 21 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
  } 
             
             #line default
             #line hidden
             this.Write("src_ldts: \'");
             
-            #line 25 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
+            #line 22 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(CreateTable.srcLdts));
             
             #line default
             #line hidden
             this.Write("\'\r\nsrc_source: \'");
             
-            #line 26 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
+            #line 23 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(CreateTable.srcSource));
             
             #line default
@@ -163,7 +148,7 @@ namespace DDLParser.Templates
 -----TODO: remove this writing the following is a temp implementation, 
 ");
             
-            #line 44 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
+            #line 41 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
 
     foreach (var column in CreateTable.Columns)
     {
@@ -172,14 +157,14 @@ namespace DDLParser.Templates
             #line hidden
             this.Write("          ");
             
-            #line 47 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
+            #line 44 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(column.Name +" "+ column.DataType));
             
             #line default
             #line hidden
             this.Write("\r\n");
             
-            #line 48 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
+            #line 45 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
  }
             
             #line default
