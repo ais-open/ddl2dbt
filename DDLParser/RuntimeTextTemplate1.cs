@@ -18,7 +18,7 @@ namespace DDLParser
     /// Class to produce the template output
     /// </summary>
     
-    #line 1 "D:\madhu\downloads\DDLParser\RuntimeTextTemplate1.tt"
+    #line 1 "D:\madhu\GeicoDDLTransformers\DDLParser\RuntimeTextTemplate1.tt"
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "16.0.0.0")]
     public partial class RuntimeTextTemplate1 : RuntimeTextTemplate1Base
     {
@@ -28,37 +28,37 @@ namespace DDLParser
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("\r\n\r\n{%- set metadata_yaml -%}\r\nsource_model: \'");
+            this.Write("{%- set metadata_yaml -%}\r\nsource_model: \'");
             
-            #line 9 "D:\madhu\downloads\DDLParser\RuntimeTextTemplate1.tt"
+            #line 7 "D:\madhu\GeicoDDLTransformers\DDLParser\RuntimeTextTemplate1.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(CreateTable.TableName));
             
             #line default
             #line hidden
             this.Write("\'\r\nsrc_pk: \'");
             
-            #line 10 "D:\madhu\downloads\DDLParser\RuntimeTextTemplate1.tt"
+            #line 8 "D:\madhu\GeicoDDLTransformers\DDLParser\RuntimeTextTemplate1.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(CreateTable.PolicyHk));
             
             #line default
             #line hidden
             this.Write("\'\r\nsrc_nk: \'");
             
-            #line 11 "D:\madhu\downloads\DDLParser\RuntimeTextTemplate1.tt"
+            #line 9 "D:\madhu\GeicoDDLTransformers\DDLParser\RuntimeTextTemplate1.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(CreateTable.PolicyNumber));
             
             #line default
             #line hidden
             this.Write("\'\r\nsrc_ldts: \'");
             
-            #line 12 "D:\madhu\downloads\DDLParser\RuntimeTextTemplate1.tt"
+            #line 10 "D:\madhu\GeicoDDLTransformers\DDLParser\RuntimeTextTemplate1.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(CreateTable.LoadTimestamp));
             
             #line default
             #line hidden
             this.Write("\'\r\nsrc_source: \'");
             
-            #line 13 "D:\madhu\downloads\DDLParser\RuntimeTextTemplate1.tt"
+            #line 11 "D:\madhu\GeicoDDLTransformers\DDLParser\RuntimeTextTemplate1.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(CreateTable.RecordSource));
             
             #line default
@@ -83,7 +83,7 @@ namespace DDLParser
 -----TODO: remove this writing the following is a temp implementation, 
 ");
             
-            #line 31 "D:\madhu\downloads\DDLParser\RuntimeTextTemplate1.tt"
+            #line 29 "D:\madhu\GeicoDDLTransformers\DDLParser\RuntimeTextTemplate1.tt"
 
     foreach (var column in CreateTable.Columns)
     {
@@ -92,14 +92,14 @@ namespace DDLParser
             #line hidden
             this.Write("          ");
             
-            #line 34 "D:\madhu\downloads\DDLParser\RuntimeTextTemplate1.tt"
+            #line 32 "D:\madhu\GeicoDDLTransformers\DDLParser\RuntimeTextTemplate1.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(column.Name +" "+ column.DataType));
             
             #line default
             #line hidden
             this.Write("\r\n");
             
-            #line 35 "D:\madhu\downloads\DDLParser\RuntimeTextTemplate1.tt"
+            #line 33 "D:\madhu\GeicoDDLTransformers\DDLParser\RuntimeTextTemplate1.tt"
  }
             
             #line default

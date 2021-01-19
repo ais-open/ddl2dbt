@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Xml.Serialization;
 using DDLParser.Templates;
 
 namespace DDLParser
@@ -50,7 +51,7 @@ ADD PRIMARY KEY (POLICY_HK);";
                     {
                         if (sqlStatement.Contains("CREATE TABLE HUB_POLICY"))
                         {
-                            GenerateOutputHubPolicyFile(sqlStatement, sqlStatements);
+                            GenerateHubFile(sqlStatement, sqlStatements);
                         }
 
                     }
@@ -59,7 +60,7 @@ ADD PRIMARY KEY (POLICY_HK);";
 
                         if (sqlStatement.Contains("CREATE TABLE LNK_POLICY_INSURES_VEHICLE"))
                         {
-                            GenerateOutputHubPolicyFile(sqlStatement, sqlStatements);
+                            GenerateLinkFile(sqlStatement, sqlStatements);
                         }
 
                     }
@@ -80,10 +81,10 @@ ADD PRIMARY KEY (POLICY_HK);";
 
         private static List<string> BuildDdlStatementsCollection(string str)
         {
-             str = str.Replace(Environment.NewLine, " ");
-            //var sqlStatements1 = str.Split(";"+Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).ToList();
-            var sqlStatements = str.Split(";", StringSplitOptions.RemoveEmptyEntries).ToList();
-            sqlStatements.ForEach(e => e.Trim());
+             //str = str.Replace(Environment.NewLine, " ");
+            var sqlStatements = str.Split(";"+Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).ToList();
+           // var sqlStatements = str.Split(";", StringSplitOptions.RemoveEmptyEntries).ToList();
+            //sqlStatements.ForEach(e => e.Trim());
             return sqlStatements;
         }
 
@@ -129,7 +130,7 @@ ADD PRIMARY KEY (POLICY_HK);";
             Console.WriteLine("File Generated");
         }
 
-        private static void GenerateOutputHubPolicyFile(string sqlStatement, List<string> sqlStatements)
+        private static void GenerateHubFile(string sqlStatement, List<string> sqlStatements)
         {
             var tableName = GetCreateDdlStatementTableName(sqlStatement);
             var foreignKeys = GetForeignKeys(sqlStatements, tableName);
@@ -176,7 +177,7 @@ ADD PRIMARY KEY (POLICY_HK);";
 
         private static string GetPrimaryKey(List<string> sqlStatements, string tableName)
         {
-            string primaryKeyStatement = sqlStatements.SingleOrDefault(e => e.Contains($"ALTER TABLE {tableName} ADD PRIMARY KEY"));
+            string primaryKeyStatement = sqlStatements.Single(e => e.Contains($"ALTER TABLE {tableName}") && e.Contains("ADD PRIMARY KEY"));
             string primaryKey = "";
 
             if (!string.IsNullOrWhiteSpace(primaryKeyStatement))
@@ -226,7 +227,7 @@ ADD PRIMARY KEY (POLICY_HK);";
             string result = null;
             if (pFrom >= 0 && str.Length > pFrom) result = str.Substring(pFrom, pTo - pFrom);
 
-            var ddlColumns = result.Split(",");
+            var ddlColumns = result.Split(","+Environment.NewLine,StringSplitOptions.RemoveEmptyEntries);
             //TODO: remove the List conversion iterate the array directly.
             var columns = ddlColumns.Select(ddlColumn => ddlColumn.Trim()).ToList();
 
@@ -266,15 +267,5 @@ ADD PRIMARY KEY (POLICY_HK);";
             return result.Trim();
         }
 
-        private static string GetPrimaryKey(string str, string tableName)
-        {
-            str = "ALTER TABLE HUB_POLICY ADD PRIMARY KEY (POLICY_HK)";
-
-            //var alterTableStr= $"Hello, {name}! Today is {date.DayOfWeek}, it's {date:HH:mm} now."
-            //G
-
-            return "";
-
-        }
     }
 }
