@@ -30,6 +30,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>LinkTemplate.tt</DependentUpon>
     </Compile>
+    <Compile Update="Templates\SatFileTemplate.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SatFileTemplate.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -44,6 +49,10 @@
     <None Update="Templates\LinkTemplate.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>LinkTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="Templates\SatFileTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>SatFileTemplate.cs</LastGenOutput>
     </None>
   </ItemGroup>
 

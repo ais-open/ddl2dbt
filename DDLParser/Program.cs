@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Xml.Serialization;
 using DDLParser.Templates;
 
 namespace DDLParser
@@ -31,8 +32,7 @@ namespace DDLParser
 POLICY_HK            BINARY() NOT NULL,
 LOAD_TIMESTAMP       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 RECORD_SOURCE        VARCHAR(100) NULL,
-POLICY_NUMBER        VARCHAR(50) NULL,
-SAMPLE_FIELD        VARCHAR(50) NULL
+POLICY_NUMBER        VARCHAR(50,0) NULL
 );
  
 ALTER TABLE HUB_POLICY
@@ -40,7 +40,7 @@ ADD PRIMARY KEY (POLICY_HK);";
 
 
 
-             rawDdl = File.ReadAllText("D:\\ddl transformations\\GeicoDDLTransformers\\docs\\Policy Phase 1 v0.13.52 DDL.ddl");
+            rawDdl = File.ReadAllText("D:\\madhu\\GeicoDDLTransformers\\docs\\Policy Phase 1 v0.13.52 DDL.ddl");
 
             var sqlStatements = BuildDdlStatementsCollection(rawDdl);
 
@@ -49,25 +49,27 @@ ADD PRIMARY KEY (POLICY_HK);";
                 if (!string.IsNullOrWhiteSpace(sqlStatement))
                     if (sqlStatement.Contains("CREATE TABLE HUB", StringComparison.OrdinalIgnoreCase))
                     {
-                        if (sqlStatement.Contains("CREATE TABLE HUB"))
+                        if (sqlStatement.Contains("CREATE TABLE HUB_POLICY"))
                         {
-                             GenerateOutputHubPolicyFile(sqlStatement, sqlStatements);
+                            GenerateHubFile(sqlStatement, sqlStatements);
                         }
-                        //else if (sqlStatement.Contains("CREATE TABLE HUB_VEHICLE"))
-                        //{
 
-                        //}
-                        //else if (sqlStatement.Contains("CREATE TABLE HUB_COVERAGE"))
-                        //{
-
-                        //}
                     }
                     else if (sqlStatement.Contains("CREATE TABLE LNK", StringComparison.OrdinalIgnoreCase))
                     {
 
                         if (sqlStatement.Contains("CREATE TABLE LNK_POLICY_INSURES_VEHICLE"))
                         {
-                            //GenerateLinkFile(sqlStatement, sqlStatements);
+                            GenerateLinkFile(sqlStatement, sqlStatements);
+                        }
+
+                    }
+                    else if (sqlStatement.Contains("CREATE TABLE SAT", StringComparison.OrdinalIgnoreCase))
+                    {
+
+                        if (sqlStatement.Contains("CREATE TABLE SAT_PEAK_POLICY"))
+                        {
+                            GenerateSatFile(sqlStatement, sqlStatements);
                         }
 
                     }
@@ -79,13 +81,56 @@ ADD PRIMARY KEY (POLICY_HK);";
 
         private static List<string> BuildDdlStatementsCollection(string str)
         {
-            str = str.Replace(Environment.NewLine, " ");
-            var sqlStatements = str.Split(";", StringSplitOptions.RemoveEmptyEntries).ToList();
-            sqlStatements.ForEach(e => e.Trim());
+             //str = str.Replace(Environment.NewLine, " ");
+            var sqlStatements = str.Split(";"+Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).ToList();
+           // var sqlStatements = str.Split(";", StringSplitOptions.RemoveEmptyEntries).ToList();
+            //sqlStatements.ForEach(e => e.Trim());
             return sqlStatements;
         }
 
-        private static void GenerateOutputHubPolicyFile(string sqlStatement, List<string> sqlStatements)
+
+        private static void GenerateSatFile(string sqlStatement, List<string> sqlStatements)
+        {
+            var tableName = GetCreateDdlStatementTableName(sqlStatement);
+
+            var satTableMetadata = new SatTableMetadata()
+            {
+                TableName = tableName,
+                SourceModel = "stg_???",
+                Columns = GetDdlStatementColumns(sqlStatement),
+                SrcPk = GetPrimaryKey(sqlStatements, tableName),
+                SrcHashDiff = "HASHDIFF",
+                SrcEff = "EFFECTIVEDATE",
+                SrcLdts = "LOAD_TIMESTAMP",
+                SrcSource = "RECORD_SOURCE",
+                SrcFk = GetForeignKeys(sqlStatements, tableName)
+            };
+
+            satTableMetadata.SrcPayload = new List<string>();
+
+            foreach (var column in satTableMetadata.Columns)
+            {
+                if (
+                    string.Equals(column.Name, satTableMetadata.SrcPk, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(column.Name, satTableMetadata.SrcHashDiff, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(column.Name, satTableMetadata.SrcEff, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(column.Name, satTableMetadata.SrcLdts, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(column.Name, satTableMetadata.SrcSource, StringComparison.OrdinalIgnoreCase))
+                {
+                }
+                else
+                {
+                    satTableMetadata.SrcPayload.Add(column.Name);
+                }
+            }
+
+            var satFileTemplate = new SatFileTemplate(satTableMetadata);
+            var content = satFileTemplate.TransformText();
+            File.WriteAllText(satTableMetadata.TableName + $".sql", content);
+            Console.WriteLine("File Generated");
+        }
+
+        private static void GenerateHubFile(string sqlStatement, List<string> sqlStatements)
         {
             var tableName = GetCreateDdlStatementTableName(sqlStatement);
             var foreignKeys = GetForeignKeys(sqlStatements, tableName);
@@ -109,7 +154,7 @@ ADD PRIMARY KEY (POLICY_HK);";
         private static void GenerateLinkFile(string sqlStatement, List<string> sqlStatements)
         {
             var tableName = GetCreateDdlStatementTableName(sqlStatement);
-         
+
             var linkTableMetadata = new LinkTableMetadata()
             {
                 TableName = tableName,
@@ -119,7 +164,7 @@ ADD PRIMARY KEY (POLICY_HK);";
                 SrcSource = "RECORD_SOURCE",
                 SourceModel = "stg_???",
                 SrcFk = GetForeignKeys(sqlStatements, tableName)
-        };
+            };
 
             var linkTemplate = new LinkTemplate(linkTableMetadata);
             var content = linkTemplate.TransformText();
@@ -127,9 +172,11 @@ ADD PRIMARY KEY (POLICY_HK);";
             Console.WriteLine("File Generated");
         }
 
+
+
         private static string GetPrimaryKey(List<string> sqlStatements, string tableName)
         {
-            string primaryKeyStatement = sqlStatements.SingleOrDefault(e => e.Contains($"ALTER TABLE {tableName} ADD PRIMARY KEY"));
+            string primaryKeyStatement = sqlStatements.Single(e => e.Contains($"ALTER TABLE {tableName}") && e.Contains("ADD PRIMARY KEY"));
             string primaryKey = "";
 
             if (!string.IsNullOrWhiteSpace(primaryKeyStatement))
@@ -137,41 +184,18 @@ ADD PRIMARY KEY (POLICY_HK);";
                 var pFrom = primaryKeyStatement.IndexOf("(", StringComparison.Ordinal) + 1;
                 var pTo = primaryKeyStatement.IndexOf(")", StringComparison.Ordinal);
                 primaryKey = primaryKeyStatement.Substring(pFrom, pTo - pFrom);
-            }
 
-            return primaryKey;
-        }
-
-
-        private static List<string> GetNaturalKeys(string str) 
-        {
-            var pFrom = str.IndexOf("(", StringComparison.Ordinal) + 1;
-            var pTo = str.LastIndexOf(")", StringComparison.Ordinal);
-            string result = null;
-            if (pFrom >= 0 && str.Length > pFrom) result = str.Substring(pFrom, pTo - pFrom);
-
-            var ddlColumns = result.Split(",");
-            //TODO: remove the List conversion iterate the array directly.
-            var columns = ddlColumns.Select(ddlColumn => ddlColumn.Trim()).ToList();
-
-            //do we need the data types ?, we need to analyse on how to split col name and data types
-            // option 1. store the data types in a list and foreach column line in ddl, find and replace the datatype string with "empty" to get the column name. 
-            //option 2. find the first occurence of the space and the col name = columnline - first occurence of space and then for datatype
-
-            var naturalKeys = new List<string>();
-            //Option 2. implementation.
-            foreach (var column in columns)
-            {
-                pTo = column.IndexOf(" ", StringComparison.Ordinal);
-
-                var columnName = column.Substring(0, pTo);
-                if (columnName != "RECORD_SOURCE" && columnName != "LOAD_TIMESTAMP" && !columnName.EndsWith("HK")) 
+                if (primaryKey.Contains(","))
                 {
-                    naturalKeys.Add(columnName);
+                    var primaryKeyArray = primaryKey.Split(",");
+
+                    return primaryKeyArray.Single(e => e.Contains("_HK"));
                 }
             }
 
-            return naturalKeys;
+
+
+            return primaryKey;
         }
 
 
@@ -196,12 +220,13 @@ ADD PRIMARY KEY (POLICY_HK);";
 
         private static List<ColumnDetail> GetDdlStatementColumns(string str)
         {
+            //POLICY_NUMBER        VARCHAR(50,0) NULL
             var pFrom = str.IndexOf("(", StringComparison.Ordinal) + 1;
             var pTo = str.LastIndexOf(")", StringComparison.Ordinal);
             string result = null;
             if (pFrom >= 0 && str.Length > pFrom) result = str.Substring(pFrom, pTo - pFrom);
 
-            var ddlColumns = result.Split(",");
+            var ddlColumns = result.Split(","+Environment.NewLine,StringSplitOptions.RemoveEmptyEntries);
             //TODO: remove the List conversion iterate the array directly.
             var columns = ddlColumns.Select(ddlColumn => ddlColumn.Trim()).ToList();
 
@@ -215,8 +240,13 @@ ADD PRIMARY KEY (POLICY_HK);";
             {
                 pTo = column.IndexOf(" ", StringComparison.Ordinal);
 
-                var columnName = column.Substring(0, pTo);
+                var columnName = column.Substring(0, pTo).Trim();
                 var columnDataType = column.Substring(pTo).Trim();
+
+                if (!columnDataType.Contains(")"))
+                {
+                   var xx= column.Substring(columnName.Length);
+                }
 
                 var columnDetail = new ColumnDetail { DataType = columnDataType, Name = columnName };
 
@@ -236,15 +266,5 @@ ADD PRIMARY KEY (POLICY_HK);";
             return result.Trim();
         }
 
-        private static string GetPrimaryKey(string str, string tableName)
-        {
-            str = "ALTER TABLE HUB_POLICY ADD PRIMARY KEY (POLICY_HK)";
-
-            //var alterTableStr= $"Hello, {name}! Today is {date.DayOfWeek}, it's {date:HH:mm} now."
-            //G
-
-            return "";
-
-        }
     }
 }
