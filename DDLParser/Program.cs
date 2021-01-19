@@ -31,7 +31,7 @@ namespace DDLParser
 POLICY_HK            BINARY() NOT NULL,
 LOAD_TIMESTAMP       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 RECORD_SOURCE        VARCHAR(100) NULL,
-POLICY_NUMBER        VARCHAR(50) NULL
+POLICY_NUMBER        VARCHAR(50,0) NULL
 );
  
 ALTER TABLE HUB_POLICY
@@ -39,7 +39,7 @@ ADD PRIMARY KEY (POLICY_HK);";
 
 
 
-             rawDdl = File.ReadAllText("D:\\madhu\\GeicoDDLTransformers\\docs\\Policy Phase 1 v0.13.52 DDL.ddl");
+            rawDdl = File.ReadAllText("D:\\madhu\\GeicoDDLTransformers\\docs\\Policy Phase 1 v0.13.52 DDL.ddl");
 
             var sqlStatements = BuildDdlStatementsCollection(rawDdl);
 
@@ -50,23 +50,25 @@ ADD PRIMARY KEY (POLICY_HK);";
                     {
                         if (sqlStatement.Contains("CREATE TABLE HUB_POLICY"))
                         {
-                            // GenerateOutputHubPolicyFile(sqlStatement, sqlStatements);
+                            GenerateOutputHubPolicyFile(sqlStatement, sqlStatements);
                         }
-                        //else if (sqlStatement.Contains("CREATE TABLE HUB_VEHICLE"))
-                        //{
 
-                        //}
-                        //else if (sqlStatement.Contains("CREATE TABLE HUB_COVERAGE"))
-                        //{
-
-                        //}
                     }
                     else if (sqlStatement.Contains("CREATE TABLE LNK", StringComparison.OrdinalIgnoreCase))
                     {
 
                         if (sqlStatement.Contains("CREATE TABLE LNK_POLICY_INSURES_VEHICLE"))
                         {
-                            GenerateLinkFile(sqlStatement, sqlStatements);
+                            GenerateOutputHubPolicyFile(sqlStatement, sqlStatements);
+                        }
+
+                    }
+                    else if (sqlStatement.Contains("CREATE TABLE SAT", StringComparison.OrdinalIgnoreCase))
+                    {
+
+                        if (sqlStatement.Contains("CREATE TABLE SAT_PEAK_POLICY"))
+                        {
+                            GenerateSatFile(sqlStatement, sqlStatements);
                         }
 
                     }
@@ -78,10 +80,53 @@ ADD PRIMARY KEY (POLICY_HK);";
 
         private static List<string> BuildDdlStatementsCollection(string str)
         {
-            str = str.Replace(Environment.NewLine, " ");
+             str = str.Replace(Environment.NewLine, " ");
+            //var sqlStatements1 = str.Split(";"+Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).ToList();
             var sqlStatements = str.Split(";", StringSplitOptions.RemoveEmptyEntries).ToList();
             sqlStatements.ForEach(e => e.Trim());
             return sqlStatements;
+        }
+
+
+        private static void GenerateSatFile(string sqlStatement, List<string> sqlStatements)
+        {
+            var tableName = GetCreateDdlStatementTableName(sqlStatement);
+
+            var satTableMetadata = new SatTableMetadata()
+            {
+                TableName = tableName,
+                SourceModel = "stg_???",
+                Columns = GetDdlStatementColumns(sqlStatement),
+                SrcPk = GetPrimaryKey(sqlStatements, tableName),
+                SrcHashDiff = "HASHDIFF",
+                SrcEff = "EFFECTIVEDATE",
+                SrcLdts = "LOAD_TIMESTAMP",
+                SrcSource = "RECORD_SOURCE",
+                SrcFk = GetForeignKeys(sqlStatements, tableName)
+            };
+
+            satTableMetadata.SrcPayload = new List<string>();
+
+            foreach (var column in satTableMetadata.Columns)
+            {
+                if (
+                    string.Equals(column.Name, satTableMetadata.SrcPk, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(column.Name, satTableMetadata.SrcHashDiff, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(column.Name, satTableMetadata.SrcEff, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(column.Name, satTableMetadata.SrcLdts, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(column.Name, satTableMetadata.SrcSource, StringComparison.OrdinalIgnoreCase))
+                {
+                }
+                else
+                {
+                    satTableMetadata.SrcPayload.Add(column.Name);
+                }
+            }
+
+            var satFileTemplate = new SatFileTemplate(satTableMetadata);
+            var content = satFileTemplate.TransformText();
+            File.WriteAllText(satTableMetadata.TableName + $".sql", content);
+            Console.WriteLine("File Generated");
         }
 
         private static void GenerateOutputHubPolicyFile(string sqlStatement, List<string> sqlStatements)
@@ -109,7 +154,7 @@ ADD PRIMARY KEY (POLICY_HK);";
         private static void GenerateLinkFile(string sqlStatement, List<string> sqlStatements)
         {
             var tableName = GetCreateDdlStatementTableName(sqlStatement);
-         
+
             var linkTableMetadata = new LinkTableMetadata()
             {
                 TableName = tableName,
@@ -119,13 +164,15 @@ ADD PRIMARY KEY (POLICY_HK);";
                 SrcSource = "RECORD_SOURCE",
                 SourceModel = "stg_???",
                 SrcFk = GetForeignKeys(sqlStatements, tableName)
-        };
+            };
 
             var linkTemplate = new LinkTemplate(linkTableMetadata);
             var content = linkTemplate.TransformText();
             File.WriteAllText(linkTableMetadata.TableName + $".sql", content);
             Console.WriteLine("File Generated");
         }
+
+
 
         private static string GetPrimaryKey(List<string> sqlStatements, string tableName)
         {
@@ -137,7 +184,16 @@ ADD PRIMARY KEY (POLICY_HK);";
                 var pFrom = primaryKeyStatement.IndexOf("(", StringComparison.Ordinal) + 1;
                 var pTo = primaryKeyStatement.IndexOf(")", StringComparison.Ordinal);
                 primaryKey = primaryKeyStatement.Substring(pFrom, pTo - pFrom);
+
+                if (primaryKey.Contains(","))
+                {
+                    var primaryKeyArray = primaryKey.Split(",");
+
+                    return primaryKeyArray.Single(e => e.Contains("_HK"));
+                }
             }
+
+
 
             return primaryKey;
         }
@@ -164,6 +220,7 @@ ADD PRIMARY KEY (POLICY_HK);";
 
         private static List<ColumnDetail> GetDdlStatementColumns(string str)
         {
+            //POLICY_NUMBER        VARCHAR(50,0) NULL
             var pFrom = str.IndexOf("(", StringComparison.Ordinal) + 1;
             var pTo = str.LastIndexOf(")", StringComparison.Ordinal);
             string result = null;
@@ -183,8 +240,13 @@ ADD PRIMARY KEY (POLICY_HK);";
             {
                 pTo = column.IndexOf(" ", StringComparison.Ordinal);
 
-                var columnName = column.Substring(0, pTo);
+                var columnName = column.Substring(0, pTo).Trim();
                 var columnDataType = column.Substring(pTo).Trim();
+
+                if (!columnDataType.Contains(")"))
+                {
+                   var xx= column.Substring(columnName.Length);
+                }
 
                 var columnDetail = new ColumnDetail { DataType = columnDataType, Name = columnName };
 
