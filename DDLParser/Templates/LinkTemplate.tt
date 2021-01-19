@@ -8,6 +8,7 @@
 {%- set metadata_yaml -%}
 source_model: '<#= LinkTableMetadata.SourceModel #>'
 src_pk: '<#= LinkTableMetadata.TableName #>'
+// Todo: add a condition to check if fk exists.
 src_fk:
 <# foreach (string foreigkey in LinkTableMetadata.SrcFk)
    { #>

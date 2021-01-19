@@ -31,7 +31,8 @@ namespace DDLParser
 POLICY_HK            BINARY() NOT NULL,
 LOAD_TIMESTAMP       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 RECORD_SOURCE        VARCHAR(100) NULL,
-POLICY_NUMBER        VARCHAR(50) NULL
+POLICY_NUMBER        VARCHAR(50) NULL,
+SAMPLE_FIELD        VARCHAR(50) NULL
 );
  
 ALTER TABLE HUB_POLICY
@@ -39,7 +40,7 @@ ADD PRIMARY KEY (POLICY_HK);";
 
 
 
-             rawDdl = File.ReadAllText("D:\\madhu\\GeicoDDLTransformers\\docs\\Policy Phase 1 v0.13.52 DDL.ddl");
+             rawDdl = File.ReadAllText("D:\\ddl transformations\\GeicoDDLTransformers\\docs\\Policy Phase 1 v0.13.52 DDL.ddl");
 
             var sqlStatements = BuildDdlStatementsCollection(rawDdl);
 
@@ -48,9 +49,9 @@ ADD PRIMARY KEY (POLICY_HK);";
                 if (!string.IsNullOrWhiteSpace(sqlStatement))
                     if (sqlStatement.Contains("CREATE TABLE HUB", StringComparison.OrdinalIgnoreCase))
                     {
-                        if (sqlStatement.Contains("CREATE TABLE HUB_POLICY"))
+                        if (sqlStatement.Contains("CREATE TABLE HUB"))
                         {
-                            // GenerateOutputHubPolicyFile(sqlStatement, sqlStatements);
+                             GenerateOutputHubPolicyFile(sqlStatement, sqlStatements);
                         }
                         //else if (sqlStatement.Contains("CREATE TABLE HUB_VEHICLE"))
                         //{
@@ -66,7 +67,7 @@ ADD PRIMARY KEY (POLICY_HK);";
 
                         if (sqlStatement.Contains("CREATE TABLE LNK_POLICY_INSURES_VEHICLE"))
                         {
-                            GenerateLinkFile(sqlStatement, sqlStatements);
+                            //GenerateLinkFile(sqlStatement, sqlStatements);
                         }
 
                     }
@@ -92,16 +93,15 @@ ADD PRIMARY KEY (POLICY_HK);";
             {
                 TableName = tableName,
                 Columns = GetDdlStatementColumns(sqlStatement),
-                PrimaryKey = GetPrimaryKey(sqlStatements, tableName),
-                LoadTimestamp = "LOAD_TIMESTAMP",
-                RecordSource = "RECORD_SOURCE",
-                PolicyHk = "POLICY_HK",
-                PolicyNumber = "POLICY_NUMBER",
+                srcPk = GetPrimaryKey(sqlStatements, tableName),
+                srcLdts = "LOAD_TIMESTAMP",
+                srcSource = "RECORD_SOURCE",
+                srcNk = GetNaturalKeys(sqlStatement),
                 SourceModel = "stg_???"
             };
 
-            var runtimeTextTemplate1 = new RuntimeTextTemplate1(createTable);
-            var content = runtimeTextTemplate1.TransformText();
+            var hubFileTemplate = new HubFileTemplate(createTable);
+            var content = hubFileTemplate.TransformText();
             File.WriteAllText(createTable.TableName + $".sql", content);
             Console.WriteLine("File Generated");
         }
@@ -140,6 +140,38 @@ ADD PRIMARY KEY (POLICY_HK);";
             }
 
             return primaryKey;
+        }
+
+
+        private static List<string> GetNaturalKeys(string str) 
+        {
+            var pFrom = str.IndexOf("(", StringComparison.Ordinal) + 1;
+            var pTo = str.LastIndexOf(")", StringComparison.Ordinal);
+            string result = null;
+            if (pFrom >= 0 && str.Length > pFrom) result = str.Substring(pFrom, pTo - pFrom);
+
+            var ddlColumns = result.Split(",");
+            //TODO: remove the List conversion iterate the array directly.
+            var columns = ddlColumns.Select(ddlColumn => ddlColumn.Trim()).ToList();
+
+            //do we need the data types ?, we need to analyse on how to split col name and data types
+            // option 1. store the data types in a list and foreach column line in ddl, find and replace the datatype string with "empty" to get the column name. 
+            //option 2. find the first occurence of the space and the col name = columnline - first occurence of space and then for datatype
+
+            var naturalKeys = new List<string>();
+            //Option 2. implementation.
+            foreach (var column in columns)
+            {
+                pTo = column.IndexOf(" ", StringComparison.Ordinal);
+
+                var columnName = column.Substring(0, pTo);
+                if (columnName != "RECORD_SOURCE" && columnName != "LOAD_TIMESTAMP" && !columnName.EndsWith("HK")) 
+                {
+                    naturalKeys.Add(columnName);
+                }
+            }
+
+            return naturalKeys;
         }
 
 

@@ -3,14 +3,27 @@
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
-
-
 {%- set metadata_yaml -%}
 source_model: '<#= CreateTable.TableName #>'
-src_pk: '<#= CreateTable.PolicyHk #>'
-src_nk: '<#= CreateTable.PolicyNumber #>'
-src_ldts: '<#= CreateTable.LoadTimestamp #>'
-src_source: '<#= CreateTable.RecordSource #>'
+<# if (CreateTable.srcPk != null)
+    { #>
+src_pk: '<#= CreateTable.srcPk #>'
+<# } #>
+src_nk: <# if (CreateTable.srcNk.Count == 1)
+        { #>'<# 
+        foreach (var key in CreateTable.srcNk)
+        {#><#= key #><# }#>'
+<# } #><# else
+        { #>
+
+<#
+    foreach (var key in CreateTable.srcNk)
+    {#>
+    - '<#= key #>'
+<# }#>
+<# } #>
+src_ldts: '<#= CreateTable.srcLdts #>'
+src_source: '<#= CreateTable.srcSource #>'
 {%- endset -%}
  
 {% set metadata_dict = fromyaml(metadata_yaml) -%}

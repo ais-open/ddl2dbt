@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DDLParser
+namespace DDLParser.Templates
 {
-    public partial class RuntimeTextTemplate1
+    public partial class HubFileTemplate
     {
         public HubTableMetadata CreateTable;
 
-        public RuntimeTextTemplate1(HubTableMetadata createTable)
+        public HubFileTemplate(HubTableMetadata createTable)
         {
             CreateTable = createTable;
         }

@@ -7,7 +7,7 @@
 //     the code is regenerated.
 // </auto-generated>
 // ------------------------------------------------------------------------------
-namespace DDLParser
+namespace DDLParser.Templates
 {
     using System.Linq;
     using System.Text;
@@ -18,9 +18,9 @@ namespace DDLParser
     /// Class to produce the template output
     /// </summary>
     
-    #line 1 "D:\madhu\downloads\DDLParser\RuntimeTextTemplate1.tt"
+    #line 1 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "16.0.0.0")]
-    public partial class RuntimeTextTemplate1 : RuntimeTextTemplate1Base
+    public partial class HubFileTemplate : HubFileTemplateBase
     {
 #line hidden
         /// <summary>
@@ -28,38 +28,118 @@ namespace DDLParser
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("\r\n\r\n{%- set metadata_yaml -%}\r\nsource_model: \'");
+            this.Write("{%- set metadata_yaml -%}\r\nsource_model: \'");
             
-            #line 9 "D:\madhu\downloads\DDLParser\RuntimeTextTemplate1.tt"
+            #line 7 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(CreateTable.TableName));
             
             #line default
             #line hidden
-            this.Write("\'\r\nsrc_pk: \'");
+            this.Write("\'\r\n");
             
-            #line 10 "D:\madhu\downloads\DDLParser\RuntimeTextTemplate1.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(CreateTable.PolicyHk));
-            
-            #line default
-            #line hidden
-            this.Write("\'\r\nsrc_nk: \'");
-            
-            #line 11 "D:\madhu\downloads\DDLParser\RuntimeTextTemplate1.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(CreateTable.PolicyNumber));
+            #line 8 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
+ if (CreateTable.srcPk != null)
+    { 
             
             #line default
             #line hidden
-            this.Write("\'\r\nsrc_ldts: \'");
+            this.Write("src_pk: \'");
             
-            #line 12 "D:\madhu\downloads\DDLParser\RuntimeTextTemplate1.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(CreateTable.LoadTimestamp));
+            #line 10 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(CreateTable.srcPk));
+            
+            #line default
+            #line hidden
+            this.Write("\'\r\n");
+            
+            #line 11 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            this.Write("src_nk: ");
+            
+            #line 12 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
+ if (CreateTable.srcNk.Count == 1)
+        { 
+            
+            #line default
+            #line hidden
+            this.Write("\'");
+            
+            #line 13 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
+ 
+        foreach (var key in CreateTable.srcNk)
+        {
+            
+            #line default
+            #line hidden
+            
+            #line 15 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(key));
+            
+            #line default
+            #line hidden
+            
+            #line 15 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
+ }
+            
+            #line default
+            #line hidden
+            this.Write("\'\r\n");
+            
+            #line 16 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            
+            #line 16 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
+ else
+        { 
+            
+            #line default
+            #line hidden
+            this.Write("\r\n");
+            
+            #line 19 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
+
+    foreach (var key in CreateTable.srcNk)
+    {
+            
+            #line default
+            #line hidden
+            this.Write("    - \'");
+            
+            #line 22 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(key));
+            
+            #line default
+            #line hidden
+            this.Write("\'\r\n");
+            
+            #line 23 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
+ }
+            
+            #line default
+            #line hidden
+            
+            #line 24 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            this.Write("src_ldts: \'");
+            
+            #line 25 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(CreateTable.srcLdts));
             
             #line default
             #line hidden
             this.Write("\'\r\nsrc_source: \'");
             
-            #line 13 "D:\madhu\downloads\DDLParser\RuntimeTextTemplate1.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(CreateTable.RecordSource));
+            #line 26 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(CreateTable.srcSource));
             
             #line default
             #line hidden
@@ -83,7 +163,7 @@ namespace DDLParser
 -----TODO: remove this writing the following is a temp implementation, 
 ");
             
-            #line 31 "D:\madhu\downloads\DDLParser\RuntimeTextTemplate1.tt"
+            #line 44 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
 
     foreach (var column in CreateTable.Columns)
     {
@@ -92,14 +172,14 @@ namespace DDLParser
             #line hidden
             this.Write("          ");
             
-            #line 34 "D:\madhu\downloads\DDLParser\RuntimeTextTemplate1.tt"
+            #line 47 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(column.Name +" "+ column.DataType));
             
             #line default
             #line hidden
             this.Write("\r\n");
             
-            #line 35 "D:\madhu\downloads\DDLParser\RuntimeTextTemplate1.tt"
+            #line 48 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
  }
             
             #line default
@@ -115,7 +195,7 @@ namespace DDLParser
     /// Base class for this transformation
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "16.0.0.0")]
-    public class RuntimeTextTemplate1Base
+    public class HubFileTemplateBase
     {
         #region Fields
         private global::System.Text.StringBuilder generationEnvironmentField;

@@ -6,11 +6,10 @@ namespace DDLParser
     public class HubTableMetadata
     {
         public string TableName;
-        public string PolicyHk;
-        public string PolicyNumber;
-        public string LoadTimestamp;
-        public string RecordSource;
-        public string PrimaryKey;
+        public string srcPk;
+        public List<string> srcNk;
+        public string srcLdts;
+        public string srcSource;
         public string SourceModel;
         public List<ColumnDetail> Columns;
         public List<string> ForeignKeys;

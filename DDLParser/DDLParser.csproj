@@ -15,10 +15,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="RuntimeTextTemplate1.cs">
+    <Compile Update="Templates\HubFileTemplate.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>RuntimeTextTemplate1.tt</DependentUpon>
+      <DependentUpon>HubFileTemplate.tt</DependentUpon>
     </Compile>
     <Compile Update="Templates\HubVehicleTemplate.cs">
       <DesignTime>True</DesignTime>
@@ -33,9 +33,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="RuntimeTextTemplate1.tt">
+    <None Update="Templates\HubFileTemplate.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
-      <LastGenOutput>RuntimeTextTemplate1.cs</LastGenOutput>
+      <LastGenOutput>HubFileTemplate.cs</LastGenOutput>
     </None>
     <None Update="Templates\HubVehicleTemplate.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>

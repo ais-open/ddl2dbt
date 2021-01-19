@@ -18,7 +18,7 @@ namespace DDLParser.Templates
     /// Class to produce the template output
     /// </summary>
     
-    #line 1 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\LinkTemplate.tt"
+    #line 1 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\LinkTemplate.tt"
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "16.0.0.0")]
     public partial class LinkTemplate : LinkTemplateBase
     {
@@ -31,21 +31,21 @@ namespace DDLParser.Templates
             this.Write("{{ config(tags = [\'policy\'], materialized = \'table\') }}\r\n\r\n{%- set metadata_yaml " +
                     "-%}\r\nsource_model: \'");
             
-            #line 9 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\LinkTemplate.tt"
+            #line 9 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\LinkTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(LinkTableMetadata.SourceModel));
             
             #line default
             #line hidden
             this.Write("\'\r\nsrc_pk: \'");
             
-            #line 10 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\LinkTemplate.tt"
+            #line 10 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\LinkTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(LinkTableMetadata.TableName));
             
             #line default
             #line hidden
-            this.Write("\'\r\nsrc_fk:\r\n");
+            this.Write("\'\r\n// Todo: add a condition to check if fk exists.\r\nsrc_fk:\r\n");
             
-            #line 12 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\LinkTemplate.tt"
+            #line 13 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\LinkTemplate.tt"
  foreach (string foreigkey in LinkTableMetadata.SrcFk)
    { 
             
@@ -53,14 +53,14 @@ namespace DDLParser.Templates
             #line hidden
             this.Write("  - \'");
             
-            #line 14 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\LinkTemplate.tt"
+            #line 15 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\LinkTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(foreigkey));
             
             #line default
             #line hidden
             this.Write("\'\r\n");
             
-            #line 15 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\LinkTemplate.tt"
+            #line 16 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\LinkTemplate.tt"
  }   // end of foreach
 
             
@@ -68,14 +68,14 @@ namespace DDLParser.Templates
             #line hidden
             this.Write("src_ldts: \'");
             
-            #line 17 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\LinkTemplate.tt"
+            #line 18 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\LinkTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(LinkTableMetadata.SrcLdts));
             
             #line default
             #line hidden
             this.Write("\'\r\nsrc_source: \'");
             
-            #line 18 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\LinkTemplate.tt"
+            #line 19 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\LinkTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(LinkTableMetadata.SrcSource));
             
             #line default
