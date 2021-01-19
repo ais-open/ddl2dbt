@@ -134,7 +134,7 @@ ADD PRIMARY KEY (POLICY_HK);";
         {
             var tableName = GetCreateDdlStatementTableName(sqlStatement);
             var foreignKeys = GetForeignKeys(sqlStatements, tableName);
-            var createTable = new HubTableMetadata
+            var hubTableMetadata = new HubTableMetadata
             {
                 TableName = tableName,
                 Columns = GetDdlStatementColumns(sqlStatement),
@@ -145,9 +145,9 @@ ADD PRIMARY KEY (POLICY_HK);";
                 SourceModel = "stg_???"
             };
 
-            var hubFileTemplate = new HubFileTemplate(createTable);
+            var hubFileTemplate = new HubFileTemplate(hubTableMetadata);
             var content = hubFileTemplate.TransformText();
-            File.WriteAllText(createTable.TableName + $".sql", content);
+            File.WriteAllText(hubTableMetadata.TableName + $".sql", content);
             Console.WriteLine("File Generated");
         }
 

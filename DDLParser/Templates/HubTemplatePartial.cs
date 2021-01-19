@@ -6,11 +6,11 @@ namespace DDLParser.Templates
 {
     public partial class HubFileTemplate
     {
-        public HubTableMetadata CreateTable;
+        public HubTableMetadata HubTableMetadata;
 
-        public HubFileTemplate(HubTableMetadata createTable)
+        public HubFileTemplate(HubTableMetadata hubTableMetadata)
         {
-            CreateTable = createTable;
+            HubTableMetadata = hubTableMetadata;
         }
     }
 }

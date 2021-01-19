@@ -4,23 +4,23 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 {%- set metadata_yaml -%}
-source_model: '<#= CreateTable.TableName #>'
-src_pk: '<#= CreateTable.srcPk #>'
-src_nk: <# if (CreateTable.srcNk.Count == 1)
+source_model: '<#= HubTableMetadata.TableName #>'
+src_pk: '<#= HubTableMetadata.srcPk #>'
+src_nk: <# if (HubTableMetadata.srcNk.Count == 1)
         { #>'<# 
-        foreach (var key in CreateTable.srcNk)
+        foreach (var key in HubTableMetadata.srcNk)
         {#><#= key #><# }#>'
 <# } #><# else
         { #>
 
 <#
-    foreach (var key in CreateTable.srcNk)
+    foreach (var key in HubTableMetadata.srcNk)
     {#>
     - '<#= key #>'
 <# }#>
 <# } #>
-src_ldts: '<#= CreateTable.srcLdts #>'
-src_source: '<#= CreateTable.srcSource #>'
+src_ldts: '<#= HubTableMetadata.srcLdts #>'
+src_source: '<#= HubTableMetadata.srcSource #>'
 {%- endset -%}
  
 {% set metadata_dict = fromyaml(metadata_yaml) -%}
@@ -39,7 +39,7 @@ src_source: '<#= CreateTable.srcSource #>'
 
 -----TODO: remove this writing the following is a temp implementation, 
 <#
-    foreach (var column in CreateTable.Columns)
+    foreach (var column in HubTableMetadata.Columns)
     {#>
           <#= column.Name +" "+ column.DataType #>
 <# }#>
