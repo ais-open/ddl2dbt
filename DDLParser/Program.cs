@@ -13,16 +13,17 @@ namespace DDLParser
         {
             try
             {
-                
+
+
 
                 //TODO: Remove the argumentDetails Tuple and Create an object for capturing command line arguments.
 
                 var argumentDetails = GetCommandlineArgs(args);
-               ParseDDL(argumentDetails.Item1,argumentDetails.Item2,argumentDetails.Item3);
-               
+                ParseDDL(argumentDetails.Item1, argumentDetails.Item2, argumentDetails.Item3);
+
                 Console.Read();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine("Error occured in the application: " + e.ToString());
             }
@@ -55,9 +56,11 @@ namespace DDLParser
                 }
             }
 
+
             //ParseDDL(filepath, fileNames, outputFilePath);
             return (filepath, fileNames, outputFilePath);
         }
+
 
         private static void ParseDDL(string filePath, string fileNames, string outputFilePath)
         {
@@ -102,7 +105,9 @@ ADD PRIMARY KEY (POLICY_HK);";
                     if (Array.Exists(fileNameArr, element => element == "lnk" || element == "*"))
                         if (sqlStatement.Contains("CREATE TABLE LNK", StringComparison.OrdinalIgnoreCase))
                         {
-                           // if (sqlStatement.Contains("CREATE TABLE LNK_POLICY_INSURES_VEHICLE"))
+
+                            // if (sqlStatement.Contains("CREATE TABLE LNK_POLICY_INSURES_VEHICLE"))
+
                             {
                                 GenerateLinkFile(sqlStatement, sqlStatements, outputFilePath);
                             }
@@ -186,9 +191,11 @@ ADD PRIMARY KEY (POLICY_HK);";
                 File.WriteAllText(outputFilePath + "\\" + satTableMetadata.TableName + $".sql", content);
                 Console.WriteLine(outputFilePath + "\\" + satTableMetadata.TableName + $".sql" + " File Generated");
             }
-            catch(Exception e)
+
+            catch (Exception e)
             {
-                Console.WriteLine("Error Generarting SAT file for " + tableName +" Exception details: "+e.ToString());
+                Console.WriteLine("Error Generarting SAT file for " + tableName + " Exception details: " + e.ToString());
+
             }
         }
 
@@ -196,6 +203,7 @@ ADD PRIMARY KEY (POLICY_HK);";
         {
             var tableName = GetCreateDdlStatementTableName(sqlStatement);
             try
+
             {
                 Console.WriteLine("generating file for table " + tableName);
                 var hubTableMetadata = new HubTableMetadata
@@ -234,8 +242,9 @@ ADD PRIMARY KEY (POLICY_HK);";
                 File.WriteAllText(outputFilePath + "\\" + hubTableMetadata.TableName + $".sql", content);
                 Console.WriteLine(outputFilePath + "\\" + hubTableMetadata.TableName + $".sql" + " File Generated");
             }
-            catch(Exception e)
+            catch (Exception e)
             {
+
                 Console.WriteLine("Error Generarting HUB file for " + tableName + " Exception details: " + e.ToString());
             }
         }
@@ -267,7 +276,9 @@ ADD PRIMARY KEY (POLICY_HK);";
                 File.WriteAllText(outputFilePath + "\\" + linkTableMetadata.TableName + $".sql", content);
                 Console.WriteLine(outputFilePath + "\\" + linkTableMetadata.TableName + $".sql" + " File Generated");
             }
-            catch(Exception e)
+
+            catch (Exception e)
+
             {
                 Console.WriteLine("Error Generarting LNK file for " + tableName + " Exception details: " + e.ToString());
             }
@@ -313,13 +324,16 @@ ADD PRIMARY KEY (POLICY_HK);";
                 if (primaryKey.Contains(","))
                 {
                     var primaryKeyArray = primaryKey.Split(",").ToList();
-                    foreach(var key in primaryKeyArray) 
+
+                    foreach (var key in primaryKeyArray)
+
                     {
                         primaryKeys.Add(key);
                     }
 
                 }
-                else 
+
+                else
                 {
                     primaryKeys.Add(primaryKey);
                 }
