@@ -13,13 +13,12 @@ namespace DDLParser
         {
             try
             {
-
-
-
                 //TODO: Remove the argumentDetails Tuple and Create an object for capturing command line arguments.
 
                 var argumentDetails = GetCommandlineArgs(args);
                 ParseDDL(argumentDetails.Item1, argumentDetails.Item2, argumentDetails.Item3);
+
+                Console.WriteLine("Files generation completed");
 
                 Console.Read();
             }
@@ -33,14 +32,14 @@ namespace DDLParser
         {
             string filepath = "", fileNames = "*", outputFilePath = "";
             if (args.Length > 0)
-            {
-                for (int i = 0; i < args.Length; i++)
+                for (var i = 0; i < args.Length; i++)
                 {
                     if (i == 0)
                     {
                         filepath = args[0];
                         Console.WriteLine(filepath);
                     }
+
                     if (args[i].Equals("-m"))
                     {
                         fileNames = args[i + 1];
@@ -54,7 +53,6 @@ namespace DDLParser
                         i += 1;
                     }
                 }
-            }
 
 
             //ParseDDL(filepath, fileNames, outputFilePath);
@@ -64,7 +62,6 @@ namespace DDLParser
 
         private static void ParseDDL(string filePath, string fileNames, string outputFilePath)
         {
-
             var rawDdl = @"CREATE TABLE HUB_POLICY 
 (
 POLICY_HK            BINARY() NOT NULL,
@@ -77,45 +74,32 @@ ALTER TABLE HUB_POLICY
 ADD PRIMARY KEY (POLICY_HK);";
 
 
-
             //rawDdl = File.ReadAllText("D:\\ddl transformations\\GeicoDDLTransformers\\docs\\Policy Phase 1 v0.13.52 DDL.ddl");
 
             rawDdl = File.ReadAllText(filePath);
 
             var sqlStatements = BuildDdlStatementsCollection(rawDdl);
-            string[] fileNameArr = fileNames.Split(',');
+            var fileNameArr = fileNames.Split(',');
 
             // Debug.Assert(sqlStatements.Count == 3);
             foreach (var sqlStatement in sqlStatements)
-            {
                 if (!string.IsNullOrWhiteSpace(sqlStatement))
                 {
                     if (Array.Exists(fileNameArr, element => element == "hub" || element == "*"))
                         if (sqlStatement.Contains("CREATE TABLE HUB", StringComparison.OrdinalIgnoreCase))
-                        {
                             //if (sqlStatement.Contains("CREATE TABLE HUB_POLICY"))
-                            {
-                                GenerateHubFile(sqlStatement, sqlStatements, outputFilePath);
-                            }
-                        }
-                        else
                         {
-                            Console.WriteLine("only create table templates supported for now");
+                            GenerateHubFile(sqlStatement, sqlStatements, outputFilePath);
                         }
+
                     if (Array.Exists(fileNameArr, element => element == "lnk" || element == "*"))
                         if (sqlStatement.Contains("CREATE TABLE LNK", StringComparison.OrdinalIgnoreCase))
-                        {
-
                             // if (sqlStatement.Contains("CREATE TABLE LNK_POLICY_INSURES_VEHICLE"))
 
-                            {
-                                GenerateLinkFile(sqlStatement, sqlStatements, outputFilePath);
-                            }
-                        }
-                        else
                         {
-                            Console.WriteLine("only create table templates supported for now");
+                            GenerateLinkFile(sqlStatement, sqlStatements, outputFilePath);
                         }
+
                     if (Array.Exists(fileNameArr, element => element == "sat" || element == "*"))
                         if (sqlStatement.Contains("CREATE TABLE SAT", StringComparison.OrdinalIgnoreCase))
                         {
@@ -126,10 +110,8 @@ ADD PRIMARY KEY (POLICY_HK);";
                         }
                         else
                         {
-                            Console.WriteLine("only create table templates supported for now");
                         }
                 }
-            }
         }
 
         private static List<string> BuildDdlStatementsCollection(string str)
@@ -165,7 +147,6 @@ ADD PRIMARY KEY (POLICY_HK);";
                 satTableMetadata.SrcPayload = new List<string>();
 
                 foreach (var column in satTableMetadata.Columns)
-                {
                     if (
                         //string.Equals(column.Name, satTableMetadata.SrcPk, StringComparison.OrdinalIgnoreCase) ||
                         satTableMetadata.SrcPk.Any(s => s.Equals(column.Name, StringComparison.OrdinalIgnoreCase)) ||
@@ -179,13 +160,9 @@ ADD PRIMARY KEY (POLICY_HK);";
                     {
                         satTableMetadata.SrcPayload.Add(column.Name);
                     }
-                }
 
                 outputFilePath += "SAT";
-                if (!Directory.Exists(outputFilePath))
-                {
-                    Directory.CreateDirectory(outputFilePath);
-                }
+                if (!Directory.Exists(outputFilePath)) Directory.CreateDirectory(outputFilePath);
                 var satFileTemplate = new SatFileTemplate(satTableMetadata);
                 var content = satFileTemplate.TransformText();
                 File.WriteAllText(outputFilePath + "\\" + satTableMetadata.TableName + $".sql", content);
@@ -194,8 +171,7 @@ ADD PRIMARY KEY (POLICY_HK);";
 
             catch (Exception e)
             {
-                Console.WriteLine("Error Generarting SAT file for " + tableName + " Exception details: " + e.ToString());
-
+                Console.WriteLine("Error generating SAT file for " + tableName + " Exception details: " + e.ToString());
             }
         }
 
@@ -219,7 +195,6 @@ ADD PRIMARY KEY (POLICY_HK);";
                 hubTableMetadata.srcNk = new List<string>();
 
                 foreach (var column in hubTableMetadata.Columns)
-                {
                     if (
                         hubTableMetadata.srcPk.Any(s => s.Equals(column.Name, StringComparison.OrdinalIgnoreCase)) ||
                         string.Equals(column.Name, hubTableMetadata.srcLdts, StringComparison.OrdinalIgnoreCase) ||
@@ -230,13 +205,9 @@ ADD PRIMARY KEY (POLICY_HK);";
                     {
                         hubTableMetadata.srcNk.Add(column.Name);
                     }
-                }
 
                 outputFilePath += "HUB";
-                if (!Directory.Exists(outputFilePath))
-                {
-                    Directory.CreateDirectory(outputFilePath);
-                }
+                if (!Directory.Exists(outputFilePath)) Directory.CreateDirectory(outputFilePath);
                 var hubFileTemplate = new HubFileTemplate(hubTableMetadata);
                 var content = hubFileTemplate.TransformText();
                 File.WriteAllText(outputFilePath + "\\" + hubTableMetadata.TableName + $".sql", content);
@@ -244,8 +215,7 @@ ADD PRIMARY KEY (POLICY_HK);";
             }
             catch (Exception e)
             {
-
-                Console.WriteLine("Error Generarting HUB file for " + tableName + " Exception details: " + e.ToString());
+                Console.WriteLine("Error generating HUB file for " + tableName + " Exception details: " + e.ToString());
             }
         }
 
@@ -267,10 +237,7 @@ ADD PRIMARY KEY (POLICY_HK);";
                 };
 
                 outputFilePath += "LNK";
-                if (!Directory.Exists(outputFilePath))
-                {
-                    Directory.CreateDirectory(outputFilePath);
-                }
+                if (!Directory.Exists(outputFilePath)) Directory.CreateDirectory(outputFilePath);
                 var linkFileTemplate = new LinkFileTemplate(linkTableMetadata);
                 var content = linkFileTemplate.TransformText();
                 File.WriteAllText(outputFilePath + "\\" + linkTableMetadata.TableName + $".sql", content);
@@ -280,37 +247,31 @@ ADD PRIMARY KEY (POLICY_HK);";
             catch (Exception e)
 
             {
-                Console.WriteLine("Error Generarting LNK file for " + tableName + " Exception details: " + e.ToString());
+                Console.WriteLine("Error Generarting LNK file for " + tableName + " Exception details: " +
+                                  e.ToString());
             }
         }
 
 
-
         private static List<string> GetPrimaryKey(List<string> sqlStatements, string tableName)
         {
-
             //if (tableName == "SAT_PEAK_VEHICLE" || tableName == "SAT_PEAK_POLICY")
             //    System.Diagnostics.Debugger.Break();
-
 
 
             var primaryKeySearchString = $"ALTER TABLE {tableName}" + Environment.NewLine + "ADD PRIMARY KEY";
 
 
-
             //var sasd = sqlStatements.Single(e => e.Contains(xx));
-
 
 
             //string primaryKeyStatement = sqlStatements.SingleOrDefault(e => e.Contains($"ALTER TABLE {tableName}") && e.Contains("ADD PRIMARY KEY"));
             //string primaryKey = "";
 
 
-
-            string primaryKeyStatement = sqlStatements.Single(e => e.Contains(primaryKeySearchString));
-            List<string> primaryKeys = new List<string>();
-            string primaryKey = "";
-
+            var primaryKeyStatement = sqlStatements.Single(e => e.Contains(primaryKeySearchString));
+            var primaryKeys = new List<string>();
+            var primaryKey = "";
 
 
             if (!string.IsNullOrWhiteSpace(primaryKeyStatement))
@@ -320,17 +281,11 @@ ADD PRIMARY KEY (POLICY_HK);";
                 primaryKey = primaryKeyStatement.Substring(pFrom, pTo - pFrom);
 
 
-
                 if (primaryKey.Contains(","))
                 {
                     var primaryKeyArray = primaryKey.Split(",").ToList();
 
-                    foreach (var key in primaryKeyArray)
-
-                    {
-                        primaryKeys.Add(key);
-                    }
-
+                    foreach (var key in primaryKeyArray) primaryKeys.Add(key);
                 }
 
                 else
@@ -338,18 +293,19 @@ ADD PRIMARY KEY (POLICY_HK);";
                     primaryKeys.Add(primaryKey);
                 }
             }
+
             return primaryKeys;
         }
 
 
         private static List<string> GetForeignKeys(List<string> sqlStatements, string tableName)
         {
-            var foreignKeyStatements = sqlStatements.Where(e => e.Contains($"ALTER TABLE {tableName}" + Environment.NewLine) && e.Contains("FOREIGN KEY")).ToList();
+            var foreignKeyStatements = sqlStatements.Where(e =>
+                e.Contains($"ALTER TABLE {tableName}" + Environment.NewLine) && e.Contains("FOREIGN KEY")).ToList();
 
-            List<string> foreignKeys = new List<string>();
+            var foreignKeys = new List<string>();
 
             foreach (var foreignKeyStatement in foreignKeyStatements)
-            {
                 if (!string.IsNullOrWhiteSpace(foreignKeyStatement))
                 {
                     var pFrom = foreignKeyStatement.IndexOf("(", StringComparison.Ordinal) + 1;
@@ -357,7 +313,6 @@ ADD PRIMARY KEY (POLICY_HK);";
                     var foreignKey = foreignKeyStatement.Substring(pFrom, pTo - pFrom);
                     foreignKeys.Add(foreignKey);
                 }
-            }
 
             return foreignKeys;
         }
@@ -392,7 +347,7 @@ ADD PRIMARY KEY (POLICY_HK);";
                     var xx = column.Substring(columnName.Length);
                 }
 
-                var columnDetail = new ColumnDetail { DataType = columnDataType, Name = columnName };
+                var columnDetail = new ColumnDetail {DataType = columnDataType, Name = columnName};
 
                 columnDetails.Add(columnDetail);
             }

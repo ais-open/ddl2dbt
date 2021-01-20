@@ -3,6 +3,8 @@
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
+{{ config(tags = ['policy'], materialized = 'table') }}
+
 {%- set metadata_yaml -%}
 source_model: '<#= HubTableMetadata.TableName #>'
 src_pk: <# if (HubTableMetadata.srcPk.Count == 1)
@@ -47,11 +49,3 @@ src_source: '<#= HubTableMetadata.srcSource #>'
                 src_ldts=src_ldts,
                 src_source=src_source, 
                 source_model=source_model) }}
-
-
------TODO: remove this writing the following is a temp implementation, 
-<#
-    foreach (var column in HubTableMetadata.Columns)
-    {#>
-          <#= column.Name +" "+ column.DataType #>
-<# }#>
