@@ -11,19 +11,51 @@ namespace DDLParser
     {
         private static void Main(string[] args)
         {
-            //if (!File.Exists(args[0]))
-            //{
-            //    Console.WriteLine("file not found");
-            //}
+            try
+            {
+                //if (!File.Exists(args[0]))
+                //{
+                //    Console.WriteLine("file not found");
+                //}
 
-            //TODO: implement capturing the input and output folder names for reading the files.
+                //TODO: implement capturing the input and output folder names for reading the files.
 
-            ParseDDL();
-            Console.Read();
+                string filepath = "", fileNames = "*", outputFilePath = "";
+                if (args.Length > 0)
+                {
+                    for (int i = 0; i < args.Length; i++)
+                    {
+                        if (i == 0)
+                        {
+                            filepath = args[0];
+                            Console.WriteLine(filepath);
+                        }
+                        if (args[i].Equals("-m"))
+                        {
+                            fileNames = args[i + 1];
+                            Console.WriteLine(fileNames);
+                            i += 1;
+                        }
+                        else if (args[i].Equals("-o"))
+                        {
+                            outputFilePath = args[i + 1];
+                            Console.WriteLine(outputFilePath);
+                            i += 1;
+                        }
+                    }
+                }
+
+                ParseDDL(filepath, fileNames, outputFilePath);
+                Console.Read();
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("Error occured in the application: " + e.ToString());
+            }
         }
 
 
-        private static void ParseDDL()
+        private static void ParseDDL(string filePath, string fileNames, string outputFilePath)
         {
 
 
@@ -40,43 +72,61 @@ ADD PRIMARY KEY (POLICY_HK);";
 
 
 
-            rawDdl = File.ReadAllText("D:\\ddl transformations\\GeicoDDLTransformers\\docs\\Policy Phase 1 v0.13.52 DDL.ddl");
+           //rawDdl = File.ReadAllText("D:\\AIS\\DBT\\GeicoDDLTransformers\\docs\\Policy Phase 1 v0.13.52 DDL.ddl");
+
+             rawDdl = File.ReadAllText(filePath);
 
             var sqlStatements = BuildDdlStatementsCollection(rawDdl);
+            string[] fileNameArr = fileNames.Split(',');
 
             // Debug.Assert(sqlStatements.Count == 3);
             foreach (var sqlStatement in sqlStatements)
+            {
                 if (!string.IsNullOrWhiteSpace(sqlStatement))
-                    if (sqlStatement.Contains("CREATE TABLE HUB", StringComparison.OrdinalIgnoreCase))
-                    {
-                        if (sqlStatement.Contains("CREATE TABLE HUB_POLICY"))
+                {
+                    if (Array.Exists(fileNameArr, element => element == "hub" || element == "*"))
+                        if (sqlStatement.Contains("CREATE TABLE HUB", StringComparison.OrdinalIgnoreCase))
                         {
-                            GenerateHubFile(sqlStatement, sqlStatements);
+                            //if (sqlStatement.Contains("CREATE TABLE HUB_POLICY"))
+                            {
+                                GenerateHubFile(sqlStatement, sqlStatements, outputFilePath);
+                            }
+
                         }
-
-                    }
-                    else if (sqlStatement.Contains("CREATE TABLE LNK", StringComparison.OrdinalIgnoreCase))
-                    {
-
-                        if (sqlStatement.Contains("CREATE TABLE LNK_POLICY_INSURES_VEHICLE"))
+                        else
                         {
-                            GenerateLinkFile(sqlStatement, sqlStatements);
+                            Console.WriteLine("only create table templates supported for now");
                         }
-
-                    }
-                    else if (sqlStatement.Contains("CREATE TABLE SAT", StringComparison.OrdinalIgnoreCase))
-                    {
-
-                        if (sqlStatement.Contains("CREATE TABLE SAT_PEAK_POLICY"))
+                    if (Array.Exists(fileNameArr, element => element == "lnk" || element == "*"))
+                        if (sqlStatement.Contains("CREATE TABLE LNK", StringComparison.OrdinalIgnoreCase))
                         {
-                            GenerateSatFile(sqlStatement, sqlStatements);
-                        }
 
-                    }
-                    else
-                    {
-                        Console.WriteLine("only create table templates supported for now");
-                    }
+                           // if (sqlStatement.Contains("CREATE TABLE LNK_POLICY_INSURES_VEHICLE"))
+                            {
+                                GenerateLinkFile(sqlStatement, sqlStatements, outputFilePath);
+                            }
+
+                        }
+                        else
+                        {
+                            Console.WriteLine("only create table templates supported for now");
+                        }
+                    if (Array.Exists(fileNameArr, element => element == "sat" || element == "*"))
+                        if (sqlStatement.Contains("CREATE TABLE SAT", StringComparison.OrdinalIgnoreCase))
+                        {
+
+                            //if (sqlStatement.Contains("CREATE TABLE SAT_PEAK_POLICY"))
+                            {
+                                GenerateSatFile(sqlStatement, sqlStatements, outputFilePath);
+                            }
+
+                        }
+                        else
+                        {
+                            Console.WriteLine("only create table templates supported for now");
+                        }
+                }
+            }
         }
 
         private static List<string> BuildDdlStatementsCollection(string str)
@@ -89,99 +139,105 @@ ADD PRIMARY KEY (POLICY_HK);";
         }
 
 
-        private static void GenerateSatFile(string sqlStatement, List<string> sqlStatements)
+        private static void GenerateSatFile(string sqlStatement, List<string> sqlStatements, string outputFilePath)
         {
             var tableName = GetCreateDdlStatementTableName(sqlStatement);
-
-            Console.WriteLine("generating file for table " + tableName);
-
-            var satTableMetadata = new SatTableMetadata()
+            try
             {
-                TableName = tableName,
-                SourceModel = "stg_???",
-                Columns = GetDdlStatementColumns(sqlStatement),
-                SrcPk = GetPrimaryKey(sqlStatements, tableName),
-                SrcHashDiff = "HASHDIFF",
-                SrcEff = "EFFECTIVEDATE",
-                SrcLdts = "LOAD_TIMESTAMP",
-                SrcSource = "RECORD_SOURCE",
-                SrcFk = GetForeignKeys(sqlStatements, tableName)
-            };
 
-            satTableMetadata.SrcPayload = new List<string>();
 
-            foreach (var column in satTableMetadata.Columns)
-            {
-                if (
-                    //string.Equals(column.Name, satTableMetadata.SrcPk, StringComparison.OrdinalIgnoreCase) ||
-                    satTableMetadata.SrcPk.Any(s => s.Equals(column.Name, StringComparison.OrdinalIgnoreCase)) ||
-                    string.Equals(column.Name, satTableMetadata.SrcHashDiff, StringComparison.OrdinalIgnoreCase) ||
-                    string.Equals(column.Name, satTableMetadata.SrcEff, StringComparison.OrdinalIgnoreCase) ||
-                    string.Equals(column.Name, satTableMetadata.SrcLdts, StringComparison.OrdinalIgnoreCase) ||
-                    string.Equals(column.Name, satTableMetadata.SrcSource, StringComparison.OrdinalIgnoreCase))
+                Console.WriteLine("generating file for table " + tableName);
+
+                var satTableMetadata = new SatTableMetadata()
                 {
-                }
-                else
+                    TableName = tableName,
+                    SourceModel = "stg_???",
+                    Columns = GetDdlStatementColumns(sqlStatement),
+                    SrcPk = GetPrimaryKey(sqlStatements, tableName),
+                    SrcHashDiff = "HASHDIFF",
+                    SrcEff = "EFFECTIVEDATE",
+                    SrcLdts = "LOAD_TIMESTAMP",
+                    SrcSource = "RECORD_SOURCE",
+                    SrcFk = GetForeignKeys(sqlStatements, tableName)
+                };
+
+                satTableMetadata.SrcPayload = new List<string>();
+
+                foreach (var column in satTableMetadata.Columns)
                 {
-                    satTableMetadata.SrcPayload.Add(column.Name);
+                    if (
+                        //string.Equals(column.Name, satTableMetadata.SrcPk, StringComparison.OrdinalIgnoreCase) ||
+                        satTableMetadata.SrcPk.Any(s => s.Equals(column.Name, StringComparison.OrdinalIgnoreCase)) ||
+                        string.Equals(column.Name, satTableMetadata.SrcHashDiff, StringComparison.OrdinalIgnoreCase) ||
+                        string.Equals(column.Name, satTableMetadata.SrcEff, StringComparison.OrdinalIgnoreCase) ||
+                        string.Equals(column.Name, satTableMetadata.SrcLdts, StringComparison.OrdinalIgnoreCase) ||
+                        string.Equals(column.Name, satTableMetadata.SrcSource, StringComparison.OrdinalIgnoreCase))
+                    {
+                    }
+                    else
+                    {
+                        satTableMetadata.SrcPayload.Add(column.Name);
+                    }
                 }
+
+                outputFilePath += "SAT";
+                if (!Directory.Exists(outputFilePath))
+                {
+                    Directory.CreateDirectory(outputFilePath);
+                }
+                var satFileTemplate = new SatFileTemplate(satTableMetadata);
+                var content = satFileTemplate.TransformText();
+                File.WriteAllText(outputFilePath + "\\" + satTableMetadata.TableName + $".sql", content);
+                Console.WriteLine(outputFilePath + "\\" + satTableMetadata.TableName + $".sql" + " File Generated");
             }
-
-            var satFileTemplate = new SatFileTemplate(satTableMetadata);
-            var content = satFileTemplate.TransformText();
-            File.WriteAllText(satTableMetadata.TableName + $".sql", content);
-            Console.WriteLine(satTableMetadata.TableName + $".sql" + " File Generated");
+            catch(Exception e)
+            {
+                Console.WriteLine("Error generarting sat file for " + tableName +" Exception details: "+e.ToString());
+            }
         }
 
-        private static void GenerateHubFile(string sqlStatement, List<string> sqlStatements)
+        private static void GenerateHubFile(string sqlStatement, List<string> sqlStatements, string outputFilePath)
         {
             var tableName = GetCreateDdlStatementTableName(sqlStatement);
             Console.WriteLine("generating file for table " + tableName);
-            var primaryKey = GetPrimaryKey(sqlStatements, tableName);
             var hubTableMetadata = new HubTableMetadata
             {
                 TableName = tableName,
                 Columns = GetDdlStatementColumns(sqlStatement),
-                srcPk = primaryKey,
+                srcPk = GetPrimaryKey(sqlStatements, tableName),
                 srcLdts = "LOAD_TIMESTAMP",
                 srcSource = "RECORD_SOURCE",
-                srcNk = GetNaturalKeys(sqlStatement, primaryKey),
                 SourceModel = "stg_???"
             };
 
-            var hubFileTemplate = new HubFileTemplate(hubTableMetadata);
-            var content = hubFileTemplate.TransformText();
-            File.WriteAllText(hubTableMetadata.TableName + $".sql", content);
-            Console.WriteLine(hubTableMetadata.TableName + $".sql" + " File Generated");
-        }
+            hubTableMetadata.srcNk = new List<string>();
 
-        private static List<string> GetNaturalKeys(string str , List<string> primaryKey)
-        {
-            var pFrom = str.IndexOf("(", StringComparison.Ordinal) + 1;
-            var pTo = str.LastIndexOf(")", StringComparison.Ordinal);
-            string result = null;
-            if (pFrom >= 0 && str.Length > pFrom) result = str.Substring(pFrom, pTo - pFrom);
-
-            var ddlColumns = result.Split(",");
-            //TODO: remove the List conversion iterate the array directly.
-            var columns = ddlColumns.Select(ddlColumn => ddlColumn.Trim()).ToList();
-
-            var naturalKeys = new List<string>();
-            foreach (var column in columns)
+            foreach (var column in hubTableMetadata.Columns)
             {
-                pTo = column.IndexOf(" ", StringComparison.Ordinal);
-
-                var columnName = column.Substring(0, pTo);
-                if (columnName != "RECORD_SOURCE" && columnName != "LOAD_TIMESTAMP" && !primaryKey.Contains(columnName))
+                if (
+                    hubTableMetadata.srcPk.Any(s => s.Equals(column.Name, StringComparison.OrdinalIgnoreCase)) ||
+                    string.Equals(column.Name, hubTableMetadata.srcLdts, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(column.Name, hubTableMetadata.srcSource, StringComparison.OrdinalIgnoreCase))
                 {
-                    naturalKeys.Add(columnName);
+                }
+                else
+                {
+                    hubTableMetadata.srcNk.Add(column.Name);
                 }
             }
 
-            return naturalKeys;
+            outputFilePath += "HUB";
+            if (!Directory.Exists(outputFilePath))
+            {
+                Directory.CreateDirectory(outputFilePath);
+            }
+            var hubFileTemplate = new HubFileTemplate(hubTableMetadata);
+            var content = hubFileTemplate.TransformText();
+            File.WriteAllText(outputFilePath + "\\" + hubTableMetadata.TableName + $".sql", content);
+            Console.WriteLine(outputFilePath + "\\" + hubTableMetadata.TableName + $".sql" + " File Generated");
         }
 
-        private static void GenerateLinkFile(string sqlStatement, List<string> sqlStatements)
+        private static void GenerateLinkFile(string sqlStatement, List<string> sqlStatements, string outputFilePath)
         {
             var tableName = GetCreateDdlStatementTableName(sqlStatement);
             Console.WriteLine("generating file for table " + tableName);
@@ -196,10 +252,15 @@ ADD PRIMARY KEY (POLICY_HK);";
                 SrcFk = GetForeignKeys(sqlStatements, tableName)
             };
 
+            outputFilePath += "LNK";
+            if (!Directory.Exists(outputFilePath))
+            {
+                Directory.CreateDirectory(outputFilePath);
+            }
             var linkFileTemplate = new LinkFileTemplate(linkTableMetadata);
             var content = linkFileTemplate.TransformText();
-            File.WriteAllText(linkTableMetadata.TableName + $".sql", content);
-            Console.WriteLine(linkTableMetadata.TableName + $".sql" + " File Generated");
+            File.WriteAllText(outputFilePath + "\\" + linkTableMetadata.TableName + $".sql", content);
+            Console.WriteLine(outputFilePath + "\\" + linkTableMetadata.TableName + $".sql" + " File Generated");
         }
 
 
