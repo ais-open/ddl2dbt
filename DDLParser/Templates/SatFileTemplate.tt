@@ -7,17 +7,36 @@
 
 {%- set metadata_yaml -%}
 source_model: '<#= SatTableMetadata.SourceModel #>'
-src_pk: '<#= SatTableMetadata.SrcPk #>'
+src_pk: <# if (SatTableMetadata.SrcPk.Count == 1)
+        { #>'<# 
+        foreach (var key in SatTableMetadata.SrcPk)
+        {#><#= key #><# }#>'
+<# } #><# else
+        { #>
+
+<#
+    foreach (var key in SatTableMetadata.SrcPk)
+    {#>
+  - '<#= key #>'
+<# }#>
+<# } #>
 src_hashdiff: '<#= SatTableMetadata.SrcHashDiff #>'
 src_eff: '<#= SatTableMetadata.SrcEff #>'
 src_ldts: '<#= SatTableMetadata.SrcLdts #>'
 src_source: '<#= SatTableMetadata.SrcSource #>'
-src_payload:
-<# foreach (string column in SatTableMetadata.SrcPayload)
-   { #>
-  - '<#= column#>'
-<# }   // end of foreach
-#>
+src_payload: <# if (SatTableMetadata.SrcPayload.Count == 1)
+        { #>'<# 
+        foreach (var column in SatTableMetadata.SrcPayload)
+        {#><#= column #><# }#>'
+<# } #><# else
+        { #>
+
+<#
+    foreach (var column in SatTableMetadata.SrcPayload)
+    {#>
+  - '<#= column #>'
+<# }#>
+<# } #>
 {%- endset -%}
 
 {% set metadata_dict = fromyaml(metadata_yaml) -%}

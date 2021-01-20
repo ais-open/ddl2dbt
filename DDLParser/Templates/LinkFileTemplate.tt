@@ -7,13 +7,33 @@
 
 {%- set metadata_yaml -%}
 source_model: '<#= LinkTableMetadata.SourceModel #>'
-src_pk: '<#= LinkTableMetadata.TableName #>'
-src_fk:
-<# foreach (string foreigkey in LinkTableMetadata.SrcFk)
-   { #>
-  - '<#= foreigkey#>'
-<# }   // end of foreach
-#>
+src_pk: <# if (LinkTableMetadata.SrcPk.Count == 1)
+        { #>'<# 
+        foreach (var key in LinkTableMetadata.SrcPk)
+        {#><#= key #><# }#>'
+<# } #><# else
+        { #>
+
+<#
+    foreach (var key in LinkTableMetadata.SrcPk)
+    {#>
+  - '<#= key #>'
+<# }#>
+<# } #>
+// Todo: add a condition to check if fk exists.
+src_fk: <# if (LinkTableMetadata.SrcFk.Count == 1)
+        { #>'<# 
+        foreach (var key in LinkTableMetadata.SrcFk)
+        {#><#= key #><# }#>'
+<# } #><# else
+        { #>
+
+<#
+    foreach (var key in LinkTableMetadata.SrcFk)
+    {#>
+  - '<#= key #>'
+<# }#>
+<# } #>
 src_ldts: '<#= LinkTableMetadata.SrcLdts #>'
 src_source: '<#= LinkTableMetadata.SrcSource #>'
 {%- endset -%}

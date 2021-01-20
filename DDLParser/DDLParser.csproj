@@ -15,20 +15,20 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="RuntimeTextTemplate1.cs">
+    <Compile Update="Templates\HubFileTemplate.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>RuntimeTextTemplate1.tt</DependentUpon>
+      <DependentUpon>HubFileTemplate.tt</DependentUpon>
     </Compile>
     <Compile Update="Templates\HubVehicleTemplate.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>HubVehicleTemplate.tt</DependentUpon>
     </Compile>
-    <Compile Update="Templates\LinkTemplate.cs">
+    <Compile Update="Templates\LinkFileTemplate.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>LinkTemplate.tt</DependentUpon>
+      <DependentUpon>LinkFileTemplate.tt</DependentUpon>
     </Compile>
     <Compile Update="Templates\SatFileTemplate.cs">
       <DesignTime>True</DesignTime>
@@ -38,17 +38,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="RuntimeTextTemplate1.tt">
+    <None Update="Templates\HubFileTemplate.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
-      <LastGenOutput>RuntimeTextTemplate1.cs</LastGenOutput>
+      <LastGenOutput>HubFileTemplate.cs</LastGenOutput>
     </None>
     <None Update="Templates\HubVehicleTemplate.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>HubVehicleTemplate.cs</LastGenOutput>
     </None>
-    <None Update="Templates\LinkTemplate.tt">
+    <None Update="Templates\LinkFileTemplate.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
-      <LastGenOutput>LinkTemplate.cs</LastGenOutput>
+      <LastGenOutput>LinkFileTemplate.cs</LastGenOutput>
     </None>
     <None Update="Templates\SatFileTemplate.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>

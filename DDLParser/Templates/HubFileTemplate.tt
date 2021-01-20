@@ -4,11 +4,35 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 {%- set metadata_yaml -%}
-source_model: '<#= CreateTable.TableName #>'
-src_pk: '<#= CreateTable.PolicyHk #>'
-src_nk: '<#= CreateTable.PolicyNumber #>'
-src_ldts: '<#= CreateTable.LoadTimestamp #>'
-src_source: '<#= CreateTable.RecordSource #>'
+source_model: '<#= HubTableMetadata.TableName #>'
+src_pk: <# if (HubTableMetadata.srcPk.Count == 1)
+        { #>'<# 
+        foreach (var key in HubTableMetadata.srcPk)
+        {#><#= key #><# }#>'
+<# } #><# else
+        { #>
+
+<#
+    foreach (var key in HubTableMetadata.srcPk)
+    {#>
+    - '<#= key #>'
+<# }#>
+<# } #>
+src_nk: <# if (HubTableMetadata.srcNk.Count == 1)
+        { #>'<# 
+        foreach (var key in HubTableMetadata.srcNk)
+        {#><#= key #><# }#>'
+<# } #><# else
+        { #>
+
+<#
+    foreach (var key in HubTableMetadata.srcNk)
+    {#>
+    - '<#= key #>'
+<# }#>
+<# } #>
+src_ldts: '<#= HubTableMetadata.srcLdts #>'
+src_source: '<#= HubTableMetadata.srcSource #>'
 {%- endset -%}
  
 {% set metadata_dict = fromyaml(metadata_yaml) -%}
@@ -27,7 +51,7 @@ src_source: '<#= CreateTable.RecordSource #>'
 
 -----TODO: remove this writing the following is a temp implementation, 
 <#
-    foreach (var column in CreateTable.Columns)
+    foreach (var column in HubTableMetadata.Columns)
     {#>
           <#= column.Name +" "+ column.DataType #>
 <# }#>
