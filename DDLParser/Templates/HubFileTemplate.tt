@@ -5,7 +5,19 @@
 <#@ import namespace="System.Collections.Generic" #>
 {%- set metadata_yaml -%}
 source_model: '<#= HubTableMetadata.TableName #>'
-src_pk: '<#= HubTableMetadata.srcPk #>'
+src_pk: <# if (HubTableMetadata.srcPk.Count == 1)
+        { #>'<# 
+        foreach (var key in HubTableMetadata.srcPk)
+        {#><#= key #><# }#>'
+<# } #><# else
+        { #>
+
+<#
+    foreach (var key in HubTableMetadata.srcPk)
+    {#>
+    - '<#= key #>'
+<# }#>
+<# } #>
 src_nk: <# if (HubTableMetadata.srcNk.Count == 1)
         { #>'<# 
         foreach (var key in HubTableMetadata.srcNk)

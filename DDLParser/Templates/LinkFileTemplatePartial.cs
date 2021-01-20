@@ -1,10 +1,10 @@
 ﻿namespace DDLParser.Templates
 {
-    public partial class LinkTemplate
+    public partial class LinkFileTemplate
     {
         public LinkTableMetadata LinkTableMetadata;
 
-        public LinkTemplate(LinkTableMetadata linkTableMetadata)
+        public LinkFileTemplate(LinkTableMetadata linkTableMetadata)
         {
             LinkTableMetadata = linkTableMetadata;
         }

@@ -6,7 +6,7 @@ namespace DDLParser
     public class HubTableMetadata
     {
         public string TableName;
-        public string srcPk;
+        public List<string> srcPk;
         public List<string> srcNk;
         public string srcLdts;
         public string srcSource;
@@ -27,7 +27,7 @@ namespace DDLParser
         public string TableName;
         public string SrcLdts;
         public string SrcSource;
-        public string SrcPk;
+        public List<string> SrcPk;
         public string SourceModel;
         public List<string> SrcFk;
         public List<ColumnDetail> Columns;
@@ -38,7 +38,7 @@ namespace DDLParser
     {
         public string TableName;
         public string SourceModel;
-        public string SrcPk;
+        public List<string> SrcPk;
         public string SrcHashDiff;
         public string SrcEff;
         public string SrcLdts;

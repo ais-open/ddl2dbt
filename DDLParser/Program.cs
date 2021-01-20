@@ -32,7 +32,7 @@ namespace DDLParser
 POLICY_HK            BINARY() NOT NULL,
 LOAD_TIMESTAMP       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 RECORD_SOURCE        VARCHAR(100) NULL,
-POLICY_NUMBER        VARCHAR(50,0) NULL
+POLICY_NUMBER        VARCHAR(50) NULL
 );
  
 ALTER TABLE HUB_POLICY
@@ -93,6 +93,8 @@ ADD PRIMARY KEY (POLICY_HK);";
         {
             var tableName = GetCreateDdlStatementTableName(sqlStatement);
 
+            Console.WriteLine("generating file for table " + tableName);
+
             var satTableMetadata = new SatTableMetadata()
             {
                 TableName = tableName,
@@ -111,7 +113,8 @@ ADD PRIMARY KEY (POLICY_HK);";
             foreach (var column in satTableMetadata.Columns)
             {
                 if (
-                    string.Equals(column.Name, satTableMetadata.SrcPk, StringComparison.OrdinalIgnoreCase) ||
+                    //string.Equals(column.Name, satTableMetadata.SrcPk, StringComparison.OrdinalIgnoreCase) ||
+                    satTableMetadata.SrcPk.Any(s => s.Equals(column.Name, StringComparison.OrdinalIgnoreCase)) ||
                     string.Equals(column.Name, satTableMetadata.SrcHashDiff, StringComparison.OrdinalIgnoreCase) ||
                     string.Equals(column.Name, satTableMetadata.SrcEff, StringComparison.OrdinalIgnoreCase) ||
                     string.Equals(column.Name, satTableMetadata.SrcLdts, StringComparison.OrdinalIgnoreCase) ||
@@ -127,31 +130,32 @@ ADD PRIMARY KEY (POLICY_HK);";
             var satFileTemplate = new SatFileTemplate(satTableMetadata);
             var content = satFileTemplate.TransformText();
             File.WriteAllText(satTableMetadata.TableName + $".sql", content);
-            Console.WriteLine("File Generated");
+            Console.WriteLine(satTableMetadata.TableName + $".sql" + " File Generated");
         }
 
         private static void GenerateHubFile(string sqlStatement, List<string> sqlStatements)
         {
             var tableName = GetCreateDdlStatementTableName(sqlStatement);
-            var foreignKeys = GetForeignKeys(sqlStatements, tableName);
+            Console.WriteLine("generating file for table " + tableName);
+            var primaryKey = GetPrimaryKey(sqlStatements, tableName);
             var hubTableMetadata = new HubTableMetadata
             {
                 TableName = tableName,
                 Columns = GetDdlStatementColumns(sqlStatement),
-                srcPk = GetPrimaryKey(sqlStatements, tableName),
+                srcPk = primaryKey,
                 srcLdts = "LOAD_TIMESTAMP",
                 srcSource = "RECORD_SOURCE",
-                srcNk = GetNaturalKeys(sqlStatement),
+                srcNk = GetNaturalKeys(sqlStatement, primaryKey),
                 SourceModel = "stg_???"
             };
 
             var hubFileTemplate = new HubFileTemplate(hubTableMetadata);
             var content = hubFileTemplate.TransformText();
             File.WriteAllText(hubTableMetadata.TableName + $".sql", content);
-            Console.WriteLine("File Generated");
+            Console.WriteLine(hubTableMetadata.TableName + $".sql" + " File Generated");
         }
 
-        private static List<string> GetNaturalKeys(string str)
+        private static List<string> GetNaturalKeys(string str , List<string> primaryKey)
         {
             var pFrom = str.IndexOf("(", StringComparison.Ordinal) + 1;
             var pTo = str.LastIndexOf(")", StringComparison.Ordinal);
@@ -162,18 +166,13 @@ ADD PRIMARY KEY (POLICY_HK);";
             //TODO: remove the List conversion iterate the array directly.
             var columns = ddlColumns.Select(ddlColumn => ddlColumn.Trim()).ToList();
 
-            //do we need the data types ?, we need to analyse on how to split col name and data types
-            // option 1. store the data types in a list and foreach column line in ddl, find and replace the datatype string with "empty" to get the column name. 
-            //option 2. find the first occurence of the space and the col name = columnline - first occurence of space and then for datatype
-
             var naturalKeys = new List<string>();
-            //Option 2. implementation.
             foreach (var column in columns)
             {
                 pTo = column.IndexOf(" ", StringComparison.Ordinal);
 
                 var columnName = column.Substring(0, pTo);
-                if (columnName != "RECORD_SOURCE" && columnName != "LOAD_TIMESTAMP" && !columnName.EndsWith("HK"))
+                if (columnName != "RECORD_SOURCE" && columnName != "LOAD_TIMESTAMP" && !primaryKey.Contains(columnName))
                 {
                     naturalKeys.Add(columnName);
                 }
@@ -185,7 +184,7 @@ ADD PRIMARY KEY (POLICY_HK);";
         private static void GenerateLinkFile(string sqlStatement, List<string> sqlStatements)
         {
             var tableName = GetCreateDdlStatementTableName(sqlStatement);
-
+            Console.WriteLine("generating file for table " + tableName);
             var linkTableMetadata = new LinkTableMetadata()
             {
                 TableName = tableName,
@@ -197,18 +196,40 @@ ADD PRIMARY KEY (POLICY_HK);";
                 SrcFk = GetForeignKeys(sqlStatements, tableName)
             };
 
-            var linkTemplate = new LinkTemplate(linkTableMetadata);
-            var content = linkTemplate.TransformText();
+            var linkFileTemplate = new LinkFileTemplate(linkTableMetadata);
+            var content = linkFileTemplate.TransformText();
             File.WriteAllText(linkTableMetadata.TableName + $".sql", content);
-            Console.WriteLine("File Generated");
+            Console.WriteLine(linkTableMetadata.TableName + $".sql" + " File Generated");
         }
 
 
 
-        private static string GetPrimaryKey(List<string> sqlStatements, string tableName)
+        private static List<string> GetPrimaryKey(List<string> sqlStatements, string tableName)
         {
-            string primaryKeyStatement = sqlStatements.Single(e => e.Contains($"ALTER TABLE {tableName}") && e.Contains("ADD PRIMARY KEY"));
+
+            //if (tableName == "SAT_PEAK_VEHICLE" || tableName == "SAT_PEAK_POLICY")
+            //    System.Diagnostics.Debugger.Break();
+
+
+
+            var primaryKeySearchString = $"ALTER TABLE {tableName}" + Environment.NewLine + "ADD PRIMARY KEY";
+
+
+
+            //var sasd = sqlStatements.Single(e => e.Contains(xx));
+
+
+
+            //string primaryKeyStatement = sqlStatements.SingleOrDefault(e => e.Contains($"ALTER TABLE {tableName}") && e.Contains("ADD PRIMARY KEY"));
+            //string primaryKey = "";
+
+
+
+            string primaryKeyStatement = sqlStatements.Single(e => e.Contains(primaryKeySearchString));
+            List<string> primaryKeys = new List<string>();
             string primaryKey = "";
+
+
 
             if (!string.IsNullOrWhiteSpace(primaryKeyStatement))
             {
@@ -216,23 +237,30 @@ ADD PRIMARY KEY (POLICY_HK);";
                 var pTo = primaryKeyStatement.IndexOf(")", StringComparison.Ordinal);
                 primaryKey = primaryKeyStatement.Substring(pFrom, pTo - pFrom);
 
+
+
                 if (primaryKey.Contains(","))
                 {
-                    var primaryKeyArray = primaryKey.Split(",");
+                    var primaryKeyArray = primaryKey.Split(",").ToList();
+                    foreach(var key in primaryKeyArray) 
+                    {
+                        primaryKeys.Add(key);
+                    }
 
-                    return primaryKeyArray.Single(e => e.Contains("_HK"));
+                }
+                else 
+                {
+                    primaryKeys.Add(primaryKey);
                 }
             }
-
-
-
-            return primaryKey;
+            return primaryKeys;
         }
 
 
         private static List<string> GetForeignKeys(List<string> sqlStatements, string tableName)
         {
-            var foreignKeyStatements = sqlStatements.Where(e => e.Contains($"ALTER TABLE {tableName}") && e.Contains("FOREIGN KEY"));
+            var foreignKeyStatements = sqlStatements.Where(e => e.Contains($"ALTER TABLE {tableName}" + Environment.NewLine) && e.Contains("FOREIGN KEY")).ToList();
+
             List<string> foreignKeys = new List<string>();
 
             foreach (var foreignKeyStatement in foreignKeyStatements)
