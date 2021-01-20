@@ -13,15 +13,13 @@ namespace DDLParser
         {
             try
             {
-                //if (!File.Exists(args[0]))
-                //{
-                //    Console.WriteLine("file not found");
-                //}
+                
 
-                //TODO: implement capturing the input and output folder names for reading the files.
+                //TODO: Remove the argumentDetails Tuple and Create an object for capturing command line arguments.
 
-                GetCommandlineArgs(args);
-               // ParseDDL(filepath, fileNames, outputFilePath);
+                var argumentDetails = GetCommandlineArgs(args);
+               ParseDDL(argumentDetails.Item1,argumentDetails.Item2,argumentDetails.Item3);
+               
                 Console.Read();
             }
             catch(Exception e)
@@ -30,7 +28,7 @@ namespace DDLParser
             }
         }
 
-        private static void GetCommandlineArgs(string[] args)
+        private static (string, string, string) GetCommandlineArgs(string[] args)
         {
             string filepath = "", fileNames = "*", outputFilePath = "";
             if (args.Length > 0)
@@ -57,7 +55,8 @@ namespace DDLParser
                 }
             }
 
-            ParseDDL(filepath, fileNames, outputFilePath);
+            //ParseDDL(filepath, fileNames, outputFilePath);
+            return (filepath, fileNames, outputFilePath);
         }
 
         private static void ParseDDL(string filePath, string fileNames, string outputFilePath)
@@ -76,9 +75,9 @@ ADD PRIMARY KEY (POLICY_HK);";
 
 
 
-           rawDdl = File.ReadAllText("D:\\AIS\\DBT\\GeicoDDLTransformers\\docs\\Policy Phase 1 v0.13.52 DDL.ddl");
+            //rawDdl = File.ReadAllText("D:\\ddl transformations\\GeicoDDLTransformers\\docs\\Policy Phase 1 v0.13.52 DDL.ddl");
 
-             //rawDdl = File.ReadAllText(filePath);
+            rawDdl = File.ReadAllText(filePath);
 
             var sqlStatements = BuildDdlStatementsCollection(rawDdl);
             string[] fileNameArr = fileNames.Split(',');
