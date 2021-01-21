@@ -153,6 +153,12 @@ ADD PRIMARY KEY (POLICY_HK);";
                     SrcPayload = new List<string>()
                 };
 
+                if (_config.SatFileGenerationSettings
+                    .SingleOrDefault(e => string.Equals(e.TableName, tableName, StringComparison.OrdinalIgnoreCase)) != null)
+                {
+                    satTableMetadata.Tags = _config.SatFileGenerationSettings.Single(e =>
+                        string.Equals(e.TableName, tableName, StringComparison.OrdinalIgnoreCase)).Tags;
+                }
 
                 foreach (var column in satTableMetadata.Columns)
                     if (
@@ -263,6 +269,13 @@ ADD PRIMARY KEY (POLICY_HK);";
                     SrcSource = "RECORD_SOURCE",
                     SrcFk = DDLHelper.GetForeignKeys(sqlStatements, tableName)
                 };
+
+                if (_config.LnkFileGenerationSettings
+                    .SingleOrDefault(e => string.Equals(e.TableName, tableName, StringComparison.OrdinalIgnoreCase)) != null)
+                {
+                    linkTableMetadata.Tags = _config.LnkFileGenerationSettings.Single(e =>
+                        string.Equals(e.TableName, tableName, StringComparison.OrdinalIgnoreCase)).Tags;
+                }
 
                 var pFrom = tableName.IndexOf('_', +1);
                 linkTableMetadata.SourceModel = "stg_lnk" + tableName.Substring(pFrom);

@@ -17,6 +17,7 @@ namespace DDLParser.TemplateModels
         public List<string> SrcPayload;
         public List<string> SrcFk;
         public List<ColumnDetail> Columns;
+        public string[] Tags;
     }
 
 }

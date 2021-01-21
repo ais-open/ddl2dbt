@@ -18,6 +18,12 @@ namespace DDLParser
             {
                 var hubFileGenerationSettings = configurationRoot.GetSection($"{configKey}:HubFileGenerationSetting").Get<HubFileGenerationSetting[]>();
                 config.HubFileGenerationSettings = hubFileGenerationSettings == null ? Array.Empty<HubFileGenerationSetting>() : hubFileGenerationSettings;
+
+                var lnkFileGenerationSettings = configurationRoot.GetSection($"{configKey}:LnkFileGenerationSetting").Get<LnkFileGenerationSetting[]>();
+                config.LnkFileGenerationSettings = lnkFileGenerationSettings == null ? Array.Empty<LnkFileGenerationSetting>() : lnkFileGenerationSettings;
+
+                var satFileGenerationSettings = configurationRoot.GetSection($"{configKey}:SatFileGenerationSetting").Get<SatFileGenerationSetting[]>();
+                config.SatFileGenerationSettings = satFileGenerationSettings == null ? Array.Empty<SatFileGenerationSetting>() : satFileGenerationSettings;
             }
             else
             {
