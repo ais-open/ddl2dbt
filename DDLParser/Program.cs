@@ -209,6 +209,7 @@ ADD PRIMARY KEY (POLICY_HK);";
                     srcPk = DDLHelper.GetPrimaryKey(sqlStatements, tableName),
                     srcLdts = Constants.LoadTimestamp,
                     srcSource = Constants.RecordSource,
+
                     srcNk = new List<string>(),
                     //Tags = _config.HubFileGenerationSettings.Single(e =>
                     //    string.Equals(e.TableName, tableName, StringComparison.OrdinalIgnoreCase)).Tags
@@ -267,6 +268,7 @@ ADD PRIMARY KEY (POLICY_HK);";
                     SrcPk = DDLHelper.GetPrimaryKey(sqlStatements, tableName),
                     SrcLdts = Constants.LoadTimestamp,
                     SrcSource = Constants.RecordSource,
+
                     SrcFk = DDLHelper.GetForeignKeys(sqlStatements, tableName)
                 };
 
