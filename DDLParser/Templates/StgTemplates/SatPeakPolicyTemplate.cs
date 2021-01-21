@@ -7,7 +7,7 @@
 //     the code is regenerated.
 // </auto-generated>
 // ------------------------------------------------------------------------------
-namespace DDLParser.Templates
+namespace DDLParser.Templates.StgTemplates
 {
     using System.Linq;
     using System.Text;
@@ -18,9 +18,9 @@ namespace DDLParser.Templates
     /// Class to produce the template output
     /// </summary>
     
-    #line 1 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
+    #line 1 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\StgTemplates\SatPeakPolicyTemplate.tt"
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "16.0.0.0")]
-    public partial class SatFileTemplate : SatFileTemplateBase
+    public partial class SatPeakPolicyTemplate : SatPeakPolicyTemplateBase
     {
 #line hidden
         /// <summary>
@@ -28,241 +28,56 @@ namespace DDLParser.Templates
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("{{ config(tags = [");
+            this.Write("{{ config(tags = [\'policy\']) }}\r\n\r\n{%- set metadata_yaml -%}\r\nsource_model:\r\n  PE" +
+                    "AK_POLICY_CONFORMED(");
             
-            #line 6 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
-for(int count=0; count < SatTableMetadata.Tags.Count(); count++)
-                   {
-            
-            #line default
-            #line hidden
-            this.Write("\'");
-            
-            #line 7 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(SatTableMetadata.Tags[count]));
+            #line 10 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\StgTemplates\SatPeakPolicyTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(StgMetadata.DataSourceObjectSystem));
             
             #line default
             #line hidden
-            this.Write("\'");
+            this.Write("): \'");
             
-            #line 7 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
-
-                    if(count != SatTableMetadata.Tags.Count()-1)
-                        {
+            #line 10 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\StgTemplates\SatPeakPolicyTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(StgMetadata.DataSourceTableName));
             
             #line default
             #line hidden
-            this.Write(",");
-            
-            #line 9 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
-}
-            
-            #line default
-            #line hidden
-            
-            #line 9 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
-
-                    }
-            
-            #line default
-            #line hidden
-            this.Write("], materialized = \'table\') }}\r\n\r\n{%- set metadata_yaml -%}\r\nsource_model: \'");
-            
-            #line 13 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(SatTableMetadata.SourceModel));
-            
-            #line default
-            #line hidden
-            this.Write("\'\r\nsrc_pk: ");
-            
-            #line 14 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
- if (SatTableMetadata.SrcPk.Count == 1)
-        { 
-            
-            #line default
-            #line hidden
-            this.Write("\'");
-            
-            #line 15 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
- 
-        foreach (var key in SatTableMetadata.SrcPk)
-        {
-            
-            #line default
-            #line hidden
-            
-            #line 17 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(key));
-            
-            #line default
-            #line hidden
-            
-            #line 17 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
- }
-            
-            #line default
-            #line hidden
-            this.Write("\'\r\n");
-            
-            #line 18 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
- } 
-            
-            #line default
-            #line hidden
-            
-            #line 18 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
- else
-        { 
-            
-            #line default
-            #line hidden
-            this.Write("\r\n");
-            
-            #line 21 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
-
-    foreach (var key in SatTableMetadata.SrcPk)
-    {
-            
-            #line default
-            #line hidden
-            this.Write("  - \'");
-            
-            #line 24 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(key));
-            
-            #line default
-            #line hidden
-            this.Write("\'\r\n");
-            
-            #line 25 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
- }
-            
-            #line default
-            #line hidden
-            
-            #line 26 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
- } 
-            
-            #line default
-            #line hidden
-            this.Write("src_hashdiff: \'");
-            
-            #line 27 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(SatTableMetadata.SrcHashDiff));
-            
-            #line default
-            #line hidden
-            this.Write("\'\r\nsrc_eff: \'");
-            
-            #line 28 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(SatTableMetadata.SrcEff));
-            
-            #line default
-            #line hidden
-            this.Write("\'\r\nsrc_ldts: \'");
-            
-            #line 29 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(SatTableMetadata.SrcLdts));
-            
-            #line default
-            #line hidden
-            this.Write("\'\r\nsrc_source: \'");
-            
-            #line 30 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(SatTableMetadata.SrcSource));
-            
-            #line default
-            #line hidden
-            this.Write("\'\r\nsrc_payload: ");
-            
-            #line 31 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
- if (SatTableMetadata.SrcPayload.Count == 1)
-        { 
-            
-            #line default
-            #line hidden
-            this.Write("\'");
-            
-            #line 32 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
- 
-        foreach (var column in SatTableMetadata.SrcPayload)
-        {
-            
-            #line default
-            #line hidden
-            
-            #line 34 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(column));
-            
-            #line default
-            #line hidden
-            
-            #line 34 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
- }
-            
-            #line default
-            #line hidden
-            this.Write("\'\r\n");
-            
-            #line 35 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
- } 
-            
-            #line default
-            #line hidden
-            
-            #line 35 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
- else
-        { 
-            
-            #line default
-            #line hidden
-            this.Write("\r\n");
-            
-            #line 38 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
-
-    foreach (var column in SatTableMetadata.SrcPayload)
-    {
-            
-            #line default
-            #line hidden
-            this.Write("  - \'");
-            
-            #line 41 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(column));
-            
-            #line default
-            #line hidden
-            this.Write("\'\r\n");
-            
-            #line 42 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
- }
-            
-            #line default
-            #line hidden
-            
-            #line 43 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\SatFileTemplate.tt"
- } 
-            
-            #line default
-            #line hidden
-            this.Write(@"{%- endset -%}
+            this.Write(@"'
+include_source_columns: true
+derived_columns:
+  RECORD_SOURCE: '!PEAK'
+  EFFECTIVE_TIMESTAMP: 'EFFECTIVEDATE'
+hashed_columns:
+  POLICY_HK: 'POLICY_NUMBER'
+  TRANSACTION_HK: 'POLICYREADONLYHISTORYID'
+  HASHDIFF:
+    is_hashdiff: true
+    exclude_columns: true
+    columns:
+      - 'CONFORMED_DIGEST'
+      - 'CONFORMED_INGESTION_TS'
+{%- endset -%}
 
 {% set metadata_dict = fromyaml(metadata_yaml) -%}
-{% set source_model = metadata_dict['source_model'] -%}
-{% set src_pk = metadata_dict['src_pk'] -%}
-{% set src_hashdiff = metadata_dict['src_hashdiff'] -%}
-{% set src_payload = metadata_dict['src_payload'] -%}
-{% set src_eff = metadata_dict['src_eff'] -%}
-{% set src_ldts = metadata_dict['src_ldts'] -%}
-{% set src_source = metadata_dict['src_source'] -%}
 
-{{ dbtvault.sat(src_pk=src_pk, 
-                src_hashdiff=src_hashdiff, 
-                src_payload=src_payload,
-                src_eff=src_eff, 
-                src_ldts=src_ldts,
-                src_source=src_source,
-                source_model=source_model) }}");
+{% set source_model = metadata_dict['source_model'] -%}
+{% set include_source_columns = metadata_dict['include_source_columns'] -%}
+{% set hashed_columns = metadata_dict['hashed_columns'] -%}
+{% set derived_columns = metadata_dict['derived_columns'] -%}
+
+WITH stg AS (
+  {{ dbtvault.stage(include_source_columns=include_source_columns,
+                      source_model=source_model,
+                      hashed_columns=hashed_columns,
+                      derived_columns=derived_columns) }} 
+  {{ limit_records() }}
+),
+stg_loadtimestamp AS (
+  {{ append_loadtimestamp(stage_name = 'stg') }}
+)
+
+SELECT * FROM stg_loadtimestamp");
             return this.GenerationEnvironment.ToString();
         }
     }
@@ -274,7 +89,7 @@ for(int count=0; count < SatTableMetadata.Tags.Count(); count++)
     /// Base class for this transformation
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "16.0.0.0")]
-    public class SatFileTemplateBase
+    public class SatPeakPolicyTemplateBase
     {
         #region Fields
         private global::System.Text.StringBuilder generationEnvironmentField;

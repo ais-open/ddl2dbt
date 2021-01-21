@@ -3,7 +3,11 @@
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
-{{ config(tags = ['policy'], materialized = 'table') }}
+{{ config(tags = [<#for(int count=0; count < SatTableMetadata.Tags.Count(); count++)
+                   {#>'<#= SatTableMetadata.Tags[count] #>'<#
+                    if(count != SatTableMetadata.Tags.Count()-1)
+                        {#>,<#}#><#
+                    }#>], materialized = 'table') }}
 
 {%- set metadata_yaml -%}
 source_model: '<#= SatTableMetadata.SourceModel #>'
