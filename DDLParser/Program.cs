@@ -22,11 +22,15 @@ namespace DDLParser
                 //TODO: Remove the argumentDetails Tuple and Create an object for capturing command line arguments.
                 var (ddlFilePath, csvFilePath, fileNames, outputFilePath) = GetCommandlineArgs(args);
                 ParseDDL(ddlFilePath, csvFilePath, fileNames, outputFilePath);
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("Files generation completed.");
+                Console.ResetColor();
             }
             catch (Exception e)
             {
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Error occured in the application: " + e);
+                Console.ResetColor();
             }
         }
 
@@ -170,12 +174,16 @@ ADD PRIMARY KEY (POLICY_HK);";
                 var satFileTemplate = new SatFileTemplate(satTableMetadata);
                 var content = satFileTemplate.TransformText();
                 File.WriteAllText($"{outputFilePath}\\{satTableMetadata.TableName}.sql", content);
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine($"{outputFilePath}\\{satTableMetadata.TableName}.sql file generated");
+                Console.ResetColor();
             }
 
             catch (Exception e)
             {
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"Error generating SAT file for {tableName} Exception details: {e}");
+                Console.ResetColor();
             }
         }
 
@@ -225,11 +233,15 @@ ADD PRIMARY KEY (POLICY_HK);";
                 var hubFileTemplate = new HubFileTemplate(hubTableMetadata);
                 var content = hubFileTemplate.TransformText();
                 File.WriteAllText($"{outputFilePath}\\{hubTableMetadata.TableName}.sql", content);
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine($"{outputFilePath}\\{hubTableMetadata.TableName}.sql file generated");
+                Console.ResetColor();
             }
             catch (Exception e)
             {
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"Error generating HUB file for {tableName} Exception details: {e}");
+                Console.ResetColor();
             }
         }
 
@@ -256,13 +268,17 @@ ADD PRIMARY KEY (POLICY_HK);";
                 var linkFileTemplate = new LinkFileTemplate(linkTableMetadata);
                 var content = linkFileTemplate.TransformText();
                 File.WriteAllText($"{outputFilePath}\\{linkTableMetadata.TableName}.sql", content);
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine($"{outputFilePath}\\{linkTableMetadata.TableName}.sql file generated");
+                Console.ResetColor();
             }
 
             catch (Exception e)
 
             {
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"Error generating LNK file for {tableName} Exception details: {e}");
+                Console.ResetColor();
             }
         }
 
