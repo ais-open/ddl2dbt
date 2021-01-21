@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DDLParser.TemplateModels;
 
 namespace DDLParser
 {
-    internal static class DDLParserHelper
+    internal static class DDLHelper
     {
         public static List<string> GetPrimaryKey(List<string> sqlStatements, string tableName)
         {

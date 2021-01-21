@@ -1,4 +1,6 @@
-﻿namespace DDLParser.Templates
+﻿using DDLParser.TemplateModels;
+
+namespace DDLParser.Templates
 {
     public partial class SatFileTemplate
     {

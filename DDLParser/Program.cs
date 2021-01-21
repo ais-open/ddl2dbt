@@ -2,16 +2,20 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using DDLParser.TemplateModels;
 using DDLParser.Templates;
 
 namespace DDLParser
 {
     internal class Program
     {
+        private readonly Config _config;
+
         private static void Main(string[] args)
         {
             try
             {
+                var _config = ConfigurationProvider.GetConfigSettings();
                 //TODO: Remove the argumentDetails Tuple and Create an object for capturing command line arguments.
                 var (filePath, fileNames, outputFilePath) = GetCommandlineArgs(args);
                 ParseDDL(filePath, fileNames, outputFilePath);
@@ -69,7 +73,7 @@ ADD PRIMARY KEY (POLICY_HK);";
 
             rawDdl = File.ReadAllText(filePath);
 
-            var sqlStatements = DDLParserHelper.BuildDdlStatementsCollection(rawDdl);
+            var sqlStatements = DDLHelper.BuildDdlStatementsCollection(rawDdl);
             var fileNameArr = fileNames.Split(',');
 
             foreach (var sqlStatement in sqlStatements)
@@ -107,7 +111,7 @@ ADD PRIMARY KEY (POLICY_HK);";
 
         private static void GenerateSatFile(string sqlStatement, List<string> sqlStatements, string outputFilePath)
         {
-            var tableName = DDLParserHelper.GetCreateDdlStatementTableName(sqlStatement);
+            var tableName = DDLHelper.GetCreateDdlStatementTableName(sqlStatement);
             try
             {
                 Console.WriteLine("generating file for table " + tableName);
@@ -116,13 +120,13 @@ ADD PRIMARY KEY (POLICY_HK);";
                 {
                     TableName = tableName,
                     SourceModel = "stg_???",
-                    Columns = DDLParserHelper.GetDdlStatementColumns(sqlStatement),
-                    SrcPk = DDLParserHelper.GetPrimaryKey(sqlStatements, tableName),
+                    Columns = DDLHelper.GetDdlStatementColumns(sqlStatement),
+                    SrcPk = DDLHelper.GetPrimaryKey(sqlStatements, tableName),
                     SrcHashDiff = "HASHDIFF",
                     SrcEff = "EFFECTIVEDATE",
                     SrcLdts = "LOAD_TIMESTAMP",
                     SrcSource = "RECORD_SOURCE",
-                    SrcFk = DDLParserHelper.GetForeignKeys(sqlStatements, tableName),
+                    SrcFk = DDLHelper.GetForeignKeys(sqlStatements, tableName),
                     SrcPayload = new List<string>()
                 };
 
@@ -158,7 +162,7 @@ ADD PRIMARY KEY (POLICY_HK);";
 
         private static void GenerateHubFile(string sqlStatement, List<string> sqlStatements, string outputFilePath)
         {
-            var tableName = DDLParserHelper.GetCreateDdlStatementTableName(sqlStatement);
+            var tableName = DDLHelper.GetCreateDdlStatementTableName(sqlStatement);
             try
 
             {
@@ -166,8 +170,8 @@ ADD PRIMARY KEY (POLICY_HK);";
                 var hubTableMetadata = new HubTableMetadata
                 {
                     TableName = tableName,
-                    Columns = DDLParserHelper.GetDdlStatementColumns(sqlStatement),
-                    srcPk = DDLParserHelper.GetPrimaryKey(sqlStatements, tableName),
+                    Columns = DDLHelper.GetDdlStatementColumns(sqlStatement),
+                    srcPk = DDLHelper.GetPrimaryKey(sqlStatements, tableName),
                     srcLdts = "LOAD_TIMESTAMP",
                     srcSource = "RECORD_SOURCE",
                     SourceModel = "stg_???",
@@ -202,19 +206,19 @@ ADD PRIMARY KEY (POLICY_HK);";
 
         private static void GenerateLinkFile(string sqlStatement, List<string> sqlStatements, string outputFilePath)
         {
-            var tableName = DDLParserHelper.GetCreateDdlStatementTableName(sqlStatement);
+            var tableName = DDLHelper.GetCreateDdlStatementTableName(sqlStatement);
             try
             {
                 Console.WriteLine("generating file for table " + tableName);
                 var linkTableMetadata = new LinkTableMetadata()
                 {
                     TableName = tableName,
-                    Columns = DDLParserHelper.GetDdlStatementColumns(sqlStatement),
-                    SrcPk = DDLParserHelper.GetPrimaryKey(sqlStatements, tableName),
+                    Columns = DDLHelper.GetDdlStatementColumns(sqlStatement),
+                    SrcPk = DDLHelper.GetPrimaryKey(sqlStatements, tableName),
                     SrcLdts = "LOAD_TIMESTAMP",
                     SrcSource = "RECORD_SOURCE",
                     SourceModel = "stg_???",
-                    SrcFk = DDLParserHelper.GetForeignKeys(sqlStatements, tableName)
+                    SrcFk = DDLHelper.GetForeignKeys(sqlStatements, tableName)
                 };
 
                 outputFilePath += "LNK";
