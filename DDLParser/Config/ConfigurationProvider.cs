@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Microsoft.Extensions.Configuration;
 
 namespace DDLParser
@@ -8,6 +9,7 @@ namespace DDLParser
         public static Config GetConfigSettings()
         {
             var configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.SetBasePath(Directory.GetCurrentDirectory());
             configurationBuilder.AddJsonFile("appsettings.json");
             var configurationRoot = configurationBuilder.Build();
 

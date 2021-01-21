@@ -45,6 +45,7 @@
   <ItemGroup>
     <None Update="appSettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </None>
     <None Update="Templates\HubFileTemplate.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
