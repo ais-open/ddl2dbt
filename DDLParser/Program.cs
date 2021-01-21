@@ -85,9 +85,12 @@ ALTER TABLE HUB_POLICY
 ADD PRIMARY KEY (POLICY_HK);";
 
 
-            rawDdl = File.ReadAllText("D:\\backup\\GeicoDDLTransformers\\docs\\Policy Phase 1 v0.13.52 DDL.ddl");
-            csvFilePath = "D:\\backup\\GeicoDDLTransformers\\docs\\Data Source Mapping v0.14.54.csv";
+            //Get Current PROJECT Directory
+            var currentProjectDirectoryPath= Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.Parent.FullName;
 
+            rawDdl = File.ReadAllText(Path.Combine(currentProjectDirectoryPath, @"docs\\", "Policy Phase 1 v0.13.52 DDL.ddl"));
+            csvFilePath = currentProjectDirectoryPath+"\\docs\\Data Source Mapping v0.14.54.csv";
+            
             //rawDdl = File.ReadAllText(ddlFilePath);
 
             var sqlStatements = DDLHelper.BuildDdlStatementsCollection(rawDdl);
