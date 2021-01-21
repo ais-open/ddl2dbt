@@ -9,13 +9,13 @@ namespace DDLParser
 {
     internal class Program
     {
-        private readonly Config _config;
+        private  static Config _config;
 
         private static void Main(string[] args)
         {
             try
             {
-                var _config = ConfigurationProvider.GetConfigSettings();
+                 _config = ConfigurationProvider.GetConfigSettings();
                 //TODO: Remove the argumentDetails Tuple and Create an object for capturing command line arguments.
                 var (filePath, fileNames, outputFilePath) = GetCommandlineArgs(args);
                 ParseDDL(filePath, fileNames, outputFilePath);
@@ -69,9 +69,9 @@ ALTER TABLE HUB_POLICY
 ADD PRIMARY KEY (POLICY_HK);";
 
 
-            //rawDdl = File.ReadAllText("D:\\ddl transformations\\GeicoDDLTransformers\\docs\\Policy Phase 1 v0.13.52 DDL.ddl");
+            rawDdl = File.ReadAllText(@"D:\madhu\GeicoDDLTransformers\docs\Policy Phase 1 v0.13.52 DDL.ddl");
 
-            rawDdl = File.ReadAllText(filePath);
+            //rawDdl = File.ReadAllText(filePath);
 
             var sqlStatements = DDLHelper.BuildDdlStatementsCollection(rawDdl);
             var fileNameArr = fileNames.Split(',');
@@ -81,7 +81,7 @@ ADD PRIMARY KEY (POLICY_HK);";
                 {
                     if (Array.Exists(fileNameArr, element => string.Equals(element, "hub", StringComparison.OrdinalIgnoreCase) ||
                                                              string.Equals(element, "*", StringComparison.OrdinalIgnoreCase)))
-                        if (sqlStatement.Contains("CREATE TABLE HUB", StringComparison.OrdinalIgnoreCase))
+                        if (sqlStatement.Contains("CREATE TABLE", StringComparison.OrdinalIgnoreCase))
                         //if (sqlStatement.Contains("CREATE TABLE HUB_POLICY"))
                         {
                             GenerateHubFile(sqlStatement, sqlStatements, outputFilePath);
@@ -93,7 +93,7 @@ ADD PRIMARY KEY (POLICY_HK);";
                         // if (sqlStatement.Contains("CREATE TABLE LNK_POLICY_INSURES_VEHICLE"))
 
                         {
-                            GenerateLinkFile(sqlStatement, sqlStatements, outputFilePath);
+                           GenerateLinkFile(sqlStatement, sqlStatements, outputFilePath);
                         }
 
                     if (Array.Exists(fileNameArr, element => string.Equals(element, "sat", StringComparison.OrdinalIgnoreCase) ||
@@ -164,8 +164,8 @@ ADD PRIMARY KEY (POLICY_HK);";
         {
             var tableName = DDLHelper.GetCreateDdlStatementTableName(sqlStatement);
             try
-
             {
+               
                 Console.WriteLine("generating file for table " + tableName);
                 var hubTableMetadata = new HubTableMetadata
                 {
@@ -175,9 +175,17 @@ ADD PRIMARY KEY (POLICY_HK);";
                     srcLdts = "LOAD_TIMESTAMP",
                     srcSource = "RECORD_SOURCE",
                     SourceModel = "stg_???",
-                    srcNk = new List<string>()
+                    srcNk = new List<string>(),
+                    //Tags = _config.HubFileGenerationSettings.Single(e =>
+                    //    string.Equals(e.TableName, tableName, StringComparison.OrdinalIgnoreCase)).Tags
                 };
 
+                if (_config.HubFileGenerationSettings
+                    .SingleOrDefault(e => string.Equals(e.TableName, tableName, StringComparison.OrdinalIgnoreCase)) != null)
+                {
+                    hubTableMetadata.Tags = _config.HubFileGenerationSettings.Single(e =>
+                        string.Equals(e.TableName, tableName, StringComparison.OrdinalIgnoreCase)).Tags;
+                }
 
                 foreach (var column in hubTableMetadata.Columns)
                     if (

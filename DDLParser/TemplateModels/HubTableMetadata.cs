@@ -11,6 +11,6 @@ namespace DDLParser.TemplateModels
         public string srcSource;
         public string SourceModel;
         public List<ColumnDetail> Columns;
-        public List<string> ForeignKeys;
+        public string[] Tags;
     }
 }
