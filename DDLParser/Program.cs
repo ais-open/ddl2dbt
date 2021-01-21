@@ -139,16 +139,15 @@ ADD PRIMARY KEY (POLICY_HK);";
             try
             {
                 Console.WriteLine("generating file for table " + tableName);
-
                 var satTableMetadata = new SatTableMetadata
                 {
                     TableName = tableName,
                     Columns = DDLHelper.GetDdlStatementColumns(sqlStatement),
                     SrcPk = DDLHelper.GetPrimaryKey(sqlStatements, tableName),
-                    SrcHashDiff = "HASHDIFF",
-                    SrcEff = "EFFECTIVEDATE",
-                    SrcLdts = "LOAD_TIMESTAMP",
-                    SrcSource = "RECORD_SOURCE",
+                    SrcHashDiff = Constants.SrcHashDiff,
+                    SrcEff = Constants.SrcEff,
+                    SrcLdts = Constants.LoadTimestamp,
+                    SrcSource = Constants.RecordSource,
                     SrcFk = DDLHelper.GetForeignKeys(sqlStatements, tableName),
                     SrcPayload = new List<string>()
                 };
@@ -208,8 +207,8 @@ ADD PRIMARY KEY (POLICY_HK);";
                     TableName = tableName,
                     Columns = DDLHelper.GetDdlStatementColumns(sqlStatement),
                     srcPk = DDLHelper.GetPrimaryKey(sqlStatements, tableName),
-                    srcLdts = "LOAD_TIMESTAMP",
-                    srcSource = "RECORD_SOURCE",
+                    srcLdts = Constants.LoadTimestamp,
+                    srcSource = Constants.RecordSource,
                     srcNk = new List<string>(),
                     //Tags = _config.HubFileGenerationSettings.Single(e =>
                     //    string.Equals(e.TableName, tableName, StringComparison.OrdinalIgnoreCase)).Tags
@@ -260,13 +259,14 @@ ADD PRIMARY KEY (POLICY_HK);";
             try
             {
                 Console.WriteLine("generating file for table " + tableName);
+
                 var linkTableMetadata = new LinkTableMetadata()
                 {
                     TableName = tableName,
                     Columns = DDLHelper.GetDdlStatementColumns(sqlStatement),
                     SrcPk = DDLHelper.GetPrimaryKey(sqlStatements, tableName),
-                    SrcLdts = "LOAD_TIMESTAMP",
-                    SrcSource = "RECORD_SOURCE",
+                    SrcLdts = Constants.LoadTimestamp,
+                    SrcSource = Constants.RecordSource,
                     SrcFk = DDLHelper.GetForeignKeys(sqlStatements, tableName)
                 };
 
