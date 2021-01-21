@@ -69,9 +69,9 @@ ALTER TABLE HUB_POLICY
 ADD PRIMARY KEY (POLICY_HK);";
 
 
-            rawDdl = File.ReadAllText(@"D:\madhu\GeicoDDLTransformers\docs\Policy Phase 1 v0.13.52 DDL.ddl");
+            //rawDdl = File.ReadAllText(@"D:\madhu\GeicoDDLTransformers\docs\Policy Phase 1 v0.13.52 DDL.ddl");
 
-            //rawDdl = File.ReadAllText(filePath);
+            rawDdl = File.ReadAllText(filePath);
 
             var sqlStatements = DDLHelper.BuildDdlStatementsCollection(rawDdl);
             var fileNameArr = fileNames.Split(',');
@@ -81,7 +81,7 @@ ADD PRIMARY KEY (POLICY_HK);";
                 {
                     if (Array.Exists(fileNameArr, element => string.Equals(element, "hub", StringComparison.OrdinalIgnoreCase) ||
                                                              string.Equals(element, "*", StringComparison.OrdinalIgnoreCase)))
-                        if (sqlStatement.Contains("CREATE TABLE", StringComparison.OrdinalIgnoreCase))
+                        if (sqlStatement.Contains("CREATE TABLE HUB", StringComparison.OrdinalIgnoreCase))
                         //if (sqlStatement.Contains("CREATE TABLE HUB_POLICY"))
                         {
                             GenerateHubFile(sqlStatement, sqlStatements, outputFilePath);
