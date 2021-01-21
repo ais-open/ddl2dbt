@@ -7,7 +7,7 @@
 //     the code is regenerated.
 // </auto-generated>
 // ------------------------------------------------------------------------------
-namespace DDLParser.Templates
+namespace DDLParser.Templates.StgTemplates
 {
     using System.Linq;
     using System.Text;
@@ -18,9 +18,9 @@ namespace DDLParser.Templates
     /// Class to produce the template output
     /// </summary>
     
-    #line 1 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
+    #line 1 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\StgTemplates\SatPeakPolicyTemplate.tt"
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "16.0.0.0")]
-    public partial class HubFileTemplate : HubFileTemplateBase
+    public partial class SatPeakPolicyTemplate : SatPeakPolicyTemplateBase
     {
 #line hidden
         /// <summary>
@@ -28,187 +28,56 @@ namespace DDLParser.Templates
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("{{ config(tags = [\'policy\'], materialized = \'table\') }}\r\n\r\n{%- set metadata_yaml " +
-                    "-%}\r\nsource_model: \'");
+            this.Write("{{ config(tags = [\'policy\']) }}\r\n\r\n{%- set metadata_yaml -%}\r\nsource_model:\r\n  PE" +
+                    "AK_POLICY_CONFORMED(");
             
-            #line 9 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(HubTableMetadata.SourceModel));
-            
-            #line default
-            #line hidden
-            this.Write("\'\r\nsrc_pk: ");
-            
-            #line 10 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
- if (HubTableMetadata.srcPk.Count == 1)
-        { 
+            #line 10 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\StgTemplates\SatPeakPolicyTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(StgMetadata.DataSourceObjectSystem));
             
             #line default
             #line hidden
-            this.Write("\'");
+            this.Write("): \'");
             
-            #line 11 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
- 
-        foreach (var key in HubTableMetadata.srcPk)
-        {
-            
-            #line default
-            #line hidden
-            
-            #line 13 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(key));
-            
-            #line default
-            #line hidden
-            
-            #line 13 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
- }
-            
-            #line default
-            #line hidden
-            this.Write("\'\r\n");
-            
-            #line 14 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
- } 
-            
-            #line default
-            #line hidden
-            
-            #line 14 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
- else
-        { 
-            
-            #line default
-            #line hidden
-            this.Write("\r\n");
-            
-            #line 17 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
-
-    foreach (var key in HubTableMetadata.srcPk)
-    {
-            
-            #line default
-            #line hidden
-            this.Write("    - \'");
-            
-            #line 20 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(key));
-            
-            #line default
-            #line hidden
-            this.Write("\'\r\n");
-            
-            #line 21 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
- }
-            
-            #line default
-            #line hidden
-            
-            #line 22 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
- } 
-            
-            #line default
-            #line hidden
-            this.Write("src_nk: ");
-            
-            #line 23 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
- if (HubTableMetadata.srcNk.Count == 1)
-        { 
-            
-            #line default
-            #line hidden
-            this.Write("\'");
-            
-            #line 24 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
- 
-        foreach (var key in HubTableMetadata.srcNk)
-        {
-            
-            #line default
-            #line hidden
-            
-            #line 26 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(key));
-            
-            #line default
-            #line hidden
-            
-            #line 26 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
- }
-            
-            #line default
-            #line hidden
-            this.Write("\'\r\n");
-            
-            #line 27 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
- } 
-            
-            #line default
-            #line hidden
-            
-            #line 27 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
- else
-        { 
-            
-            #line default
-            #line hidden
-            this.Write("\r\n");
-            
-            #line 30 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
-
-    foreach (var key in HubTableMetadata.srcNk)
-    {
-            
-            #line default
-            #line hidden
-            this.Write("    - \'");
-            
-            #line 33 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(key));
-            
-            #line default
-            #line hidden
-            this.Write("\'\r\n");
-            
-            #line 34 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
- }
-            
-            #line default
-            #line hidden
-            
-            #line 35 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
- } 
-            
-            #line default
-            #line hidden
-            this.Write("src_ldts: \'");
-            
-            #line 36 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(HubTableMetadata.srcLdts));
-            
-            #line default
-            #line hidden
-            this.Write("\'\r\nsrc_source: \'");
-            
-            #line 37 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\HubFileTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(HubTableMetadata.srcSource));
+            #line 10 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\StgTemplates\SatPeakPolicyTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(StgMetadata.DataSourceTableName));
             
             #line default
             #line hidden
             this.Write(@"'
+include_source_columns: true
+derived_columns:
+  RECORD_SOURCE: '!PEAK'
+  EFFECTIVE_TIMESTAMP: 'EFFECTIVEDATE'
+hashed_columns:
+  POLICY_HK: 'POLICY_NUMBER'
+  TRANSACTION_HK: 'POLICYREADONLYHISTORYID'
+  HASHDIFF:
+    is_hashdiff: true
+    exclude_columns: true
+    columns:
+      - 'CONFORMED_DIGEST'
+      - 'CONFORMED_INGESTION_TS'
 {%- endset -%}
- 
+
 {% set metadata_dict = fromyaml(metadata_yaml) -%}
+
 {% set source_model = metadata_dict['source_model'] -%}
-{% set src_pk = metadata_dict['src_pk'] -%}
-{% set src_nk = metadata_dict['src_nk'] -%}
-{% set src_ldts = metadata_dict['src_ldts'] -%}
-{% set src_source = metadata_dict['src_source'] -%}
- 
-{{ dbtvault.hub(src_pk=src_pk, 
-                src_nk=src_nk, 
-                src_ldts=src_ldts,
-                src_source=src_source, 
-                source_model=source_model) }}");
+{% set include_source_columns = metadata_dict['include_source_columns'] -%}
+{% set hashed_columns = metadata_dict['hashed_columns'] -%}
+{% set derived_columns = metadata_dict['derived_columns'] -%}
+
+WITH stg AS (
+  {{ dbtvault.stage(include_source_columns=include_source_columns,
+                      source_model=source_model,
+                      hashed_columns=hashed_columns,
+                      derived_columns=derived_columns) }} 
+  {{ limit_records() }}
+),
+stg_loadtimestamp AS (
+  {{ append_loadtimestamp(stage_name = 'stg') }}
+)
+
+SELECT * FROM stg_loadtimestamp");
             return this.GenerationEnvironment.ToString();
         }
     }
@@ -220,7 +89,7 @@ namespace DDLParser.Templates
     /// Base class for this transformation
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "16.0.0.0")]
-    public class HubFileTemplateBase
+    public class SatPeakPolicyTemplateBase
     {
         #region Fields
         private global::System.Text.StringBuilder generationEnvironmentField;

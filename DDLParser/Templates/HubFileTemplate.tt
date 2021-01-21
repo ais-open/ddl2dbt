@@ -6,7 +6,7 @@
 {{ config(tags = ['policy'], materialized = 'table') }}
 
 {%- set metadata_yaml -%}
-source_model: '<#= HubTableMetadata.TableName #>'
+source_model: '<#= HubTableMetadata.SourceModel #>'
 src_pk: <# if (HubTableMetadata.srcPk.Count == 1)
         { #>'<# 
         foreach (var key in HubTableMetadata.srcPk)

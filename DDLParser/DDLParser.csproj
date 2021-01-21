@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CsvHelper" Version="21.0.6" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
@@ -34,6 +35,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>SatFileTemplate.tt</DependentUpon>
     </Compile>
+    <Compile Update="Templates\StgTemplates\SatPeakPolicyTemplate.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SatPeakPolicyTemplate.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -51,6 +57,10 @@
     <None Update="Templates\SatFileTemplate.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>SatFileTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="Templates\StgTemplates\SatPeakPolicyTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>SatPeakPolicyTemplate.cs</LastGenOutput>
     </None>
   </ItemGroup>
 

@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using CsvHelper;
 using DDLParser.TemplateModels;
 using DDLParser.Templates;
+using DDLParser.Templates.StgTemplates;
 
 namespace DDLParser
 {
@@ -17,8 +20,8 @@ namespace DDLParser
             {
                  _config = ConfigurationProvider.GetConfigSettings();
                 //TODO: Remove the argumentDetails Tuple and Create an object for capturing command line arguments.
-                var (filePath, fileNames, outputFilePath) = GetCommandlineArgs(args);
-                ParseDDL(filePath, fileNames, outputFilePath);
+                var (ddlFilePath, csvFilePath, fileNames, outputFilePath) = GetCommandlineArgs(args);
+                ParseDDL(ddlFilePath, csvFilePath, fileNames, outputFilePath);
                 Console.WriteLine("Files generation completed.");
             }
             catch (Exception e)
@@ -27,35 +30,44 @@ namespace DDLParser
             }
         }
 
-        private static (string, string, string) GetCommandlineArgs(string[] args)
+        
+        private static (string, string, string, string) GetCommandlineArgs(string[] args)
         {
-            string filepath = "", fileNames = "*", outputFilePath = "";
+            string ddLfilepath = "", fileNames = "*", outputFilePath = "", csvfilepath = "";
             if (args.Length > 0)
                 for (var i = 0; i < args.Length; i++)
                 {
-                    if (i == 0)
+                    if (args[i].Equals("-ddl"))
                     {
-                        filepath = args[0];
-                        Console.WriteLine(filepath);
+                        ddLfilepath = args[i + 1];
+                        Console.WriteLine(ddLfilepath);
+                        i += 1; ;
                     }
-
+                    if (args[i].Equals("-csv"))
+                    {
+                        csvfilepath = args[i + 1];
+                        Console.WriteLine(csvfilepath);
+                        i += 1;
+                    }
                     if (args[i].Equals("-m"))
                     {
                         fileNames = args[i + 1];
                         Console.WriteLine(fileNames);
                         i += 1;
                     }
-                    else if (args[i].Equals("-o"))
+                    if (args[i].Equals("-o"))
                     {
                         outputFilePath = args[i + 1];
                         Console.WriteLine(outputFilePath);
                         i += 1;
                     }
                 }
-            return (filepath, fileNames, outputFilePath);
-        }
 
-        private static void ParseDDL(string filePath, string fileNames, string outputFilePath)
+
+            //ParseDDL(filepath, fileNames, outputFilePath);
+            return (ddLfilepath, csvfilepath, fileNames, outputFilePath);
+        }
+        private static void ParseDDL(string ddlFilePath, string csvFilePath, string fileNames, string outputFilePath)
         {
             var rawDdl = @"CREATE TABLE HUB_POLICY 
 (
@@ -69,9 +81,10 @@ ALTER TABLE HUB_POLICY
 ADD PRIMARY KEY (POLICY_HK);";
 
 
-            //rawDdl = File.ReadAllText(@"D:\madhu\GeicoDDLTransformers\docs\Policy Phase 1 v0.13.52 DDL.ddl");
+            rawDdl = File.ReadAllText("D:\\backup\\GeicoDDLTransformers\\docs\\Policy Phase 1 v0.13.52 DDL.ddl");
+            csvFilePath = "D:\\backup\\GeicoDDLTransformers\\docs\\Data Source Mapping v0.14.54.csv";
 
-            rawDdl = File.ReadAllText(filePath);
+            //rawDdl = File.ReadAllText(ddlFilePath);
 
             var sqlStatements = DDLHelper.BuildDdlStatementsCollection(rawDdl);
             var fileNameArr = fileNames.Split(',');
@@ -106,6 +119,10 @@ ADD PRIMARY KEY (POLICY_HK);";
                             }
                         }
                 }
+
+            if (!csvFilePath.Equals(""))
+                if (Array.Exists(fileNameArr, element => string.Equals(element, "stg", StringComparison.OrdinalIgnoreCase) || string.Equals(element, "*", StringComparison.OrdinalIgnoreCase)))
+                    GenerateStgFile(ddlFilePath, csvFilePath, outputFilePath);
         }
 
 
@@ -119,7 +136,6 @@ ADD PRIMARY KEY (POLICY_HK);";
                 var satTableMetadata = new SatTableMetadata
                 {
                     TableName = tableName,
-                    SourceModel = "stg_???",
                     Columns = DDLHelper.GetDdlStatementColumns(sqlStatement),
                     SrcPk = DDLHelper.GetPrimaryKey(sqlStatements, tableName),
                     SrcHashDiff = "HASHDIFF",
@@ -145,6 +161,9 @@ ADD PRIMARY KEY (POLICY_HK);";
                     {
                         satTableMetadata.SrcPayload.Add(column.Name);
                     }
+
+                var pFrom = tableName.IndexOf('_', tableName.IndexOf('_') + 1);
+                satTableMetadata.SourceModel = "stg_sat" + tableName.Substring(pFrom);
 
                 outputFilePath += "SAT";
                 if (!Directory.Exists(outputFilePath)) Directory.CreateDirectory(outputFilePath);
@@ -174,7 +193,6 @@ ADD PRIMARY KEY (POLICY_HK);";
                     srcPk = DDLHelper.GetPrimaryKey(sqlStatements, tableName),
                     srcLdts = "LOAD_TIMESTAMP",
                     srcSource = "RECORD_SOURCE",
-                    SourceModel = "stg_???",
                     srcNk = new List<string>(),
                     //Tags = _config.HubFileGenerationSettings.Single(e =>
                     //    string.Equals(e.TableName, tableName, StringComparison.OrdinalIgnoreCase)).Tags
@@ -198,6 +216,9 @@ ADD PRIMARY KEY (POLICY_HK);";
                     {
                         hubTableMetadata.srcNk.Add(column.Name);
                     }
+
+                var pFrom = tableName.IndexOf('_', +1);
+                hubTableMetadata.SourceModel = "stg_hub" + tableName.Substring(pFrom);
 
                 outputFilePath += "HUB";
                 if (!Directory.Exists(outputFilePath)) Directory.CreateDirectory(outputFilePath);
@@ -225,10 +246,11 @@ ADD PRIMARY KEY (POLICY_HK);";
                     SrcPk = DDLHelper.GetPrimaryKey(sqlStatements, tableName),
                     SrcLdts = "LOAD_TIMESTAMP",
                     SrcSource = "RECORD_SOURCE",
-                    SourceModel = "stg_???",
                     SrcFk = DDLHelper.GetForeignKeys(sqlStatements, tableName)
                 };
 
+                var pFrom = tableName.IndexOf('_', +1);
+                linkTableMetadata.SourceModel = "stg_lnk" + tableName.Substring(pFrom);
                 outputFilePath += "LNK";
                 if (!Directory.Exists(outputFilePath)) Directory.CreateDirectory(outputFilePath);
                 var linkFileTemplate = new LinkFileTemplate(linkTableMetadata);
@@ -242,6 +264,63 @@ ADD PRIMARY KEY (POLICY_HK);";
             {
                 Console.WriteLine($"Error generating LNK file for {tableName} Exception details: {e}");
             }
+        }
+
+        private static void GenerateStgFile(string rawDDLPath, string csvFilePath, string outputFilePath)
+        {
+            //GetCsvData(csvFilePath);
+            var tables = new List<string>();
+
+            using (var reader = new StreamReader(csvFilePath))
+            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+            {
+                csv.Read();
+                csv.ReadHeader();
+                while (csv.Read())
+                {
+                    var record = csv.GetRecord<DataSource>();
+                    if (!tables.Contains(record.TableName))
+                    {
+                        tables.Add(record.TableName);
+                    }
+                }
+            }
+            foreach (var name in tables)
+            {
+                switch (name)
+                {
+                    case "SAT_PEAK_POLICY":
+                        var stgMetadata = new StgMetadata();
+                        using (var reader = new StreamReader(csvFilePath))
+                        using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                        {
+                            csv.Read();
+                            csv.ReadHeader();
+                            while (csv.Read())
+                            {
+                                var record = csv.GetRecord<DataSource>();
+                                if ((record.TableName).Equals(name))
+                                {
+                                    if (!record.DataSourceTableName.Equals(""))
+                                    {
+                                        stgMetadata.DataSourceTableName = record.DataSourceTableName;
+                                        stgMetadata.DataSourceObjectSystem = record.DataSourceObjectSystem;
+                                        break;
+                                    }
+                                }
+                            }
+                            var satPeakPolicyTemplate = new SatPeakPolicyTemplate(stgMetadata);
+                            var content = satPeakPolicyTemplate.TransformText();
+                            File.WriteAllText(name + $".sql", content);
+                        }
+
+                        break;
+                    default:
+                        // code block
+                        break;
+                }
+            }
+
         }
     }
 }
