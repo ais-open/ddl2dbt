@@ -4,7 +4,7 @@ The PublishSingleFile Flag : go to the solution folder and run the following cmd
 
 dotnet publish -r win-x64 -c Release /p:PublishSingleFile=true
 
-To execute run the following command with the appropriate file path
+To execute, run the following command with the appropriate file path
 
 .\Ddl2Dbt.exe -ddl "{DDL FILE PATH}" -m * -o "{OUTPUT FOLDER}"
 
