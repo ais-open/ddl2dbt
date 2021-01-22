@@ -2,7 +2,7 @@
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
 
-namespace DDLParser
+namespace DDL2Dbt
 {
     public static class Logger
     {

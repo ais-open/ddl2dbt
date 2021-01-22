@@ -1,4 +1,4 @@
-﻿namespace DDLParser.TemplateModels
+﻿namespace DDL2Dbt.TemplateModels
 {
     public class ColumnDetail
     {

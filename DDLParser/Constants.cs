@@ -1,4 +1,4 @@
-﻿namespace DDLParser
+﻿namespace DDL2Dbt
 {
     internal class Constants
     {

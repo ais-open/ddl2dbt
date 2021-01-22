@@ -1,4 +1,4 @@
-﻿namespace DDLParser
+﻿namespace DDL2Dbt.Config
 {
     public class HubFileGenerationSetting
     {

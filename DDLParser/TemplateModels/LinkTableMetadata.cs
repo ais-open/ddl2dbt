@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DDLParser.TemplateModels
+namespace DDL2Dbt.TemplateModels
 {
     public class LinkTableMetadata
     {

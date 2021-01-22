@@ -7,7 +7,7 @@
 //     the code is regenerated.
 // </auto-generated>
 // ------------------------------------------------------------------------------
-namespace DDLParser.Templates.StgTemplates
+namespace DDL2Dbt.Templates.StgTemplates
 {
     using System.Linq;
     using System.Text;
@@ -18,7 +18,7 @@ namespace DDLParser.Templates.StgTemplates
     /// Class to produce the template output
     /// </summary>
     
-    #line 1 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\StgTemplates\SatPeakPolicyTemplate.tt"
+    #line 1 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\StgTemplates\SatPeakPolicyTemplate.tt"
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "16.0.0.0")]
     public partial class SatPeakPolicyTemplate : SatPeakPolicyTemplateBase
     {
@@ -31,14 +31,14 @@ namespace DDLParser.Templates.StgTemplates
             this.Write("{{ config(tags = [\'policy\']) }}\r\n\r\n{%- set metadata_yaml -%}\r\nsource_model:\r\n  PE" +
                     "AK_POLICY_CONFORMED(");
             
-            #line 10 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\StgTemplates\SatPeakPolicyTemplate.tt"
+            #line 10 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\StgTemplates\SatPeakPolicyTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(StgMetadata.DataSourceObjectSystem));
             
             #line default
             #line hidden
             this.Write("): \'");
             
-            #line 10 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\StgTemplates\SatPeakPolicyTemplate.tt"
+            #line 10 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\StgTemplates\SatPeakPolicyTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(StgMetadata.DataSourceTableName));
             
             #line default

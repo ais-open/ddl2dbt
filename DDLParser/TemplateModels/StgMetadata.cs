@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace DDLParser.TemplateModels
+﻿namespace DDL2Dbt.TemplateModels
 {
     public class StgMetadata
     {

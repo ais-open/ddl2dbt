@@ -4,16 +4,17 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using CsvHelper;
-using DDLParser.TemplateModels;
-using DDLParser.Templates;
-using DDLParser.Templates.StgTemplates;
+using DDL2Dbt.Config;
+using DDL2Dbt.TemplateModels;
+using DDL2Dbt.Templates;
+using DDL2Dbt.Templates.StgTemplates;
 using Serilog;
 
-namespace DDLParser
+namespace DDL2Dbt
 {
     internal class Parser
     {
-        private static Config _config;
+        private static Config.Config _config;
         public static void ParseDDL(string ddlFilePath, string csvFilePath, string fileNames, string outputFilePath)
         {
             _config = ConfigurationProvider.GetConfigSettings();

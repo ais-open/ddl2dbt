@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using DDLParser.TemplateModels;
+﻿using DDL2Dbt.TemplateModels;
 
-namespace DDLParser.Templates.StgTemplates
+namespace DDL2Dbt.Templates.StgTemplates
 {
     public partial class SatPeakPolicyTemplate
     {

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using DDLParser.TemplateModels;
+using DDL2Dbt.TemplateModels;
 
-namespace DDLParser
+namespace DDL2Dbt
 {
     internal static class DDLHelper
     {

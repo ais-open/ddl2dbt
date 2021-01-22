@@ -7,7 +7,7 @@
 //     the code is regenerated.
 // </auto-generated>
 // ------------------------------------------------------------------------------
-namespace DDLParser.Templates
+namespace DDL2Dbt.Templates
 {
     using System.Linq;
     using System.Text;
@@ -18,7 +18,7 @@ namespace DDLParser.Templates
     /// Class to produce the template output
     /// </summary>
     
-    #line 1 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
+    #line 1 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "16.0.0.0")]
     public partial class LinkFileTemplate : LinkFileTemplateBase
     {
@@ -30,7 +30,7 @@ namespace DDLParser.Templates
         {
             this.Write("{{ config(tags = [");
             
-            #line 6 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
+            #line 6 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
 for(int count=0; count < LinkTableMetadata.Tags.Count(); count++)
                    {
             
@@ -38,14 +38,14 @@ for(int count=0; count < LinkTableMetadata.Tags.Count(); count++)
             #line hidden
             this.Write("\'");
             
-            #line 7 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
+            #line 7 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(LinkTableMetadata.Tags[count]));
             
             #line default
             #line hidden
             this.Write("\'");
             
-            #line 7 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
+            #line 7 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
 
                     if(count != LinkTableMetadata.Tags.Count()-1)
                         {
@@ -54,13 +54,13 @@ for(int count=0; count < LinkTableMetadata.Tags.Count(); count++)
             #line hidden
             this.Write(",");
             
-            #line 9 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
+            #line 9 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
 }
             
             #line default
             #line hidden
             
-            #line 9 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
+            #line 9 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
 
                     }
             
@@ -68,14 +68,14 @@ for(int count=0; count < LinkTableMetadata.Tags.Count(); count++)
             #line hidden
             this.Write("], materialized = \'table\') }}\r\n\r\n{%- set metadata_yaml -%}\r\nsource_model: \'");
             
-            #line 13 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
+            #line 13 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(LinkTableMetadata.SourceModel));
             
             #line default
             #line hidden
             this.Write("\'\r\nsrc_pk: ");
             
-            #line 14 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
+            #line 14 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
  if (LinkTableMetadata.SrcPk.Count == 1)
         { 
             
@@ -83,20 +83,20 @@ for(int count=0; count < LinkTableMetadata.Tags.Count(); count++)
             #line hidden
             this.Write("\'");
             
-            #line 15 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
+            #line 15 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(LinkTableMetadata.SrcPk[0]));
             
             #line default
             #line hidden
             this.Write("\'\r\n");
             
-            #line 16 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
+            #line 16 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
  } 
             
             #line default
             #line hidden
             
-            #line 16 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
+            #line 16 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
  else
         { 
             
@@ -104,7 +104,7 @@ for(int count=0; count < LinkTableMetadata.Tags.Count(); count++)
             #line hidden
             this.Write("\r\n");
             
-            #line 19 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
+            #line 19 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
 
     foreach (var key in LinkTableMetadata.SrcPk)
     {
@@ -113,27 +113,27 @@ for(int count=0; count < LinkTableMetadata.Tags.Count(); count++)
             #line hidden
             this.Write("  - \'");
             
-            #line 22 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
+            #line 22 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(key));
             
             #line default
             #line hidden
             this.Write("\'\r\n");
             
-            #line 23 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
+            #line 23 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
  }
             
             #line default
             #line hidden
             
-            #line 24 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
+            #line 24 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
  } 
             
             #line default
             #line hidden
             this.Write("// Todo: add a condition to check if fk exists.\r\nsrc_fk: ");
             
-            #line 26 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
+            #line 26 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
  if (LinkTableMetadata.SrcFk.Count == 1)
         { 
             
@@ -141,20 +141,20 @@ for(int count=0; count < LinkTableMetadata.Tags.Count(); count++)
             #line hidden
             this.Write("\'");
             
-            #line 27 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
+            #line 27 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(LinkTableMetadata.SrcFk[0]));
             
             #line default
             #line hidden
             this.Write("\'\r\n");
             
-            #line 28 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
+            #line 28 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
  } 
             
             #line default
             #line hidden
             
-            #line 28 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
+            #line 28 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
  else
         { 
             
@@ -162,7 +162,7 @@ for(int count=0; count < LinkTableMetadata.Tags.Count(); count++)
             #line hidden
             this.Write("\r\n");
             
-            #line 31 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
+            #line 31 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
 
     foreach (var key in LinkTableMetadata.SrcFk)
     {
@@ -171,34 +171,34 @@ for(int count=0; count < LinkTableMetadata.Tags.Count(); count++)
             #line hidden
             this.Write("  - \'");
             
-            #line 34 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
+            #line 34 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(key));
             
             #line default
             #line hidden
             this.Write("\'\r\n");
             
-            #line 35 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
+            #line 35 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
  }
             
             #line default
             #line hidden
             
-            #line 36 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
+            #line 36 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
  } 
             
             #line default
             #line hidden
             this.Write("src_ldts: \'");
             
-            #line 37 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
+            #line 37 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(LinkTableMetadata.SrcLdts));
             
             #line default
             #line hidden
             this.Write("\'\r\nsrc_source: \'");
             
-            #line 38 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
+            #line 38 "D:\madhu\GeicoDDLTransformers\DDLParser\Templates\LinkFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(LinkTableMetadata.SrcSource));
             
             #line default

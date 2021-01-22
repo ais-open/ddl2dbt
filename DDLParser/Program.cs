@@ -2,7 +2,7 @@
 using Serilog;
 
 //using Microsoft.Extensions.Logging.Console;
-namespace DDLParser
+namespace DDL2Dbt
 {
     internal class Program
     {

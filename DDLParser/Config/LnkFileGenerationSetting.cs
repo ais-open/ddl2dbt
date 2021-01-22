@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace DDLParser
+﻿namespace DDL2Dbt.Config
 {
     public class LnkFileGenerationSetting
     {

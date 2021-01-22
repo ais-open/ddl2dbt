@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DDLParser.TemplateModels
+namespace DDL2Dbt.TemplateModels
 {
     //TOOD: change the names to match the dbValut names from the template.
 

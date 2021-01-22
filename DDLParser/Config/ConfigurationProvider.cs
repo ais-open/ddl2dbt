@@ -1,9 +1,8 @@
 ﻿using System;
 using System.IO;
 using Microsoft.Extensions.Configuration;
-using Serilog;
 
-namespace DDLParser
+namespace DDL2Dbt.Config
 {
     class ConfigurationProvider
     {

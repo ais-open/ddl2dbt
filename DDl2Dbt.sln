@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDLParser", "DDLParser\DDLParser.csproj", "{B940D43B-C89C-452F-A397-78504B66C482}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDL2Dbt", "DDLParser\DDL2Dbt.csproj", "{B940D43B-C89C-452F-A397-78504B66C482}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

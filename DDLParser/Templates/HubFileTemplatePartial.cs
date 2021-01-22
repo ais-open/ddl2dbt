@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using DDLParser.TemplateModels;
+﻿using DDL2Dbt.TemplateModels;
 
-namespace DDLParser.Templates
+namespace DDL2Dbt.Templates
 {
     public partial class HubFileTemplate
     {
