@@ -7,34 +7,39 @@ using CsvHelper;
 using DDLParser.TemplateModels;
 using DDLParser.Templates;
 using DDLParser.Templates.StgTemplates;
+using Serilog;
+using Serilog.Core;
 
+//using Microsoft.Extensions.Logging.Console;
 namespace DDLParser
 {
     internal class Program
     {
-        private  static Config _config;
+        private static Config _config;
 
         private static void Main(string[] args)
         {
             try
             {
-                 _config = ConfigurationProvider.GetConfigSettings();
+                _config = ConfigurationProvider.GetConfigSettings();
+                Logger.SetupLogger();
+
                 //TODO: Remove the argumentDetails Tuple and Create an object for capturing command line arguments.
                 var (ddlFilePath, csvFilePath, fileNames, outputFilePath) = GetCommandlineArgs(args);
                 ParseDDL(ddlFilePath, csvFilePath, fileNames, outputFilePath);
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("Files generation completed.");
-                Console.ResetColor();
+                Log.Information("Files generation completed.");
             }
             catch (Exception e)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Error occured in the application: " + e);
-                Console.ResetColor();
+                Log.Error(e, "Error occured in the application");
+            }
+            finally
+            {
+                Log.CloseAndFlush();
             }
         }
 
-        
+
         private static (string, string, string, string) GetCommandlineArgs(string[] args)
         {
             string ddLfilepath = "", fileNames = "*", outputFilePath = "", csvfilepath = "";
@@ -86,11 +91,11 @@ ADD PRIMARY KEY (POLICY_HK);";
 
 
             //Get Current PROJECT Directory
-           // var currentProjectDirectoryPath= Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.Parent.FullName;
+            // var currentProjectDirectoryPath= Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.Parent.FullName;
 
             //rawDdl = File.ReadAllText(Path.Combine(currentProjectDirectoryPath, @"docs\\", "Policy Phase 1 v0.13.52 DDL.ddl"));
-           // csvFilePath = currentProjectDirectoryPath+"\\docs\\Data Source Mapping v0.14.54.csv";
-            
+            // csvFilePath = currentProjectDirectoryPath+"\\docs\\Data Source Mapping v0.14.54.csv";
+
             rawDdl = File.ReadAllText(ddlFilePath);
 
             var sqlStatements = DDLHelper.BuildDdlStatementsCollection(rawDdl);
@@ -113,7 +118,7 @@ ADD PRIMARY KEY (POLICY_HK);";
                         // if (sqlStatement.Contains("CREATE TABLE LNK_POLICY_INSURES_VEHICLE"))
 
                         {
-                           GenerateLinkFile(sqlStatement, sqlStatements, outputFilePath);
+                            GenerateLinkFile(sqlStatement, sqlStatements, outputFilePath);
                         }
 
                     if (Array.Exists(fileNameArr, element => string.Equals(element, "sat", StringComparison.OrdinalIgnoreCase) ||
@@ -138,7 +143,7 @@ ADD PRIMARY KEY (POLICY_HK);";
             var tableName = DDLHelper.GetCreateDdlStatementTableName(sqlStatement);
             try
             {
-                Console.WriteLine("generating file for table " + tableName);
+                Log.Information($"Generating file for table {tableName}");
                 var satTableMetadata = new SatTableMetadata
                 {
                     TableName = tableName,
@@ -181,17 +186,14 @@ ADD PRIMARY KEY (POLICY_HK);";
                 if (!Directory.Exists(outputFilePath)) Directory.CreateDirectory(outputFilePath);
                 var satFileTemplate = new SatFileTemplate(satTableMetadata);
                 var content = satFileTemplate.TransformText();
-                File.WriteAllText($"{outputFilePath}\\{satTableMetadata.TableName}.sql", content);
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"{outputFilePath}\\{satTableMetadata.TableName}.sql file generated");
-                Console.ResetColor();
+                
+                var pathStr = $"{outputFilePath}\\{satTableMetadata.TableName}.sql";
+                File.WriteAllText(pathStr, content);
+                Log.Information("Generated file  "+pathStr);
             }
-
             catch (Exception e)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"Error generating SAT file for {tableName} Exception details: {e}");
-                Console.ResetColor();
+                Log.Error(e, $"Error generating SAT file for table {tableName}");
             }
         }
 
@@ -200,8 +202,7 @@ ADD PRIMARY KEY (POLICY_HK);";
             var tableName = DDLHelper.GetCreateDdlStatementTableName(sqlStatement);
             try
             {
-               
-                Console.WriteLine("generating file for table " + tableName);
+                Log.Information($"Generating file for table {tableName}");
                 var hubTableMetadata = new HubTableMetadata
                 {
                     TableName = tableName,
@@ -241,16 +242,15 @@ ADD PRIMARY KEY (POLICY_HK);";
                 if (!Directory.Exists(outputFilePath)) Directory.CreateDirectory(outputFilePath);
                 var hubFileTemplate = new HubFileTemplate(hubTableMetadata);
                 var content = hubFileTemplate.TransformText();
-                File.WriteAllText($"{outputFilePath}\\{hubTableMetadata.TableName}.sql", content);
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"{outputFilePath}\\{hubTableMetadata.TableName}.sql file generated");
-                Console.ResetColor();
+
+                var pathStr = $"{outputFilePath}\\{hubTableMetadata.TableName}.sql";
+                File.WriteAllText(pathStr, content);
+                Log.Information("Generated file  " + pathStr);
             }
             catch (Exception e)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"Error generating HUB file for {tableName} Exception details: {e}");
-                Console.ResetColor();
+                Log.Error(e, $"Error generating HUB file for table {tableName}");
+
             }
         }
 
@@ -259,7 +259,8 @@ ADD PRIMARY KEY (POLICY_HK);";
             var tableName = DDLHelper.GetCreateDdlStatementTableName(sqlStatement);
             try
             {
-                Console.WriteLine("generating file for table " + tableName);
+                Log.Information($"Generating file for table {tableName}");
+
 
                 var linkTableMetadata = new LinkTableMetadata()
                 {
@@ -268,7 +269,6 @@ ADD PRIMARY KEY (POLICY_HK);";
                     SrcPk = DDLHelper.GetPrimaryKey(sqlStatements, tableName),
                     SrcLdts = Constants.LoadTimestamp,
                     SrcSource = Constants.RecordSource,
-
                     SrcFk = DDLHelper.GetForeignKeys(sqlStatements, tableName)
                 };
 
@@ -285,18 +285,14 @@ ADD PRIMARY KEY (POLICY_HK);";
                 if (!Directory.Exists(outputFilePath)) Directory.CreateDirectory(outputFilePath);
                 var linkFileTemplate = new LinkFileTemplate(linkTableMetadata);
                 var content = linkFileTemplate.TransformText();
-                File.WriteAllText($"{outputFilePath}\\{linkTableMetadata.TableName}.sql", content);
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"{outputFilePath}\\{linkTableMetadata.TableName}.sql file generated");
-                Console.ResetColor();
+               
+                var pathStr = $"{outputFilePath}\\{linkTableMetadata.TableName}.sql";
+                File.WriteAllText(pathStr, content);
+                Log.Information("Generated file  " + pathStr);
             }
-
             catch (Exception e)
-
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"Error generating LNK file for {tableName} Exception details: {e}");
-                Console.ResetColor();
+                Log.Error(e, $"Error generating LNK file for table {tableName}");
             }
         }
 
