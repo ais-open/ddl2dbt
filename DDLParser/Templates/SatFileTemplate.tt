@@ -12,9 +12,7 @@
 {%- set metadata_yaml -%}
 source_model: '<#= SatTableMetadata.SourceModel #>'
 src_pk: <# if (SatTableMetadata.SrcPk.Count == 1)
-        { #>'<# 
-        foreach (var key in SatTableMetadata.SrcPk)
-        {#><#= key #><# }#>'
+        { #>'<#= SatTableMetadata.SrcPk[0] #>'
 <# } #><# else
         { #>
 
@@ -29,9 +27,7 @@ src_eff: '<#= SatTableMetadata.SrcEff #>'
 src_ldts: '<#= SatTableMetadata.SrcLdts #>'
 src_source: '<#= SatTableMetadata.SrcSource #>'
 src_payload: <# if (SatTableMetadata.SrcPayload.Count == 1)
-        { #>'<# 
-        foreach (var column in SatTableMetadata.SrcPayload)
-        {#><#= column #><# }#>'
+        { #>'<#= SatTableMetadata.SrcPayload[0] #>'
 <# } #><# else
         { #>
 

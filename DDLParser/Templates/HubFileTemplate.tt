@@ -12,9 +12,7 @@
 {%- set metadata_yaml -%}
 source_model: '<#= HubTableMetadata.SourceModel #>'
 src_pk: <# if (HubTableMetadata.srcPk.Count == 1)
-        { #>'<# 
-        foreach (var key in HubTableMetadata.srcPk)
-        {#><#= key #><# }#>'
+        { #>'<#= HubTableMetadata.srcPk[0] #>'
 <# } #><# else
         { #>
 
@@ -25,9 +23,7 @@ src_pk: <# if (HubTableMetadata.srcPk.Count == 1)
 <# }#>
 <# } #>
 src_nk: <# if (HubTableMetadata.srcNk.Count == 1)
-        { #>'<# 
-        foreach (var key in HubTableMetadata.srcNk)
-        {#><#= key #><# }#>'
+        { #>'<#= HubTableMetadata.srcNk[0] #>'
 <# } #><# else
         { #>
 
