@@ -3,24 +3,30 @@
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
-{{ config(tags = ['policy']) }}
+{{ config(tags = ['policy'], materialized = 'table') }}
 
 {%- set metadata_yaml -%}
 source_model:
   PEAK_POLICY_CONFORMED(<#= StgMetadata.DataSourceObjectSystem #>): '<#= StgMetadata.DataSourceTableName #>'
-include_source_columns: true???
-derived_columns:???
+include_source_columns: true
+derived_columns:
   RECORD_SOURCE: '!PEAK'???
-  EFFECTIVE_TIMESTAMP: 'EFFECTIVEDATE'???
+  COVERAGE_CODE: 'COVERAGECODE' ???
+  LIMIT_CODE: 'LIMITCODE' ???
+  DEDUCTIBLE_CODE: 'DEDUCTIBLECODE' ???
+  STATE_CODE: 'STATECODE' ???
+  EFFECTIVE_TIMESTAMP: 'EFFECTIVEDATE' ???
+  COVERAGE_NK:  ???
+    - 'COVERAGE_CODE'
+    - 'LIMIT_CODE'
+    - 'DEDUCTIBLE_CODE'
+    - 'STATE_CODE'
 hashed_columns:???
-  POLICY_HK: 'POLICY_NUMBER'???
-  TRANSACTION_HK: 'POLICYREADONLYHISTORYID'???
-  HASHDIFF:
-    is_hashdiff: true
-    exclude_columns: true
-    columns:
-      - 'CONFORMED_DIGEST'
-      - 'CONFORMED_INGESTION_TS'
+  POLICY_HK: 'POLICY_ID'
+  TRANSACTION_HK: 'TRANSACTION_ID'
+  POLICY_HAS_TRANSACTION_HK:
+    - 'POLICY_HK'
+    - 'TRANSACTION_HK'
 {%- endset -%}
 
 {% set metadata_dict = fromyaml(metadata_yaml) -%}

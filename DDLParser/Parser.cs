@@ -8,6 +8,7 @@ using DDL2Dbt.Config;
 using DDL2Dbt.TemplateModels;
 using DDL2Dbt.Templates;
 using DDL2Dbt.Templates.StgTemplates;
+using DDL2Dbt.Templates.StgTemplates;
 using Serilog;
 
 namespace DDL2Dbt
@@ -31,12 +32,21 @@ ADD PRIMARY KEY (POLICY_HK);";
 
 
             //Get Current PROJECT Directory
-            // var currentProjectDirectoryPath= Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.Parent.FullName;
+            var currentProjectDirectoryPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.Parent.FullName;
+            //rawDdl = File.ReadAllText(ddlFilePath);
+            rawDdl = File.ReadAllText(Path.Combine(currentProjectDirectoryPath, @"docs\\", "Policy Phase 1 v0.13.52 DDL.ddl"));
+            csvFilePath = currentProjectDirectoryPath + "\\docs\\Data Source Mapping v0.14.54.csv";
+            Console.WriteLine(csvFilePath);
 
-            //rawDdl = File.ReadAllText(Path.Combine(currentProjectDirectoryPath, @"docs\\", "Policy Phase 1 v0.13.52 DDL.ddl"));
-            // csvFilePath = currentProjectDirectoryPath+"\\docs\\Data Source Mapping v0.14.54.csv";
-
-            rawDdl = File.ReadAllText(ddlFilePath);
+            IEnumerable<DataSource> records = null;
+            if (!csvFilePath.Equals(""))
+            {
+                using (var reader = new StreamReader(csvFilePath))
+                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                {
+                    records = csv.GetRecords<DataSource>().ToList();
+                }
+            }
 
             var sqlStatements = DDLHelper.BuildDdlStatementsCollection(rawDdl);
             var fileNameArr = fileNames.Split(',');
@@ -49,7 +59,12 @@ ADD PRIMARY KEY (POLICY_HK);";
                         if (sqlStatement.Contains("CREATE TABLE HUB", StringComparison.OrdinalIgnoreCase))
                             //if (sqlStatement.Contains("CREATE TABLE HUB_POLICY"))
                         {
-                            GenerateHubFile(sqlStatement, sqlStatements, outputFilePath);
+                            var hubTableMetadata = GenerateHubFile(sqlStatement, sqlStatements, outputFilePath);
+                            if (!csvFilePath.Equals(""))
+                            {
+                                if (Array.Exists(fileNameArr, element => string.Equals(element, "stg", StringComparison.OrdinalIgnoreCase) || string.Equals(element, "*", StringComparison.OrdinalIgnoreCase)))
+                                    GenerateStgFile(hubTableMetadata.TableName, hubTableMetadata.SourceModel, records, outputFilePath);
+                            }
                         }
 
                     if (Array.Exists(fileNameArr, element => string.Equals(element, "lnk", StringComparison.OrdinalIgnoreCase) ||
@@ -58,7 +73,12 @@ ADD PRIMARY KEY (POLICY_HK);";
                             // if (sqlStatement.Contains("CREATE TABLE LNK_POLICY_INSURES_VEHICLE"))
 
                         {
-                            GenerateLinkFile(sqlStatement, sqlStatements, outputFilePath);
+                            var linkTableMetadata = GenerateLinkFile(sqlStatement, sqlStatements, outputFilePath);
+                            if (!csvFilePath.Equals(""))
+                            {
+                                if (Array.Exists(fileNameArr, element => string.Equals(element, "stg", StringComparison.OrdinalIgnoreCase) || string.Equals(element, "*", StringComparison.OrdinalIgnoreCase)))
+                                    GenerateStgFile(linkTableMetadata.TableName, linkTableMetadata.SourceModel, records, outputFilePath);
+                            }
                         }
 
                     if (Array.Exists(fileNameArr, element => string.Equals(element, "sat", StringComparison.OrdinalIgnoreCase) ||
@@ -67,34 +87,33 @@ ADD PRIMARY KEY (POLICY_HK);";
                         {
                             //if (sqlStatement.Contains("CREATE TABLE SAT_PEAK_POLICY"))
                             {
-                                GenerateSatFile(sqlStatement, sqlStatements, outputFilePath);
+                                var satTableMetadata = GenerateSatFile(sqlStatement, sqlStatements, outputFilePath);
+                                if (!csvFilePath.Equals(""))
+                                {
+                                    if (Array.Exists(fileNameArr, element => string.Equals(element, "stg", StringComparison.OrdinalIgnoreCase) || string.Equals(element, "*", StringComparison.OrdinalIgnoreCase)))
+                                        GenerateStgFile(satTableMetadata.TableName, satTableMetadata.SourceModel, records, outputFilePath);
+                                }
                             }
                         }
                 }
-
-            if (!csvFilePath.Equals(""))
-                if (Array.Exists(fileNameArr, element => string.Equals(element, "stg", StringComparison.OrdinalIgnoreCase) || string.Equals(element, "*", StringComparison.OrdinalIgnoreCase)))
-                    GenerateStgFile(ddlFilePath, csvFilePath, outputFilePath);
         }
 
-        private static void GenerateSatFile(string sqlStatement, List<string> sqlStatements, string outputFilePath)
+        private static SatTableMetadata GenerateSatFile(string sqlStatement, List<string> sqlStatements, string outputFilePath)
         {
             var tableName = DDLHelper.GetCreateDdlStatementTableName(sqlStatement);
+            var satTableMetadata = new SatTableMetadata();
             try
             {
                 Log.Information($"Generating file for table {tableName}");
-                var satTableMetadata = new SatTableMetadata
-                {
-                    TableName = tableName,
-                    Columns = DDLHelper.GetDdlStatementColumns(sqlStatement),
-                    SrcPk = DDLHelper.GetPrimaryKey(sqlStatements, tableName),
-                    SrcHashDiff = Constants.SrcHashDiff,
-                    SrcEff = Constants.SrcEff,
-                    SrcLdts = Constants.LoadTimestamp,
-                    SrcSource = Constants.RecordSource,
-                    SrcFk = DDLHelper.GetForeignKeys(sqlStatements, tableName),
-                    SrcPayload = new List<string>()
-                };
+                satTableMetadata.TableName = tableName;
+                satTableMetadata.Columns = DDLHelper.GetDdlStatementColumns(sqlStatement);
+                satTableMetadata.SrcPk = DDLHelper.GetPrimaryKey(sqlStatements, tableName);
+                satTableMetadata.SrcHashDiff = Constants.SrcHashDiff;
+                satTableMetadata.SrcEff = Constants.SrcEff;
+                satTableMetadata.SrcLdts = Constants.LoadTimestamp;
+                satTableMetadata.SrcSource = Constants.RecordSource;
+                satTableMetadata.SrcFk = DDLHelper.GetForeignKeys(sqlStatements, tableName);
+                satTableMetadata.SrcPayload = new List<string>();
 
                 if (_config.SatFileGenerationSettings
                     .SingleOrDefault(e => string.Equals(e.TableName, tableName, StringComparison.OrdinalIgnoreCase)) != null)
@@ -134,26 +153,22 @@ ADD PRIMARY KEY (POLICY_HK);";
             {
                 Log.Error(e, $"Error generating SAT file for table {tableName}");
             }
+            return satTableMetadata;
         }
 
-        private static void GenerateHubFile(string sqlStatement, List<string> sqlStatements, string outputFilePath)
+        private static HubTableMetadata GenerateHubFile(string sqlStatement, List<string> sqlStatements, string outputFilePath)
         {
             var tableName = DDLHelper.GetCreateDdlStatementTableName(sqlStatement);
+            var hubTableMetadata = new HubTableMetadata();
             try
             {
                 Log.Information($"Generating file for table {tableName}");
-                var hubTableMetadata = new HubTableMetadata
-                {
-                    TableName = tableName,
-                    Columns = DDLHelper.GetDdlStatementColumns(sqlStatement),
-                    srcPk = DDLHelper.GetPrimaryKey(sqlStatements, tableName),
-                    srcLdts = Constants.LoadTimestamp,
-                    srcSource = Constants.RecordSource,
-
-                    srcNk = new List<string>(),
-                    //Tags = _config.HubFileGenerationSettings.Single(e =>
-                    //    string.Equals(e.TableName, tableName, StringComparison.OrdinalIgnoreCase)).Tags
-                };
+                hubTableMetadata.TableName = tableName;
+                hubTableMetadata.Columns = DDLHelper.GetDdlStatementColumns(sqlStatement);
+                hubTableMetadata.srcPk = DDLHelper.GetPrimaryKey(sqlStatements, tableName);
+                hubTableMetadata.srcLdts = Constants.LoadTimestamp;
+                hubTableMetadata.srcSource = Constants.RecordSource;
+                hubTableMetadata.srcNk = new List<string>();
 
                 if (_config.HubFileGenerationSettings
                     .SingleOrDefault(e => string.Equals(e.TableName, tableName, StringComparison.OrdinalIgnoreCase)) != null)
@@ -191,25 +206,24 @@ ADD PRIMARY KEY (POLICY_HK);";
                 Log.Error(e, $"Error generating HUB file for table {tableName}");
 
             }
+            return hubTableMetadata;
         }
 
-        private static void GenerateLinkFile(string sqlStatement, List<string> sqlStatements, string outputFilePath)
+        private static LinkTableMetadata GenerateLinkFile(string sqlStatement, List<string> sqlStatements, string outputFilePath)
         {
             var tableName = DDLHelper.GetCreateDdlStatementTableName(sqlStatement);
+            var linkTableMetadata = new LinkTableMetadata();
             try
             {
                 Log.Information($"Generating file for table {tableName}");
 
 
-                var linkTableMetadata = new LinkTableMetadata()
-                {
-                    TableName = tableName,
-                    Columns = DDLHelper.GetDdlStatementColumns(sqlStatement),
-                    SrcPk = DDLHelper.GetPrimaryKey(sqlStatements, tableName),
-                    SrcLdts = Constants.LoadTimestamp,
-                    SrcSource = Constants.RecordSource,
-                    SrcFk = DDLHelper.GetForeignKeys(sqlStatements, tableName)
-                };
+                linkTableMetadata.TableName = tableName;
+                linkTableMetadata.Columns = DDLHelper.GetDdlStatementColumns(sqlStatement);
+                linkTableMetadata.SrcPk = DDLHelper.GetPrimaryKey(sqlStatements, tableName);
+                linkTableMetadata.SrcLdts = Constants.LoadTimestamp;
+                linkTableMetadata.SrcSource = Constants.RecordSource;
+                linkTableMetadata.SrcFk = DDLHelper.GetForeignKeys(sqlStatements, tableName);
 
                 if (_config.LnkFileGenerationSettings
                     .SingleOrDefault(e => string.Equals(e.TableName, tableName, StringComparison.OrdinalIgnoreCase)) != null)
@@ -233,61 +247,308 @@ ADD PRIMARY KEY (POLICY_HK);";
             {
                 Log.Error(e, $"Error generating LNK file for table {tableName}");
             }
+            return linkTableMetadata;
         }
 
-        private static void GenerateStgFile(string rawDDLPath, string csvFilePath, string outputFilePath)
+        private static void GenerateStgFile(string tableName, string sourceModel, IEnumerable<DataSource> csvDataSource, string outputFilePath)
         {
-            //GetCsvData(csvFilePath);
-            var tables = new List<string>();
+            var stgMetadata = new StgMetadata();
+            stgMetadata.DataSourceTableName = "???";
+            stgMetadata.DataSourceObjectSystem = "???";
+            switch (tableName)
+            {
+                case "SAT_PEAK_POLICY":
 
-            using (var reader = new StreamReader(csvFilePath))
-            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
-            {
-                csv.Read();
-                csv.ReadHeader();
-                while (csv.Read())
-                {
-                    var record = csv.GetRecord<DataSource>();
-                    if (!tables.Contains(record.TableName))
+                    foreach (var record in csvDataSource)
                     {
-                        tables.Add(record.TableName);
-                    }
-                }
-            }
-            foreach (var name in tables)
-            {
-                switch (name)
-                {
-                    case "SAT_PEAK_POLICY":
-                        var stgMetadata = new StgMetadata();
-                        using (var reader = new StreamReader(csvFilePath))
-                        using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                        if ((record.TableName).Equals(tableName))
                         {
-                            csv.Read();
-                            csv.ReadHeader();
-                            while (csv.Read())
+                            if (!record.DataSourceTableName.Equals(""))
                             {
-                                var record = csv.GetRecord<DataSource>();
-                                if ((record.TableName).Equals(name))
-                                {
-                                    if (!record.DataSourceTableName.Equals(""))
-                                    {
-                                        stgMetadata.DataSourceTableName = record.DataSourceTableName;
-                                        stgMetadata.DataSourceObjectSystem = record.DataSourceObjectSystem;
-                                        break;
-                                    }
-                                }
+                                stgMetadata.DataSourceTableName = record.DataSourceTableName;
+                                stgMetadata.DataSourceObjectSystem = record.DataSourceObjectSystem;
+                                break;
                             }
-                            var satPeakPolicyTemplate = new SatPeakPolicyTemplate(stgMetadata);
-                            var content = satPeakPolicyTemplate.TransformText();
-                            File.WriteAllText(name + $".sql", content);
+                        }
+                    }
+                    outputFilePath += "STG";
+                    if (!Directory.Exists(outputFilePath)) Directory.CreateDirectory(outputFilePath);
+                    var satPeakPolicyTemplate = new SatPeakPolicyTemplate(stgMetadata);
+                    var content = satPeakPolicyTemplate.TransformText();
+                    File.WriteAllText($"{outputFilePath}\\{sourceModel}.sql", content);
+
+                    break;
+
+                case "LNK_POLICY_HAS_VEHICLE_COVERAGE":
+
+                    foreach (var record in csvDataSource)
+                    {
+                        if ((record.TableName).Equals(tableName))
+                        {
+                            if (!record.DataSourceTableName.Equals(""))
+                            {
+                                stgMetadata.DataSourceTableName = record.DataSourceTableName;
+                                stgMetadata.DataSourceObjectSystem = record.DataSourceObjectSystem;
+                                break;
+                            }
+                        }
+                    }
+                    outputFilePath += "STG";
+                    if (!Directory.Exists(outputFilePath)) Directory.CreateDirectory(outputFilePath);
+                    var lnkPolicyHasVehicleCoverageTemplate = new LnkPolicyHasVehicleCoverageTemplate(stgMetadata);
+                    content = lnkPolicyHasVehicleCoverageTemplate.TransformText();
+                    File.WriteAllText($"{outputFilePath}\\{sourceModel}.sql", content);
+
+
+                    break;
+
+
+                case "LNK_POLICY_HAS_TRANSACTION":
+
+                    foreach (var record in csvDataSource)
+                    {
+                        if ((record.TableName).Equals(tableName))
+                        {
+                            if (!record.DataSourceTableName.Equals(""))
+                            {
+                                stgMetadata.DataSourceTableName = record.DataSourceTableName;
+                                stgMetadata.DataSourceObjectSystem = record.DataSourceObjectSystem;
+                                break;
+                            }
+                        }
+                    }
+                    outputFilePath += "STG";
+                    if (!Directory.Exists(outputFilePath)) Directory.CreateDirectory(outputFilePath);
+                    var lnkPolicyHasTrancactionTemplate = new LnkPolicyHasTrancactionTemplate(stgMetadata);
+                    content = lnkPolicyHasTrancactionTemplate.TransformText();
+                    File.WriteAllText($"{outputFilePath}\\{sourceModel}.sql", content);
+
+
+                    break;
+
+                case "LNK_POLICY_INSURES_VEHICLE":
+
+                    foreach (var record in csvDataSource)
+                    {
+                        if ((record.TableName).Equals(tableName))
+                        {
+                            if (!record.DataSourceTableName.Equals(""))
+                            {
+                                stgMetadata.DataSourceTableName = record.DataSourceTableName;
+                                stgMetadata.DataSourceObjectSystem = record.DataSourceObjectSystem;
+                                break;
+                            }
+                        }
+                    }
+                    outputFilePath += "STG";
+                    if (!Directory.Exists(outputFilePath)) Directory.CreateDirectory(outputFilePath);
+                    var lnkPolicyInsuresVehicleTemplate = new LnkPolicyInsuresVehicleTemplate(stgMetadata);
+                    content = lnkPolicyInsuresVehicleTemplate.TransformText();
+                    File.WriteAllText($"{outputFilePath}\\{sourceModel}.sql", content);
+
+
+                    break;
+
+                case "SAT_PEAK_VEHICLE":
+
+                    foreach (var record in csvDataSource)
+                    {
+                        if ((record.TableName).Equals(tableName))
+                        {
+                            if (!record.DataSourceTableName.Equals(""))
+                            {
+                                stgMetadata.DataSourceTableName = record.DataSourceTableName;
+                                stgMetadata.DataSourceObjectSystem = record.DataSourceObjectSystem;
+                                break;
+                            }
+                        }
+                    }
+                    outputFilePath += "STG";
+                    if (!Directory.Exists(outputFilePath)) Directory.CreateDirectory(outputFilePath);
+                    var SatPeakVehicleTemplate = new SatPeakVehicleTemplate(stgMetadata);
+                    content = SatPeakVehicleTemplate.TransformText();
+                    File.WriteAllText($"{outputFilePath}\\{sourceModel}.sql", content);
+
+
+                    break;
+
+                case "SAT_PEAK_TRANSACTION":
+
+                    foreach (var record in csvDataSource)
+                    {
+                        if ((record.TableName).Equals(tableName))
+                        {
+                            if (!record.DataSourceTableName.Equals(""))
+                            {
+                                stgMetadata.DataSourceTableName = record.DataSourceTableName;
+                                stgMetadata.DataSourceObjectSystem = record.DataSourceObjectSystem;
+                                break;
+                            }
+                        }
+                    }
+                    outputFilePath += "STG";
+                    if (!Directory.Exists(outputFilePath)) Directory.CreateDirectory(outputFilePath);
+                    var satPeakTransactionTemplate = new SatPeakTransactionTemplate(stgMetadata);
+                    content = satPeakTransactionTemplate.TransformText();
+                    File.WriteAllText($"{outputFilePath}\\{sourceModel}.sql", content);
+
+
+                    break;
+
+                case "SAT_BR_COVERAGE_REF_COV_DED_LIT":
+                case "SAT_BR_COVERAGE_REF_COV_LIMIT_LIT":
+                case "SAT_BR_COVERAGE_REF_COV_MNEMONICS":
+                case "SAT_BR_POLICY_RATING_STRUCTURE":
+                case "SAT_BR_POLICY_REF_PRODCT_RSK_TYP_TBL":
+                case "SAT_BR_POLICY_RISK_SEGMENT":
+
+                    foreach (var record in csvDataSource)
+                    {
+                        if ((record.TableName).Equals(tableName))
+                        {
+                            if (!record.DataSourceTableName.Equals(""))
+                            {
+                                stgMetadata.DataSourceTableName = record.DataSourceTableName;
+                                stgMetadata.DataSourceObjectSystem = record.DataSourceObjectSystem;
+                                break;
+                            }
+                        }
+                    }
+                    outputFilePath += "STG";
+                    if (!Directory.Exists(outputFilePath)) Directory.CreateDirectory(outputFilePath);
+                    var satBrCoverageRefCovDedLitTemplate = new SatBrCoverageRefCovDedLitTemplate(stgMetadata);
+                    content = satBrCoverageRefCovDedLitTemplate.TransformText();
+                    File.WriteAllText($"{outputFilePath}\\{sourceModel}.sql", content);
+
+
+                    break;
+
+                case "SAT_PEAK_VEHICLE_VINSYMBOL":
+                case "SAT_PEAK_VEHICLE_REGISTRATIONOWNERSHIP":
+                case "SAT_PEAK_VEHICLE_USAGEDETAILS":
+
+                    foreach (var record in csvDataSource)
+                    {
+                        if ((record.TableName).Equals(tableName))
+                        {
+                            if (!record.DataSourceTableName.Equals(""))
+                            {
+                                stgMetadata.DataSourceTableName = record.DataSourceTableName;
+                                stgMetadata.DataSourceObjectSystem = record.DataSourceObjectSystem;
+                                break;
+                            }
+                        }
+                    }
+
+                    outputFilePath += "STG";
+                    if (!Directory.Exists(outputFilePath)) Directory.CreateDirectory(outputFilePath);
+                    var satPeakVehicleVinsymbolTemplate = new SatPeakVehicleVinsymbolTemplate(stgMetadata);
+                    content = satPeakVehicleVinsymbolTemplate.TransformText();
+                    File.WriteAllText($"{outputFilePath}\\{sourceModel}.sql", content);
+
+                    break;
+
+
+                case "SAT_RDS_COV_MNEMONICS":
+
+                case "SAT_RDS_COV_DED_LIT":
+
+                case "SAT_RDS_COV_LIMIT_LIT":
+
+                case "SAT_RDS_PRODCT_RSK_TYP_TBL":
+
+                case "SAT_PEAK_VEHICLE_PII":
+
+                case "SAT_PEAK_VEHICLE_VINSYMBOL_PII":
+
+
+
+                    foreach (var record in csvDataSource)
+
+                    {
+
+                        if ((record.TableName).Equals(tableName))
+
+                        {
+
+                            if (!record.DataSourceTableName.Equals(""))
+
+                            {
+
+                                stgMetadata.DataSourceTableName = record.DataSourceTableName;
+
+                                stgMetadata.DataSourceObjectSystem = record.DataSourceObjectSystem;
+
+                                break;
+
+                            }
+
                         }
 
-                        break;
-                    default:
-                        // code block
-                        break;
-                }
+                    }
+
+                    outputFilePath += "STG";
+
+                    if (!Directory.Exists(outputFilePath)) Directory.CreateDirectory(outputFilePath);
+
+                    var satRdsCovMnemonicsTemplate = new SatRdsCovMnemonicsTemplate(stgMetadata);
+
+                    content = satRdsCovMnemonicsTemplate.TransformText();
+
+                    File.WriteAllText($"{outputFilePath}\\{sourceModel}.sql", content);
+
+
+
+                    break;
+
+
+
+                case "SAT_PEAK_RISK_COVERAGE":
+
+
+
+                    foreach (var record in csvDataSource)
+
+                    {
+
+                        if ((record.TableName).Equals(tableName))
+
+                        {
+
+                            if (!record.DataSourceTableName.Equals(""))
+
+                            {
+
+                                stgMetadata.DataSourceTableName = record.DataSourceTableName;
+
+                                stgMetadata.DataSourceObjectSystem = record.DataSourceObjectSystem;
+
+                                break;
+
+                            }
+
+                        }
+
+                    }
+
+                    outputFilePath += "STG";
+
+                    if (!Directory.Exists(outputFilePath)) Directory.CreateDirectory(outputFilePath);
+
+                    var satPeakRiskCoverageTemplate = new SatPeakRiskCoverageTemplate(stgMetadata);
+
+                    content = satPeakRiskCoverageTemplate.TransformText();
+
+                    File.WriteAllText($"{outputFilePath}\\{sourceModel}.sql", content);
+
+
+
+                    break;
+
+                default:
+                    // code block
+                    break;
+
             }
 
         }

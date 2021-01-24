@@ -5,11 +5,11 @@ using DDL2Dbt.TemplateModels;
 
 namespace DDL2Dbt.Templates.StgTemplates
 {
-    public partial class SatPeakPolicyTemplate
+    public partial class SatBrCoverageRefCovDedLitTemplate
     {
         public StgMetadata StgMetadata;
 
-        public SatPeakPolicyTemplate(StgMetadata stgMetadata)
+        public SatBrCoverageRefCovDedLitTemplate(StgMetadata stgMetadata)
         {
             StgMetadata = stgMetadata;
         }

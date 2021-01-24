@@ -11,10 +11,8 @@ source_model:
 include_source_columns: true???
 derived_columns:???
   RECORD_SOURCE: '!PEAK'???
-  EFFECTIVE_TIMESTAMP: 'EFFECTIVEDATE'???
 hashed_columns:???
-  POLICY_HK: 'POLICY_NUMBER'???
-  TRANSACTION_HK: 'POLICYREADONLYHISTORYID'???
+  LINE_HK: 'LINE_ID'???
   HASHDIFF:
     is_hashdiff: true
     exclude_columns: true

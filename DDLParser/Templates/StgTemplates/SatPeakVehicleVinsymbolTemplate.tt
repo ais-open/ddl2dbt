@@ -9,12 +9,16 @@
 source_model:
   PEAK_POLICY_CONFORMED(<#= StgMetadata.DataSourceObjectSystem #>): '<#= StgMetadata.DataSourceTableName #>'
 include_source_columns: true???
-derived_columns:???
+derived_columns:
   RECORD_SOURCE: '!PEAK'???
   EFFECTIVE_TIMESTAMP: 'EFFECTIVEDATE'???
-hashed_columns:???
+hashed_columns:
+  VEHICLE_HK: 'VEHICLE_ID'???
   POLICY_HK: 'POLICY_NUMBER'???
   TRANSACTION_HK: 'POLICYREADONLYHISTORYID'???
+  POLICY_INSURES_VEHICLE_HK:???
+    - 'POLICY_HK'
+    - 'VEHICLE_HK'
   HASHDIFF:
     is_hashdiff: true
     exclude_columns: true

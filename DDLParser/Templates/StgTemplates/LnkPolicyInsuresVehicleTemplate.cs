@@ -18,9 +18,9 @@ namespace DDL2Dbt.Templates.StgTemplates
     /// Class to produce the template output
     /// </summary>
     
-    #line 1 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\StgTemplates\SatPeakPolicyTemplate.tt"
+    #line 1 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\StgTemplates\LnkPolicyInsuresVehicleTemplate.tt"
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "16.0.0.0")]
-    public partial class SatPeakPolicyTemplate : SatPeakPolicyTemplateBase
+    public partial class LnkPolicyInsuresVehicleTemplate : LnkPolicyInsuresVehicleTemplateBase
     {
 #line hidden
         /// <summary>
@@ -28,35 +28,41 @@ namespace DDL2Dbt.Templates.StgTemplates
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("{{ config(tags = [\'policy\']) }}\r\n\r\n{%- set metadata_yaml -%}\r\nsource_model:\r\n  PE" +
-                    "AK_POLICY_CONFORMED(");
+            this.Write("{{ config(tags = [\'policy\'], materialized = \'table\') }}\r\n\r\n{%- set metadata_yaml " +
+                    "-%}\r\nsource_model:\r\n  PEAK_POLICY_CONFORMED(");
             
-            #line 10 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\StgTemplates\SatPeakPolicyTemplate.tt"
+            #line 10 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\StgTemplates\LnkPolicyInsuresVehicleTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(StgMetadata.DataSourceObjectSystem));
             
             #line default
             #line hidden
             this.Write("): \'");
             
-            #line 10 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\StgTemplates\SatPeakPolicyTemplate.tt"
+            #line 10 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\StgTemplates\LnkPolicyInsuresVehicleTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(StgMetadata.DataSourceTableName));
             
             #line default
             #line hidden
             this.Write(@"'
-include_source_columns: true???
-derived_columns:???
+include_source_columns: true
+derived_columns:
   RECORD_SOURCE: '!PEAK'???
-  EFFECTIVE_TIMESTAMP: 'EFFECTIVEDATE'???
+  COVERAGE_CODE: 'COVERAGECODE' ???
+  LIMIT_CODE: 'LIMITCODE' ???
+  DEDUCTIBLE_CODE: 'DEDUCTIBLECODE' ???
+  STATE_CODE: 'STATECODE' ???
+  EFFECTIVE_TIMESTAMP: 'EFFECTIVEDATE' ???
+  COVERAGE_NK:  ???
+    - 'COVERAGE_CODE'
+    - 'LIMIT_CODE'
+    - 'DEDUCTIBLE_CODE'
+    - 'STATE_CODE'
 hashed_columns:???
-  POLICY_HK: 'POLICY_NUMBER'???
-  TRANSACTION_HK: 'POLICYREADONLYHISTORYID'???
-  HASHDIFF:
-    is_hashdiff: true
-    exclude_columns: true
-    columns:
-      - 'CONFORMED_DIGEST'
-      - 'CONFORMED_INGESTION_TS'
+  POLICY_HK: 'POLICY_ID'
+  VEHICLE_HK: 'VEHICLE_ID'
+  POLICY_INSURES_VEHICLE_HK:
+    - 'POLICY_HK'
+    - 'VEHICLE_HK'
 {%- endset -%}
 
 {% set metadata_dict = fromyaml(metadata_yaml) -%}
@@ -89,7 +95,7 @@ SELECT * FROM stg_loadtimestamp");
     /// Base class for this transformation
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "16.0.0.0")]
-    public class SatPeakPolicyTemplateBase
+    public class LnkPolicyInsuresVehicleTemplateBase
     {
         #region Fields
         private global::System.Text.StringBuilder generationEnvironmentField;

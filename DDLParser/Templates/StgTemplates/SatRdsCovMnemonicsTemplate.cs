@@ -18,9 +18,9 @@ namespace DDL2Dbt.Templates.StgTemplates
     /// Class to produce the template output
     /// </summary>
     
-    #line 1 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\StgTemplates\SatPeakPolicyTemplate.tt"
+    #line 1 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\StgTemplates\SatRdsCovMnemonicsTemplate.tt"
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "16.0.0.0")]
-    public partial class SatPeakPolicyTemplate : SatPeakPolicyTemplateBase
+    public partial class SatRdsCovMnemonicsTemplate : SatRdsCovMnemonicsTemplateBase
     {
 #line hidden
         /// <summary>
@@ -28,29 +28,32 @@ namespace DDL2Dbt.Templates.StgTemplates
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("{{ config(tags = [\'policy\']) }}\r\n\r\n{%- set metadata_yaml -%}\r\nsource_model:\r\n  PE" +
-                    "AK_POLICY_CONFORMED(");
+            this.Write("{{ config(tags = [\'reference\']) }}\r\n\r\n{%- set metadata_yaml -%}\r\nsource_model: \r\n" +
+                    "  RDS_REFERENCE_CONFORMED(");
             
-            #line 10 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\StgTemplates\SatPeakPolicyTemplate.tt"
+            #line 10 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\StgTemplates\SatRdsCovMnemonicsTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(StgMetadata.DataSourceObjectSystem));
             
             #line default
             #line hidden
             this.Write("): \'");
             
-            #line 10 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\StgTemplates\SatPeakPolicyTemplate.tt"
+            #line 10 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\StgTemplates\SatRdsCovMnemonicsTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(StgMetadata.DataSourceTableName));
             
             #line default
             #line hidden
-            this.Write(@"'
-include_source_columns: true???
-derived_columns:???
-  RECORD_SOURCE: '!PEAK'???
-  EFFECTIVE_TIMESTAMP: 'EFFECTIVEDATE'???
-hashed_columns:???
-  POLICY_HK: 'POLICY_NUMBER'???
-  TRANSACTION_HK: 'POLICYREADONLYHISTORYID'???
+            this.Write("\'\r\ninclude_source_columns: true???\r\nderived_columns:\r\n  RECORD_SOURCE: \'!RDS\'???\r" +
+                    "\n  REFERENCE_RULE_TABLE_NAME: \'!");
+            
+            #line 14 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\StgTemplates\SatRdsCovMnemonicsTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(StgMetadata.DataSourceTableName));
+            
+            #line default
+            #line hidden
+            this.Write(@"'???
+hashed_columns:
+  HUB_REFERENCE_RULE_HK: 'REFERENCE_RULE_TABLE_NAME'???
   HASHDIFF:
     is_hashdiff: true
     exclude_columns: true
@@ -77,7 +80,8 @@ stg_loadtimestamp AS (
   {{ append_loadtimestamp(stage_name = 'stg') }}
 )
 
-SELECT * FROM stg_loadtimestamp");
+SELECT LOAD_TIMESTAMP AS EFFECTIVE_TIMESTAMP, stg_loadtimestamp.* FROM stg_loadtimestamp
+");
             return this.GenerationEnvironment.ToString();
         }
     }
@@ -89,7 +93,7 @@ SELECT * FROM stg_loadtimestamp");
     /// Base class for this transformation
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "16.0.0.0")]
-    public class SatPeakPolicyTemplateBase
+    public class SatRdsCovMnemonicsTemplateBase
     {
         #region Fields
         private global::System.Text.StringBuilder generationEnvironmentField;
