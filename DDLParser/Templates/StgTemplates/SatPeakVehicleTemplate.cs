@@ -18,9 +18,9 @@ namespace DDL2Dbt.Templates.StgTemplates
     /// Class to produce the template output
     /// </summary>
     
-    #line 1 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\StgTemplates\SatPeakPolicyTemplate.tt"
+    #line 1 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\StgTemplates\SatPeakVehicleTemplate.tt"
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "16.0.0.0")]
-    public partial class SatPeakPolicyTemplate : SatPeakPolicyTemplateBase
+    public partial class SatPeakVehicleTemplate : SatPeakVehicleTemplateBase
     {
 #line hidden
         /// <summary>
@@ -31,26 +31,31 @@ namespace DDL2Dbt.Templates.StgTemplates
             this.Write("{{ config(tags = [\'policy\']) }}\r\n\r\n{%- set metadata_yaml -%}\r\nsource_model:\r\n  PE" +
                     "AK_POLICY_CONFORMED(");
             
-            #line 10 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\StgTemplates\SatPeakPolicyTemplate.tt"
+            #line 10 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\StgTemplates\SatPeakVehicleTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(StgMetadata.DataSourceObjectSystem));
             
             #line default
             #line hidden
             this.Write("): \'");
             
-            #line 10 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\StgTemplates\SatPeakPolicyTemplate.tt"
+            #line 10 "D:\ddl transformations\GeicoDDLTransformers\DDLParser\Templates\StgTemplates\SatPeakVehicleTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(StgMetadata.DataSourceTableName));
             
             #line default
             #line hidden
             this.Write(@"'
 include_source_columns: true???
-derived_columns:???
+derived_columns:
   RECORD_SOURCE: '!PEAK'???
   EFFECTIVE_TIMESTAMP: 'EFFECTIVEDATE'???
-hashed_columns:???
+  VEHICLE_NK: 'VEHICLE_ID'???
+hashed_columns:
   POLICY_HK: 'POLICY_NUMBER'???
-  TRANSACTION_HK: 'POLICYREADONLYHISTORYID'???
+  VEHICLE_HK: 'VEHICLE_ID'???
+  TRANSACTION_HK: 'POLICYREADONLYHISTORYID' ???
+  POLICY_INSURES_VEHICLE_HK:???
+    - 'POLICY_HK'
+    - 'VEHICLE_HK'
   HASHDIFF:
     is_hashdiff: true
     exclude_columns: true
@@ -70,7 +75,7 @@ WITH stg AS (
   {{ dbtvault.stage(include_source_columns=include_source_columns,
                       source_model=source_model,
                       hashed_columns=hashed_columns,
-                      derived_columns=derived_columns) }} 
+                      derived_columns=derived_columns) }}                  
   {{ limit_records() }}
 ),
 stg_loadtimestamp AS (
@@ -89,7 +94,7 @@ SELECT * FROM stg_loadtimestamp");
     /// Base class for this transformation
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "16.0.0.0")]
-    public class SatPeakPolicyTemplateBase
+    public class SatPeakVehicleTemplateBase
     {
         #region Fields
         private global::System.Text.StringBuilder generationEnvironmentField;

@@ -5,11 +5,10 @@ using DDL2Dbt.TemplateModels;
 
 namespace DDL2Dbt.Templates.StgTemplates
 {
-    public partial class SatPeakPolicyTemplate
+    public partial class LnkPolicyInsuresVehicleTemplate
     {
         public StgMetadata StgMetadata;
-
-        public SatPeakPolicyTemplate(StgMetadata stgMetadata)
+        public LnkPolicyInsuresVehicleTemplate(StgMetadata stgMetadata)
         {
             StgMetadata = stgMetadata;
         }
