@@ -12,7 +12,7 @@ using Serilog;
 
 namespace DDL2Dbt
 {
-    internal class Parser
+    public class Parser
     {
         private static Config.Config _config;
         public static void ParseDDL(string ddlFilePath, string csvFilePath, string fileNames, string outputFilePath)
@@ -229,6 +229,11 @@ ADD PRIMARY KEY (POLICY_HK);";
                 {
                     linkTableMetadata.Tags =_config.LnkFileGenerationSettings.Single(e =>
                         string.Equals(e.TableName, tableName, StringComparison.OrdinalIgnoreCase)).Tags;
+                }
+
+                else
+                {
+                    Log.Warning($"Could not find tags for table {tableName} in the configuration");
                 }
 
                 var pFrom = tableName.IndexOf('_', +1);
