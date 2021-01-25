@@ -1,4 +1,4 @@
-# GeicoDDLTransformers
+# Readme
 
 The PublishSingleFile Flag : go to the solution folder and run the following cmd, to generate a single executable.
 
