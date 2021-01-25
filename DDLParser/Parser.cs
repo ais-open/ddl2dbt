@@ -8,7 +8,6 @@ using DDL2Dbt.Config;
 using DDL2Dbt.TemplateModels;
 using DDL2Dbt.Templates;
 using DDL2Dbt.Templates.StgTemplates;
-using DDL2Dbt.Templates.StgTemplates;
 using Serilog;
 
 namespace DDL2Dbt
