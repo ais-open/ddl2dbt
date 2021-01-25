@@ -218,6 +218,11 @@ ADD PRIMARY KEY (POLICY_HK);";
                         string.Equals(e.TableName, tableName, StringComparison.OrdinalIgnoreCase)).Tags;
                 }
 
+                else
+                {
+                    Log.Warning($"Could not find tags for table {tableName} in the configuration");
+                }
+
                 var pFrom = tableName.IndexOf('_', +1);
                 linkTableMetadata.SourceModel = "stg_lnk" + tableName.Substring(pFrom);
                 outputFilePath += "LNK";
