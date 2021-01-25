@@ -12,7 +12,7 @@ using Serilog;
 
 namespace DDL2Dbt
 {
-    internal class Parser
+    public class Parser
     {
         private static Config.Config _config;
         public static void ParseDDL(string ddlFilePath, string csvFilePath, string fileNames, string outputFilePath)
