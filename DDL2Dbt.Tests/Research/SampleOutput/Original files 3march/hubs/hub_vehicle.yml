@@ -1,5 +1,0 @@
-version: 2
-models:
-  - name: hub_vehicle 
-    description: "{{ doc('hub_vehicle') }}"
-

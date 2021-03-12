@@ -1,5 +1,0 @@
-version: 2
-models:
-  - name: sat_br_coverage_ref_cov_mnemonics 
-    description: "{{ doc('sat_br_coverage_ref_cov_mnemonics') }}"
-

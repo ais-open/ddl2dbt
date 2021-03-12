@@ -1,5 +1,0 @@
-version: 2
-models:
-  - name: lnk_policy_transaction_has_vehicle_coverage 
-    description: "{{ doc('lnk_policy_transaction_has_vehicle_coverage') }}"
-
