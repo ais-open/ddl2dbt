@@ -1,5 +1,0 @@
-version: 2
-models:
-  - name: sat_peak_risk_coverage 
-    description: "{{ doc('sat_peak_risk_coverage') }}"
-
