@@ -1,0 +1,91 @@
+version: 2
+models:
+  - name: sat_peak_vehicle 
+    description: "Satellite containing sensitive descriptive columns related to a vehicle."
+    columns:
+      - name: HASHDIFF
+        description: "Checksum value used to detect record level changes in the source system for values stored in the satellite target table. Should always include the hash key (HK) for the record from the hub table as well as all descriptive (non data vault specific metadata fields) in the satellite table. For a list of all satellite fields which should be included in the hashdiff of the table look at the UDP named INCLUDE_IN_HASHDIFF. If it is set to true then it shoudl be included else it is not included."
+      - name: EFFECTIVE_TIMESTAMP
+        description: "Should be set to beginning of day (time) when being set for a specific date."
+      - name: LOAD_TIMESTAMP
+        description: "Time and date the record was loaded into the table."
+        tests:
+          - unique
+          - not_null
+      - name: RECORD_SOURCE
+        description: "Manually assigned text value representing the data source from which the record originated. Ex - PEAK, OASIS, RATABASE, ATLAS, etc."
+        tests:
+          - unique
+          - not_null
+      - name: POLICY_NUMBER
+        description: "Number assigned to a policy. It is unique and is printed on the DEC page to identify the policy to the policyholder. This is duplicated on purpose so that this information will be included when publishing the policy change event for downstream. SPII Restricted General- PII Partial Data Steward Business: Steve Wilson / Ross Merrits Technical: Kim Lloyd"
+      - name: POLICYREADONLYHISTORYID
+        description: "Not in PEAK DATA MODEL; Need definition and classification from business APII General Non PII Data Steward Business: Steve Wilson / Ross Merrits Technical: Kim Lloyd"
+      - name: INCLUDEDELETED
+        description: "Not in PEAK DATA MODEL; Need definition and classification from business SPII General Non PII Data Steward Business: Steve Wilson / Ross Merrits Technical: Kim Lloyd"
+      - name: PRODUCTKIND
+        description: "Not in PEAK DATA MODEL; Need definition and classification from business SPII General Non PII Data Steward Business: Steve Wilson / Ross Merrits Technical: Kim Lloyd"
+      - name: RETRIEVEPOLICY_ID
+        description: "Not in PEAK DATA MODEL; Need definition and classification from business SPII General Non PII Data Steward Business: Steve Wilson / Ross Merrits Technical: Kim Lloyd"
+      - name: DATA_ID
+        description: "Not in PEAK DATA MODEL; Need definition and classification from business SPII General Non PII Data Steward Business: Steve Wilson / Ross Merrits Technical: Kim Lloyd"
+      - name: POLICY_ID
+        description: "Not in PEAK DATA MODEL; Need definition and classification from business SPII General Non PII Data Stewards Business: Steve Wilson / Ross Merrits Technical: Kim Lloyd"
+      - name: LINE_ID
+        description: "Not in PEAK DATA MODEL; Need definition and classification from business SPII General Non PII Data Steward Business: Steve Wilson / Ross Merrits Technical: Kim Lloyd"
+      - name: LINE_CHANGE
+        description: "Not in PEAK DATA MODEL; Need definition and classification from business SPII General Non PII Data Steward Business: Steve Wilson / Ross Merrits Technical: Kim Lloyd"
+      - name: LINE_WRITTEN
+        description: "Not in PEAK DATA MODEL; Need definition and classification from business SPII General Non PII Data Steward Business: Steve Wilson / Ross Merrits Technical: Kim Lloyd"
+      - name: RISK_ID
+        description: ""
+      - name: RISK_DELETED
+        description: "Not in PEAK DATA MODEL; Need definition and classification from business SPII General Non PII Data Steward Business: Steve Wilson / Ross Merrits Technical: Kim Lloyd"
+      - name: VEHICLE_ID
+        description: "Unique GUID generated in ADC for vehicle node. This GUID will not change throughout the policy life. This field is for ADC internal usage and there is no equivalent field at Geico Oasis model. SPII General Non PII Data Steward Business: Steve Wilson / Ross Merrits Technical: Kim Lloyd"
+      - name: VEHICLE_DELETED
+        description: "An indicator identifying whether this node is deleted. This node will be removed from the manuscript during renewal if it is set to true. SPII General Non PII Data Steward Business: Steve Wilson / Ross Merrits Technical: Kim Lloyd"
+      - name: ACTION
+        description: "This field is used to identify the type of change made to the node during a transaction. The valid values are: Add (adding data to the node), Update (changing data in the node), and Remove (removing the node and data from the policy, the @delete attribute should also = 1); the element value will be null or not present when no changes are being made during the current transaction. SPII General Non PII Data Steward Business: Steve Wilson / Ross Merrits Technical: Kim Lloyd"
+      - name: ASSIGNEDDRIVER
+        description: "Driver number assigned to the individual used to rate the vehicle. SPII General Non PII Data Steward Business: Steve Wilson / Ross Merrits Technical: Kim Lloyd"
+      - name: EFFECTIVEDATE
+        description: "Date when this node is first added for this policy in a specific policy term SPII General Non PII Data Steward Business: Steve Wilson / Ross Merrits Technical: Kim Lloyd"
+      - name: EFFECTIVETYPECODE
+        description: "Code identifying the type of policy activity or transaction processed for this policy, e.g., New Business, Renewal, Cancellation, etc. Note: when there is a business need to further define a particular effective/expiration type code, this additional information is stored in a reason amended code. For example, a row with an EFFECTIVE_TYPE_CD of 'N' identifies the transaction as being New Business. With a POL_REA_AMD_CD of 'SO', the new business transaction is further defined as a spin-off within the Oasis Service application. For more information about reason amended codes, refer to the description of POL_REA_AMD_CD on the POL_INS_LINE data table. SPII General Non PII Data Steward Business: Steve Wilson / Ross Merrits Technical: Kim Lloyd"
+      - name: LASTCHANGEDACTION
+        description: "This is the code represents the last ever changed Action. Similar to Action, it has four values: Add, Update, Delete and Unchanged (we send a blank for this). This information is used to trace the node which is not changed in the current transaction but it has been changed before the current transaction. This information can be used to derive the reason amended code. SPII General Non PII Data Steward Business: Steve Wilson / Ross Merrits Technical: Kim Lloyd"
+      - name: LASTCHANGEDDATE
+        description: "Date when this node was last changed. SPII General Non PII Data Steward Business: Steve Wilson / Ross Merrits Technical: Kim Lloyd"
+      - name: REASONAMENDMENTCODE
+        description: "Code identifying additional information about the policy activity or transaction, i.e., EFFECTIVE_TYPE_CD. For example, there are currently 3 reason amended codes used to identify additional information about the Cancel for Cancel/Rewrite transaction (EFFECTIVE_TYPE_CD = 7). SPII General Non PII Data Steward Business: Steve Wilson / Ross Merrits Technical: Kim Lloyd"
+      - name: REMOVALREASON
+        description: "Reason vehicle was removed from policy. Entered either by customer or counselor. SPII General Non PII Data Steward Business: Steve Wilson / Ross Merrits Technical: Kim Lloyd"
+      - name: REMOVEDDATE
+        description: "Date vehicle was removed from policy. Entered either by customer or by counselor SPII General Non PII Data Steward Business: Steve Wilson / Ross Merrits Technical: Kim Lloyd"
+      - name: REPLACEDVEHICLEID
+        description: "The identifier of the vehicle that was replaced by the newly added vehicle during a change/replace amendment. This information is used for the calculation of certain state-mandated taxes and fees. SPII General Non PII Data Steward Business: Steve Wilson / Ross Merrits Technical: Kim Lloyd"
+      - name: STORAGEPLAN
+        description: "The storage plan chosen by the policy holder and driver which coverages can be chosen on the vehicle at the time the vehicle is being stored SPII General Non PII Data Steward Business: Steve Wilson / Ross Merrits Technical: Kim Lloyd"
+      - name: VEHICLEHISTORYDAMAGEDCODE
+        description: "Code indicating whether the vehicle has a classification of damaged or branded title. No value is acceptable. Value list, complete: NC (Vehicle History order was not requested due to ineligibility) ND (Vehicle History response indicates the vehicle does not have damage and/or a branded title) NH (Vehicle History response indicated a “No Hit”) NP (Vehicle History response could not be parsed, or the damaged/branded title information was not available) TD (Vehicle History order failed for technical reasons (such as error, timeout, exception etc)) YD (Vehicle History response indicates the vehicle has damage and/or a branded title) SPII General Non PII Data Steward Business: Steve Wilson / Ross Merrits Technical: Kim Lloyd"
+      - name: VEHICLEHISTORYDAMAGEDIMPACTCODE
+        description: "Code indicating the impact of the Vehicle History Damaged Code. No value is acceptable. Value list, complete: N (Negative, results in a higher premium) P (Positive, results in a lower premium) U (Unchanged, results in no change to the premium) SPII General Non PII Data Steward Business: Steve Wilson / Ross Merrits Technical: Kim Lloyd"
+      - name: VEHICLEHISTORYORDERDATE
+        description: "The most recent date when a Vehicle History report was ordered. SPII General Non PII Data Steward Business: Steve Wilson / Ross Merrits Technical: Kim Lloyd"
+      - name: VEHICLEHISTORYRATEBOOKDATE
+        description: "A date populated by Ratabase when the Vehicle History Score process is requested. This date is used to look up the previous rating factors related to the vehicle history score data to determine whether the new rating has a positive, negative or neutral impact. SPII General Non PII Data Steward Business: Steve Wilson / Ross Merrits Technical: Kim Lloyd"
+      - name: VEHICLEHISTORYTITLETRANSFERREDCODE
+        description: "When numeric, this is the number of times that the vehicle title has been transferred from owner to owner. When non-numeric it is a code representing the status of the Vehicle History order for the number of title transfers. No value is acceptable. Value list, complete: 01 - 96 (Number of times that ownership of the vehicle title has been transferred) NC (Vehicle History order was not requested due to ineligibility) NH (Vehicle History response indicated a “No Hit”) NP (Vehicle History response could not be parsed, or the number of title transfers was not available) TD (Vehicle History order failed for technical reasons (such as error, timeout, exception, etc.)) SPII General Non PII Data Steward Business: Steve Wilson / Ross Merrits Technical: Kim Lloyd"
+      - name: VEHICLEHISTORYTITLETRANSFERREDIMPACTCODE
+        description: "Code indicating the impact of the Vehicle History Transferred Title Code. No value is acceptable. Value list, complete: N (Negative, results in a higher premium) P (Positive, results in a lower premium) U (Unchanged, results in no change to the premium) SPII General Non PII Data Steward Business: Steve Wilson / Ross Merrits Technical: Kim Lloyd"
+      - name: VEHICLELOCATION
+        description: "Code identifying if the vehicle is located on a farm. Value list, complete: F = Farm, O = Other (default). SPII General Non PII Data Steward Business: Steve Wilson / Ross Merrits Technical: Kim Lloyd"
+      - name: VEHICLENUMBER
+        description: "Number assigned to each vehicle on a policy. SPII General Non PII Data Steward Business: Steve Wilson / Ross Merrits Technical: Kim Lloyd"
+      - name: POLICY_TRANSACTION_INSURES_VEHICLE_HK
+        description: "Hash key of the natural key for the associated table/concept/domain/subject area in the source system."
+        tests:
+          - unique
+          - not_null
+

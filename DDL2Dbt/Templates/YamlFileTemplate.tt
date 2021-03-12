@@ -1,0 +1,20 @@
+﻿<#@ template language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+version: 2
+models:
+  - name: <#= YamlFileMetadata.TableName#> 
+    description: "<#= YamlFileMetadata.TableDefinition #>"
+    columns:
+<# foreach (var LabelValuePair in YamlFileMetadata.ColumnDefinition){ #>
+      - name: <#= LabelValuePair.Label #>
+        description: "<#= LabelValuePair.Value #>"
+<# if (LabelValuePair.Label.Contains("_HK", StringComparison.OrdinalIgnoreCase) || LabelValuePair.Label.Equals("LOAD_TIMESTAMP",StringComparison.OrdinalIgnoreCase) || LabelValuePair.Label.Equals("RECORD_SOURCE", StringComparison.OrdinalIgnoreCase)) { #>
+        tests:
+          - unique
+          - not_null
+<# } #>
+<# } #>
+

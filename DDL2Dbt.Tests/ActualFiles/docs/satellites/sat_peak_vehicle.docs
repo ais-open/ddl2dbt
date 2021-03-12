@@ -1,0 +1,5 @@
+{% docs sat_peak_vehicle %}
+
+This table contains sat_peak_vehicle.
+
+{% enddocs %}

@@ -1,0 +1,5 @@
+{% docs sat_br_policy_has_policy_transaction_rating_structure %}
+
+This table contains sat_br_policy_has_policy_transaction_rating_structure.
+
+{% enddocs %}

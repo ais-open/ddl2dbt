@@ -1,0 +1,5 @@
+version: 2
+models:
+  - name: sat_br_policy_has_policy_transaction_rating_structure 
+    description: "{{ doc('sat_br_policy_has_policy_transaction_rating_structure') }}"
+

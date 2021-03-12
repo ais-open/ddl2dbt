@@ -1,0 +1,5 @@
+version: 2
+models:
+  - name: hub_policy_transaction 
+    description: "{{ doc('hub_policy_transaction') }}"
+

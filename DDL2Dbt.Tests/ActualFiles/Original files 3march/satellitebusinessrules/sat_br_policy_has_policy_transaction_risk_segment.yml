@@ -1,0 +1,5 @@
+version: 2
+models:
+  - name: sat_br_policy_has_policy_transaction_risk_segment 
+    description: "{{ doc('sat_br_policy_has_policy_transaction_risk_segment') }}"
+

@@ -1,0 +1,76 @@
+﻿<#@ template language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+{{ config(tags = [<#for(int count=0; count < StgMetadata.Tags.Count(); count++)
+                   {#>'<#= StgMetadata.Tags[count] #>'<#
+                    if(count != StgMetadata.Tags.Count()-1)
+                        {#>,<#}#><#
+                    }#>]) }}
+
+{%- set metadata_yaml -%}
+source_model:
+  <#= StgMetadata.SourceModelLabel #>: '<#= StgMetadata.SourceModelValue #>'
+include_source_columns: true
+<# if(!StgMetadata.IsFIleTypeBR) { #>
+derived_columns:
+<# foreach (var LabelListPair in StgMetadata.DerivedColumns)
+    {#>
+  <#= LabelListPair.Label #>: <# if (LabelListPair.Value.Count == 1)
+  { #>'<#= LabelListPair.Value[0] #>'
+<# } #><# else
+        { #>
+
+<#
+    foreach (var value in LabelListPair.Value)
+    {#>
+    - '<#= value #>'
+<# }#>
+<# } #>
+<# } #>
+<# } #>
+hashed_columns:
+<# foreach (var LabelListPair in StgMetadata.HashedColumns)
+    {#>
+  <#= LabelListPair.Label #>: <# if (LabelListPair.Value.Count == 1)
+      { #>'<#= LabelListPair.Value[0] #>'
+<# } #><# else
+        { #>
+
+<#
+    foreach (var value in LabelListPair.Value)
+    {#>
+    - '<#= value #>'
+<# }#>
+<# } #>
+<# } #>
+<# if(StgMetadata.HashDiff){ #>
+  HASHDIFF:
+    is_hashdiff: true
+    columns:
+<# foreach (var column in StgMetadata.Columns)
+    {#>
+      - '<#= column #>'
+<# } } #>
+{%- endset -%}
+
+{% set metadata_dict = fromyaml(metadata_yaml) -%}
+
+{% set source_model = metadata_dict['source_model'] -%}
+{% set include_source_columns = metadata_dict['include_source_columns'] -%}
+{% set hashed_columns = metadata_dict['hashed_columns'] -%}
+{% set derived_columns = metadata_dict['derived_columns'] -%}
+
+WITH stg AS (
+  {{ dbtvault.stage(include_source_columns=include_source_columns,
+                      source_model=source_model,
+                      hashed_columns=hashed_columns,
+                      derived_columns=derived_columns) }} 
+  {{ limit_records() }}
+),
+stg_loadtimestamp AS (
+  {{ append_loadtimestamp(stage_name = 'stg') }}
+)
+
+SELECT * FROM stg_loadtimestamp

@@ -1,0 +1,5 @@
+version: 2
+models:
+  - name: lnk_policy_transaction_has_policy_transaction 
+    description: "{{ doc('lnk_policy_transaction_has_policy_transaction') }}"
+

@@ -1,0 +1,5 @@
+version: 2
+models:
+  - name: sat_br_coverage_ref_cov_ded_lit 
+    description: "{{ doc('sat_br_coverage_ref_cov_ded_lit') }}"
+

@@ -1,0 +1,35 @@
+{{ config(tags = ['core']) }}
+
+{%- set metadata_yaml -%}
+source_model:
+  PEAK_POLICY_CONFORMED: 'SEGMENT'
+include_source_columns: true
+hashed_columns:
+  POLICY_HAS_POLICY_TRANSACTION_HK: ''
+  HASHDIFF:
+    is_hashdiff: true
+    columns:
+      - 'RISK_SEGMENT'
+      - 'RECORD_SOURCE'
+      - 'POLICY_HAS_POLICY_TRANSACTION_HK'
+{%- endset -%}
+
+{% set metadata_dict = fromyaml(metadata_yaml) -%}
+
+{% set source_model = metadata_dict['source_model'] -%}
+{% set include_source_columns = metadata_dict['include_source_columns'] -%}
+{% set hashed_columns = metadata_dict['hashed_columns'] -%}
+{% set derived_columns = metadata_dict['derived_columns'] -%}
+
+WITH stg AS (
+  {{ dbtvault.stage(include_source_columns=include_source_columns,
+                      source_model=source_model,
+                      hashed_columns=hashed_columns,
+                      derived_columns=derived_columns) }} 
+  {{ limit_records() }}
+),
+stg_loadtimestamp AS (
+  {{ append_loadtimestamp(stage_name = 'stg') }}
+)
+
+SELECT * FROM stg_loadtimestamp

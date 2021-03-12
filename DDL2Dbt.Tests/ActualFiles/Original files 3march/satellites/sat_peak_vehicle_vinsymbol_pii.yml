@@ -1,0 +1,5 @@
+version: 2
+models:
+  - name: sat_peak_vehicle_vinsymbol_pii 
+    description: "{{ doc('sat_peak_vehicle_vinsymbol_pii') }}"
+

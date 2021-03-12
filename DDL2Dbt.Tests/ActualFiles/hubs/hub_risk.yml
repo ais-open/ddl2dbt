@@ -1,0 +1,5 @@
+version: 2
+models:
+  - name: hub_risk 
+    description: "{{ doc('hub_risk') }}"
+

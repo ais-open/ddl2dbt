@@ -1,0 +1,5 @@
+version: 2
+models:
+  - name: sat_peak_vehicle 
+    description: "{{ doc('sat_peak_vehicle') }}"
+

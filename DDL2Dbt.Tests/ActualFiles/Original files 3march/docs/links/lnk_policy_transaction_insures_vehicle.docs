@@ -1,0 +1,5 @@
+{% docs lnk_policy_transaction_insures_vehicle %}
+
+This table contains lnk_policy_transaction_insures_vehicle.
+
+{% enddocs %}

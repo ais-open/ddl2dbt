@@ -338,3 +338,7 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+/DDLParser/Properties/launchSettings.json
+
+/DDL2Dbt.Tests/ExpectedFiles/
+/DDL2Dbt.Tests/ActualFiles/copy Data Source Mapping v0.17 - Copy.csv

@@ -1,7 +1,8 @@
-{{ config(tags = ['policy'], materialized = 'table') }}
+{{ config(tags = ['core']) }}
+
 
 {%- set metadata_yaml -%}
-source_model: 'stg_peak_vehicle'
+source_model: 'stg_sat_peak_vehicle'
 src_pk: 'POLICY_INSURES_VEHICLE_HK'
 src_hashdiff: 'HASHDIFF'
 src_eff: 'EFFECTIVE_TIMESTAMP'

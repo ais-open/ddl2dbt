@@ -1,0 +1,5 @@
+{% docs hub_vehicle %}
+
+This table contains hub_vehicle.
+
+{% enddocs %}

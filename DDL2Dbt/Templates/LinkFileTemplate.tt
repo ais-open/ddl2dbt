@@ -1,0 +1,41 @@
+﻿<#@ template language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+{{ config(tags = [<#for(int count=0; count < LinkTableMetadata.Tags.Count(); count++)
+                   {#>'<#= LinkTableMetadata.Tags[count] #>'<#
+                    if(count != LinkTableMetadata.Tags.Count()-1)
+                        {#>,<#}#><#
+                    }#>]) }}
+
+{%- set metadata_yaml -%}
+source_model: '<#= LinkTableMetadata.SourceModel #>'
+src_pk: '<#=LinkTableMetadata.SrcPk#>'
+src_fk:<# if (LinkTableMetadata.SrcFk.Count == 1)
+        { #>'<#= LinkTableMetadata.SrcFk[0] #>'
+<# } #><# else
+        { #>
+
+<#
+    foreach (var key in LinkTableMetadata.SrcFk)
+    {#>
+  - '<#= key #>'
+<# }#>
+<# } #>
+src_ldts: '<#= LinkTableMetadata.SrcLdts #>'
+src_source: '<#= LinkTableMetadata.SrcSource #>'
+{%- endset -%}
+
+{% set metadata_dict = fromyaml(metadata_yaml) -%}
+{% set source_model = metadata_dict['source_model'] -%}
+{% set src_pk = metadata_dict['src_pk'] -%}
+{% set src_fk = metadata_dict['src_fk'] -%}
+{% set src_ldts = metadata_dict['src_ldts'] -%}
+{% set src_source = metadata_dict['src_source'] -%}
+
+{{ dbtvault.link(src_pk=src_pk, 
+                src_fk=src_fk, 
+                src_ldts=src_ldts,
+                src_source=src_source, 
+                source_model=source_model) }}

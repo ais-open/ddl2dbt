@@ -1,0 +1,5 @@
+version: 2
+models:
+  - name: hub_coverage 
+    description: "{{ doc('hub_coverage') }}"
+

@@ -1,0 +1,5 @@
+{% docs lnk_policy_transaction_has_policy_transaction %}
+
+This table contains lnk_policy_transaction_has_policy_transaction.
+
+{% enddocs %}
