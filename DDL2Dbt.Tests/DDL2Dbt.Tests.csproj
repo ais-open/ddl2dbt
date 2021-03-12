@@ -20,4 +20,8 @@
     <ProjectReference Include="..\DDL2Dbt\DDL2Dbt.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Research\" />
+  </ItemGroup>
+
 </Project>
