@@ -10,8 +10,8 @@ namespace DDL2Dbt.Tests
         public void GenerateModelFiles_WithAValidDDLFileForStgModelFilesGeneration_ShouldCreateStgTemplateFile()
         {
             //Arrange
-            var expectedStgFileNames = new List<string> { "stg_hub_coverage.sql", "stg_hub_policy_peak_policy.sql"};
-            var expectedStgSatBrFilesNames = new List<string> { "stg_sat_br_coverage_ref_cov_ded_lit.sql" };
+            var expectedStgFileNames = new List<string> { "stg_hub_file1.sql", "stg_hub_file2.sql"};
+            var expectedStgSatBrFilesNames = new List<string> { "stg_sat_br_file1.sql" };
 
             //Act
             DbtManager.GenerateModelFiles(DDLFilePath, CsvFilePath, "*", OutPutFilePath);
@@ -28,8 +28,8 @@ namespace DDL2Dbt.Tests
         public void GenerateModelFiles_WithAValidDDLFileForStgModelFilesGeneration_WithoutSpecifyingModels_ShouldCreateStgTemplateFile()
         {
             //Arrange
-            var expectedStgFileNames = new List<string> { "stg_hub_coverage.sql", "stg_hub_policy_peak_policy.sql" };
-            var expectedStgSatBrFilesNames = new List<string> { "stg_sat_br_coverage_ref_cov_ded_lit.sql" };
+            var expectedStgFileNames = new List<string> { "stg_hub_file1.sql", "stg_hub_file2.sql" };
+            var expectedStgSatBrFilesNames = new List<string> { "stg_sat_br_file1.sql" };
 
             //Act
             DbtManager.GenerateModelFiles(DDLFilePath, CsvFilePath, string.Empty, OutPutFilePath);

@@ -11,15 +11,15 @@ namespace DDL2Dbt.Tests
         public void GenerateModelFiles_WithAValidDDLFileForSatModelFilesGeneration_ShouldCreateSatTemplateFiles()
         {
             //Arrange
-            var expectedSatAndYamlFileNames = new List<string> { "sat_peak_policy.sql", "sat_peak_policy.yml", "sat_peak_vehicle.sql", "sat_peak_vehicle.yml" };
+            var expectedSatAndYamlFileNames = new List<string> { "sat_file1.sql", "sat_file1.yml", "sat_file2.sql", "sat_file2.yml" };
             var expectedSatBrAndYmlFilesNames = new List<string>
-            { "sat_br_policy_has_policy_transaction_rating_structure.sql",
-                "sat_br_policy_has_policy_transaction_rating_structure.yml",
-                "sat_br_policy_has_policy_transaction_risk_segment.sql",
-                "sat_br_policy_has_policy_transaction_risk_segment.yml"
+            { "sat_br_file1.sql",
+                "sat_br_file1.yml",
+                "sat_br_file2.sql",
+                "sat_br_file2.yml"
             };
-            var expectedSatDocFilesNames = new List<string> { "sat_peak_policy.docs", "sat_peak_vehicle.docs" };
-            var expectedSatBrDocFilesNames = new List<string> { "sat_br_policy_has_policy_transaction_rating_structure.docs", "sat_br_policy_has_policy_transaction_risk_segment.docs" };
+            var expectedSatDocFilesNames = new List<string> { "sat_file1.docs", "sat_file2.docs" };
+            var expectedSatBrDocFilesNames = new List<string> { "sat_br_file1.docs", "sat_br_file2.docs" };
 
 
             //Act
