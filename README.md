@@ -4,7 +4,7 @@ Usage:
 
 
 Example:
-.\Ddl2Dbt.exe --ddl "D:\Policy Phase 1 v0.13.52 DDL.ddl" -m * -o "D:\ddl\\"
+.\Ddl2Dbt.exe --ddl "D:\filename.ddl" -m * -o "D:\ddl\\"
 
 
 Usage:
