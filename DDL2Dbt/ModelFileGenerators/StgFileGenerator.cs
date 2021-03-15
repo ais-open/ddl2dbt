@@ -17,7 +17,7 @@ namespace DDL2Dbt.ModelFileGenerators
             var stgMetadata = new StgMetadata();
             try
             {
-
+                // testing pipelines
                 //get the records related to the table
                 List<CsvDataSource> tableRecords = csvDataSource.Where(e => e.TableName.Equals(tableName, StringComparison.OrdinalIgnoreCase)).ToList();
 
