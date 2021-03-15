@@ -1,0 +1,29 @@
+version: 2
+models:
+  - name: sat_cust_nation_details 
+    description: "This is SAT_CUST_NATION_DETAILS table definition"
+    columns:
+      - name: LOAD_TIMESTAMP
+        description: ""
+        tests:
+          - unique
+          - not_null
+      - name: RECORD_SOURCE
+        description: ""
+        tests:
+          - unique
+          - not_null
+      - name: HASHDIFF
+        description: ""
+      - name: EFFECTIVE_TIMESTAMP
+        description: ""
+      - name: SampleColumn1
+        description: ""
+      - name: SampleColumn2
+        description: ""
+      - name: NATION_DETAILS_HK
+        description: ""
+        tests:
+          - unique
+          - not_null
+

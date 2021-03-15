@@ -1,0 +1,23 @@
+version: 2
+models:
+  - name: hub_customer 
+    description: "This is HUB_Customer table definition"
+    columns:
+      - name: CUSTOMER_HK
+        description: "This is CUSTOMER_HK column description"
+        tests:
+          - unique
+          - not_null
+      - name: LOAD_TIMESTAMP
+        description: ""
+        tests:
+          - unique
+          - not_null
+      - name: RECORD_SOURCE
+        description: ""
+        tests:
+          - unique
+          - not_null
+      - name: CUSTOMER_NO
+        description: ""
+

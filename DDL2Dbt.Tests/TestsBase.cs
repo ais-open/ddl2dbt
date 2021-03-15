@@ -20,7 +20,7 @@ namespace DDL2Dbt.Tests
             CurrentProjectDirectoryPath = Directory.GetParent(Environment.CurrentDirectory).Parent?.Parent?.Parent?.FullName;
             DDLFilePath = CurrentProjectDirectoryPath + @"\DDL2Dbt.Tests\ActualFiles\DDL.ddl";
             InvalidDDLFilePath = CurrentProjectDirectoryPath + @"\DDL2Dbt.Tests\ActualFiles123\DDL.ddl";
-            CsvFilePath = CurrentProjectDirectoryPath + @"\DDL2Dbt.Tests\ActualFiles\filename.csv";
+            CsvFilePath = CurrentProjectDirectoryPath + @"\DDL2Dbt.Tests\ActualFiles\csvFile.csv";
             OutPutFilePath = CurrentProjectDirectoryPath + @"\DDL2Dbt.Tests\ExpectedFiles\";
             ActualFilesPath = CurrentProjectDirectoryPath + @"\DDL2Dbt.Tests\ActualFiles\";
         }

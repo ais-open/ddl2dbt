@@ -52,9 +52,9 @@ namespace DDL2Dbt.Parsers
                 {
                     if (csvDataSource.TableName.Equals(tableName, StringComparison.OrdinalIgnoreCase))
                     {
-                        if (!string.IsNullOrWhiteSpace(csvDataSource.PhysicalQwnerTeamName))
+                        if (!string.IsNullOrWhiteSpace(csvDataSource.Tags))
                         {
-                            tags = csvDataSource.PhysicalQwnerTeamName.Split(",");
+                            tags = csvDataSource.Tags.Split(",");
                         }
                     }
                 }
