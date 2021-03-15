@@ -60,11 +60,11 @@ namespace DDL2Dbt.ModelFileGenerators
                 stgMetadata.Tags = CsvParser.GetTags(csvDataSource, tableName);
 
                 //TODO : Revisit this for lnk  we are populating ??? for now
-                if (tableName.Contains("lnk", StringComparison.OrdinalIgnoreCase))
-                {
-                    stgMetadata.SourceModelLabel = Constants.NotFoundString;
-                    stgMetadata.SourceModelValue = Constants.NotFoundString;
-                }
+                //if (tableName.Contains("lnk", StringComparison.OrdinalIgnoreCase))
+                //{
+                //    stgMetadata.SourceModelLabel = Constants.NotFoundString;
+                //    stgMetadata.SourceModelValue = Constants.NotFoundString;
+                //}
 
                 outputFilePath += "stage";
                 if (tableName.StartsWith(Constants.SatBrFileName, StringComparison.OrdinalIgnoreCase))
