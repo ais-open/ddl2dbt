@@ -2,7 +2,7 @@
 
 {%- set metadata_yaml -%}
 source_model:
-  STG.SOURCE.MODEL_1: '???'
+  STG.SOURCE.MODEL_1: 'NATION'
 include_source_columns: true
 derived_columns:
   RECORD_SOURCE: '!CUST'
