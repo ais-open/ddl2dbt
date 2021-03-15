@@ -144,7 +144,7 @@ namespace DDL2Dbt.ModelFileGenerators
             foreach (var distinctColumnName in distinctColumnNameList)
             {
                 LabelListPair derivedRecord = new LabelListPair();
-                // Getting values from column 'Table5.SourceTransform' to be mapped with column names
+                // Getting values from column 'StageColumns' to be mapped with column names
                 derivedRecord.Label = distinctColumnName;
                 List<string> columnValuesList = new List<string>();
                 foreach (var record in tableRecords)
