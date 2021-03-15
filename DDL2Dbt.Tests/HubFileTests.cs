@@ -11,8 +11,8 @@ namespace DDL2Dbt.Tests
         public void GenerateModelFiles_WithAValidDDLFileForHubModelFilesGeneration_ShouldCreateHubTemplateFileDocsFileAndYamlFile()
         {
             //Arrange
-            var expectedHubAndYamlFileNames = new List<string> { "hub_file1.sql", "hub_file1.yml", "hub_file2.sql", "hub_file2.yml" };
-            var expectedDocFilesNames = new List<string> { "hub_file1.docs", "hub_file2.docs" };
+            var expectedHubAndYamlFileNames = new List<string> { "hub_customer.sql", "hub_customer.yml" };
+            var expectedDocFilesNames = new List<string> { "hub_customer.docs" };
 
             //Act
             DbtManager.GenerateModelFiles(DDLFilePath, CsvFilePath, Constants.HubFileName, OutPutFilePath);

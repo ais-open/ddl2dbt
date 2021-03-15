@@ -1,0 +1,5 @@
+{% docs lnk_customer_nation %}
+
+This table contains lnk_customer_nation.
+
+{% enddocs %}

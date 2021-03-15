@@ -11,8 +11,8 @@ namespace DDL2Dbt.Tests
         public void GenerateModelFiles_WithAValidDDLAndCsvForLnkModelFilesGeneration_ShouldCreateLnkTemplateFiles()
         {
             //Arrange
-            var expectedLinkAndYamlFileNames = new List<string> { "lnk_file1.sql", "lnk_file1.yml", "lnk_file2.sql", "lnk_file2.yml" };
-            var expectedDocFilesNames = new List<string> { "lnk_file1.docs", "lnk_file2.docs" };
+            var expectedLinkAndYamlFileNames = new List<string> { "lnk_customer_nation.sql", "lnk_customer_nation.yml" };
+            var expectedDocFilesNames = new List<string> { "lnk_customer_nation.docs" };
 
             //Act
             DbtManager.GenerateModelFiles(DDLFilePath, CsvFilePath, Constants.LnkFileName, OutPutFilePath);

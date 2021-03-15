@@ -121,7 +121,7 @@ namespace DDL2Dbt.ModelFileGenerators
 
             foreach (var record in tableRecords)
             {
-                if (record.IncludeInHashdiff.Equals("TRUE", StringComparison.OrdinalIgnoreCase))
+                if (record.HashdiffColumns.Equals("TRUE", StringComparison.OrdinalIgnoreCase))
                 {
                     hasDiffColumns.Add(record.ColumnName);
                 }
@@ -137,7 +137,7 @@ namespace DDL2Dbt.ModelFileGenerators
 
 
             // Ignore rows containing _HK and Timestamp in the "columnname" column.
-            tableRecords = tableRecords.Where(e => !e.ColumnName.Contains("_HK") && !e.ColumnName.Equals(Constants.LoadTimestamp) && !string.IsNullOrWhiteSpace(e.Table5SourceTransform)).ToList();
+            tableRecords = tableRecords.Where(e => !e.ColumnName.Contains("_HK") && !e.ColumnName.Equals(Constants.LoadTimestamp) && !string.IsNullOrWhiteSpace(e.StageColumns)).ToList();
 
             List<string> distinctColumnNameList = tableRecords.Select(e => e.ColumnName).Distinct().ToList();
 
@@ -151,7 +151,7 @@ namespace DDL2Dbt.ModelFileGenerators
                 {
                     if (record.ColumnName.Equals(distinctColumnName))
                     {
-                        columnValuesList.Add(record.Table5SourceTransform);
+                        columnValuesList.Add(record.StageColumns);
                     }
 
                 }
@@ -163,7 +163,8 @@ namespace DDL2Dbt.ModelFileGenerators
             {
                 if (cols.Label.Equals("RECORD_SOURCE"))
                 {
-                    cols.Value = new List<string> { "!PEAK" };
+                    var recordSource = "!" + cols.Value[0];
+                    cols.Value = new List<string> { recordSource };
                 }
                 if (cols.Label.Equals("EFFECTIVE_TIMESTAMP"))
                 {
@@ -191,11 +192,11 @@ namespace DDL2Dbt.ModelFileGenerators
                     if (record.ColumnName.Equals(distinctHashedColumnName))
                     {
                         //Getting hashed column values by breaking up the MD5 string if available
-                        if (record.Table5SourceTransform.Contains("MD5",StringComparison.OrdinalIgnoreCase))
+                        if (record.StageColumns.Contains("MD5",StringComparison.OrdinalIgnoreCase))
                         {
-                            var pFrom = record.Table5SourceTransform.LastIndexOf("(", StringComparison.Ordinal) + 1;
-                            var pTo = record.Table5SourceTransform.IndexOf(")", StringComparison.Ordinal);
-                            columnValuesList.AddRange(record.Table5SourceTransform.Substring(pFrom, pTo - pFrom).Replace(" ", string.Empty).Split(",").ToList());
+                            var pFrom = record.StageColumns.LastIndexOf("(", StringComparison.Ordinal) + 1;
+                            var pTo = record.StageColumns.IndexOf(")", StringComparison.Ordinal);
+                            columnValuesList.AddRange(record.StageColumns.Substring(pFrom, pTo - pFrom).Replace(" ", string.Empty).Split(",").ToList());
                         }
                     }
                 }
@@ -215,7 +216,7 @@ namespace DDL2Dbt.ModelFileGenerators
 
         private static List<string> GetSourceModel(List<CsvDataSource> tableRecords)
         {
-            var SourceModels =tableRecords.Select(e => e.Table4SourceTable).Distinct().ToList();
+            var SourceModels =tableRecords.Select(e => e.SourceModel).Distinct().ToList();
             return SourceModels;
         }
 

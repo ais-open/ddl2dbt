@@ -2,7 +2,7 @@
   "profiles": {
     "DDL2Dbt": {
       "commandName": "Project",
-      "commandLineArgs": "-m * -c \"D:\\ddl2dbt project\\ddl2dbt\\DDL2Dbt.Tests\\ActualFiles\\filename.csv\" -d \"D:\\ddl2dbt project\\ddl2dbt\\DDL2Dbt.Tests\\ActualFiles\\DDL.ddl\" -o D:/Models"
+      "commandLineArgs": "-m * -d \"D:\\Github\\ddl2dbt\\DDL2Dbt.Tests\\ActualFiles\\DDL.ddl\" -o D:/Models -c \"D:\\Github\\ddl2dbt\\DDL2Dbt.Tests\\ActualFiles\\csvFile.csv\""
     }
   }
 }

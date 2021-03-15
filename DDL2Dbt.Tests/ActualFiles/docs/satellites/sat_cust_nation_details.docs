@@ -1,0 +1,5 @@
+{% docs sat_cust_nation_details %}
+
+This table contains sat_cust_nation_details.
+
+{% enddocs %}

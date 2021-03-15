@@ -1,0 +1,31 @@
+version: 2
+models:
+  - name: lnk_customer_nation 
+    description: "This is LNK_CUSTOMER_NATION table definition"
+    columns:
+      - name: CUSTOMER_HK
+        description: ""
+        tests:
+          - unique
+          - not_null
+      - name: LOAD_TIMESTAMP
+        description: ""
+        tests:
+          - unique
+          - not_null
+      - name: RECORD_SOURCE
+        description: ""
+        tests:
+          - unique
+          - not_null
+      - name: CUSTOMER_NATION_HK
+        description: ""
+        tests:
+          - unique
+          - not_null
+      - name: NATION_DETAILS_HK
+        description: ""
+        tests:
+          - unique
+          - not_null
+

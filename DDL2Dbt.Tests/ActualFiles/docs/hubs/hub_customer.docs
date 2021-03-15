@@ -1,0 +1,5 @@
+{% docs hub_customer %}
+
+This table contains hub_customer.
+
+{% enddocs %}
