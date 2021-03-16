@@ -23,7 +23,7 @@ Ddl2Dbt --ddl "D:\ddlfilename.ddl" -m * -c "D:\csvfilename.csv" -o "D:\ddl\\"
 
 ### DDL File :
 It is required to run the ddl2dbt application. This file will contain the ddl statements.
-The DDL file can be of type text, sql or ddl.  Accepted file-extentions are: '.txt', '.sql' and '.ddl'.
+The DDL file can be of type text, sql or ddl.  Accepted file-extentions are: '.txt', '.sql' and '.ddl'.  
 Eg:
 ```sh
 CREATE TABLE HUB_CUSTOMER
@@ -39,7 +39,7 @@ ADD PRIMARY KEY (CUSTOMER_HK);
 ```
 
 ### CSV File:
-It is not required to run the ddl2dbt applications, but without the csv the stage files cannot be generated. For Hub, Lnk and Sat files the csv is used only to populate tags so if no csv is provided then the hub, lnk and sat files will still be generated with '???' for the tags.
+It is not required to run the ddl2dbt applications, but without the csv the stage files cannot be generated. For Hub, Lnk and Sat files the csv is used only to populate tags so if no csv is provided then the hub, lnk and sat files will still be generated with '???' for the tags.  
 Eg:
 |Table Name|Tags|Table Definition|Column Name|HASHDIFF|Column Definition|Source Model|Derived/Hashed Columns|
 | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
@@ -59,4 +59,5 @@ Eg:
 | Column Definition | Optional | This column specifies the Column Definition. It will be used to populate column details in the yaml file |
 | Source Model | Required | This column is used to populate 'source_model' for the stage files |
 | Derived/Hashed Columns | Required | This column is used to populate derived and hashed columns of the stage file |
+
 **If  you want to use a csv with different column names then the new column names can be specified in the appSettings.json file.**
