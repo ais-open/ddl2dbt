@@ -74,6 +74,12 @@ namespace ddl2dbt.ModelFileGenerators
                     stgMetadata.IsFIleTypeBR = true;
                 }
                 Utility.CreateDirectoryIfDoesNotExists(outputFilePath);
+                //Getting rid of empty values if any
+                if (sourceModels.Count > 1) 
+                { 
+                    sourceModels = sourceModels.Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToList(); 
+                }
+                //Creating multiple stg files for all the unique Source Models
                 if (sourceModels.Count > 1)
                 {
                     foreach (var SourceModel in sourceModels)
@@ -163,7 +169,7 @@ namespace ddl2dbt.ModelFileGenerators
             {
                 if (cols.Label.Equals("RECORD_SOURCE"))
                 {
-                    var recordSource = "!" + cols.Value[0];
+                    var recordSource = "!" + cols.Value[0].Replace("'", string.Empty);
                     cols.Value = new List<string> { recordSource };
                 }
                 if (cols.Label.Equals("EFFECTIVE_TIMESTAMP"))
