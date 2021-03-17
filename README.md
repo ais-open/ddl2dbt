@@ -1,4 +1,5 @@
 # ddl2dbt
+[![Build Status](https://dev.azure.com/appliedis/Data%20Platform%20Delivery%20Framework/_apis/build/status/DDL2DBT_Github_CD?branchName=master)](https://dev.azure.com/appliedis/Data%20Platform%20Delivery%20Framework/_build/latest?definitionId=129&branchName=master)
 dbt (https://docs.getdbt.com) is an source platform for data warehouse automation. dbtvault (https://dbtvault.readthedocs.io/) macro, enables DataVault 2.0 architecture based data warehouse.  A typical dbt project using dbtvault macro, consists of .sql and .yml files.  
 ddl2dbt is a CLI, written in C# that automates generation of dbt and dbtvault macro based .sql and .yml source code.  
 It takes Sql Data Defintion Language (DDL) file and a CSV file containing source to target mapping as input and generates hub, links, satellites and stage .sql and .yml files.  
