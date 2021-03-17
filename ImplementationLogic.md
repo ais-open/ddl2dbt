@@ -49,7 +49,6 @@ The following are the sections of a hub files and the description involves on ho
 1. tags: tags: tags are populated from the &quot;Tags&quot; column present in the csv file.
 2. source\_model: It is the concatenation of the keyword &quot;stg\_&quot; with the table name.
 Eg: For table &#39;HUB\_CUSTOMER&#39;, its Source\_Model will be &#39;stg\_hub\_customer&#39;.
-
 3. src\_pk: It contains the primary key for the current table. The Primary Key columns are extracted using the logic defined in the DDL Parsing file. Out of the extracted column names only the one ending with &#39;\_HK&#39; is taken and populated with src\_pk.
 4. src\_nk: All the columns of the table are extracted and out of those, the ones that are not present in the primary key list (retrieved using the logic in the ddl paraser) and are not &#39;RECORD\_SOURCE&#39; or &#39;LOAD\_TIMESTAMP&#39; are populated with the src\_nk.
 5. src\_ldts: This field has a fixed value of &#39;LOAD\_TIMESTAMP&#39;.
@@ -81,3 +80,12 @@ Ex: For table name &#39;SAT\_Table&#39; the SourceModel would be &#39;stg\_sat\_
 6. src\_ldts: This field has a fixed value of &#39;LOAD\_TIMESTAMP&#39;.
 7. src\_source: This field has a fixed value of &#39;RECORD\_SOURCE&#39;.
 8. Src\_payload: The src\_payload is a list of columns present inside the ddl file which are not part of Src\_pk, Src\_hashdiff, Src\_eff, Src\_ldts and Src\_source.
+
+**Building yaml files:**
+
+Each hub, sat and lnk table in the ddl will have a corresponding yaml file.
+
+- The DDL file will be parsed to get all the hub, lnk and sat tables with their respective columns.
+- The table description is fetched from the csv and populated inside the yaml file.
+- Similarly all the column description are also fetched and populated with it's respective column name inside the yaml file.
+- If the table description or the column description are empty inside the csv then an empty-string( "" ) will be populated.

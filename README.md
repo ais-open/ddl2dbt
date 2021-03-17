@@ -24,6 +24,8 @@ It takes Sql Data Defintion Language (DDL) file and a CSV file containing source
 **Example:**
 ddl2dbt --ddl "D:\ddlfilename.ddl" -m * -c "D:\csvfilename.csv" -o "D:\ddl\\" 
 
+**Video Demo:** https://youtu.be/UBYfKvcn3Wo
+
 ### DDL File :
 It is required to run the ddl2dbt application. This file will contain the ddl statements.
 The DDL file can be of type text, sql or ddl.  Accepted file-extentions are: '.txt', '.sql' and '.ddl'.  
@@ -65,7 +67,7 @@ Eg:
 
 **If  you want to use a csv with different column names then the new column names can be specified in the appSettings.json file.**
   
-## Output:
+## Output Files:
 **1) hub_customer.sql**
 ```sh
 {{ config(tags = ['tag']) }}
