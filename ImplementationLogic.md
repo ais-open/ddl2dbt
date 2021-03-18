@@ -1,4 +1,4 @@
-**Ddl2dbt -DRAFT**
+## Ddl2dbt
 
 **DDL parsing**
 
