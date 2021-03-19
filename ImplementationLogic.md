@@ -89,3 +89,6 @@ Each hub, sat and lnk table in the ddl will have a corresponding yaml file.
 - The table description is fetched from the csv and populated inside the yaml file.
 - Similarly all the column description are also fetched and populated with it's respective column name inside the yaml file.
 - If the table description or the column description are empty inside the csv then an empty-string( "" ) will be populated.
+- Columns with 'Columns Name' equals 'LOAD_TIMESTAMP', 'RECORD_SOURCE' or contains '_HK' will have the following tests: - 
+- - not_null
+- - unique
