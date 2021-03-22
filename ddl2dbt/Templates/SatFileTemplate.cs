@@ -18,7 +18,7 @@ namespace ddl2dbt.Templates
     /// Class to produce the template output
     /// </summary>
     
-    #line 1 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
+    #line 1 "D:\Github\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "16.0.0.0")]
     public partial class SatFileTemplate : SatFileTemplateBase
     {
@@ -30,7 +30,7 @@ namespace ddl2dbt.Templates
         {
             this.Write("{{ config(tags = [");
             
-            #line 6 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
+            #line 6 "D:\Github\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
 for(int count=0; count < SatTableMetadata.Tags.Count(); count++)
                    {
             
@@ -38,14 +38,14 @@ for(int count=0; count < SatTableMetadata.Tags.Count(); count++)
             #line hidden
             this.Write("\'");
             
-            #line 7 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
+            #line 7 "D:\Github\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(SatTableMetadata.Tags[count]));
             
             #line default
             #line hidden
             this.Write("\'");
             
-            #line 7 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
+            #line 7 "D:\Github\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
 
                     if(count != SatTableMetadata.Tags.Count()-1)
                         {
@@ -54,63 +54,148 @@ for(int count=0; count < SatTableMetadata.Tags.Count(); count++)
             #line hidden
             this.Write(", ");
             
-            #line 9 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
+            #line 9 "D:\Github\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
 }
             
             #line default
             #line hidden
             
-            #line 9 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
+            #line 9 "D:\Github\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
 
                     }
             
             #line default
             #line hidden
-            this.Write("]) }}\r\n\r\n{%- set metadata_yaml -%}\r\nsource_model: \'");
+            this.Write("]) }}\r\n\r\n{%- set metadata_yaml -%}\r\nsource_model: ");
             
-            #line 13 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(SatTableMetadata.SourceModel));
+            #line 13 "D:\Github\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
+ if (SatTableMetadata.SourceModel.Count == 1)
+        { 
             
             #line default
             #line hidden
-            this.Write("\'\r\nsrc_pk: \'");
+            this.Write("\'");
             
-            #line 14 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
+            #line 14 "D:\Github\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(SatTableMetadata.SourceModel[0]));
+            
+            #line default
+            #line hidden
+            this.Write("\'\r\n");
+            
+            #line 15 "D:\Github\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            
+            #line 15 "D:\Github\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
+ else
+        { 
+            
+            #line default
+            #line hidden
+            this.Write("\r\n");
+            
+            #line 18 "D:\Github\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
+
+    foreach (var model in SatTableMetadata.SourceModel)
+    {
+            
+            #line default
+            #line hidden
+            this.Write("    - \'");
+            
+            #line 21 "D:\Github\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(model));
+            
+            #line default
+            #line hidden
+            this.Write("\'\r\n");
+            
+            #line 22 "D:\Github\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
+ }
+            
+            #line default
+            #line hidden
+            
+            #line 23 "D:\Github\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            this.Write("src_pk: \'");
+            
+            #line 24 "D:\Github\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(SatTableMetadata.SrcPk));
             
             #line default
             #line hidden
-            this.Write("\'\r\nsrc_hashdiff: \'");
+            this.Write("\'\r\n");
             
-            #line 15 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
+            #line 25 "D:\Github\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
+
+if(SatTableMetadata.IsFIleTypeMAS)
+{
+            
+            #line default
+            #line hidden
+            this.Write("src_cdk:\r\n");
+            
+            #line 29 "D:\Github\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
+
+    if(SatTableMetadata.CompositeKeysPresent){
+    foreach (var key in SatTableMetadata.Compositekeys)
+    {
+            
+            #line default
+            #line hidden
+            this.Write("  - \'");
+            
+            #line 33 "D:\Github\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(key));
+            
+            #line default
+            #line hidden
+            this.Write("\'\r\n");
+            
+            #line 34 "D:\Github\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
+ }}}
+
+            
+            #line default
+            #line hidden
+            this.Write("src_hashdiff: \'");
+            
+            #line 36 "D:\Github\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(SatTableMetadata.SrcHashDiff));
             
             #line default
             #line hidden
             this.Write("\'\r\nsrc_eff: \'");
             
-            #line 16 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
+            #line 37 "D:\Github\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(SatTableMetadata.SrcEff));
             
             #line default
             #line hidden
             this.Write("\'\r\nsrc_ldts: \'");
             
-            #line 17 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
+            #line 38 "D:\Github\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(SatTableMetadata.SrcLdts));
             
             #line default
             #line hidden
             this.Write("\'\r\nsrc_source: \'");
             
-            #line 18 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
+            #line 39 "D:\Github\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(SatTableMetadata.SrcSource));
             
             #line default
             #line hidden
             this.Write("\'\r\nsrc_payload:\r\n");
             
-            #line 20 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
+            #line 41 "D:\Github\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
 
     foreach (var column in SatTableMetadata.SrcPayload)
     {
@@ -119,36 +204,78 @@ for(int count=0; count < SatTableMetadata.Tags.Count(); count++)
             #line hidden
             this.Write("  - \'");
             
-            #line 23 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
+            #line 44 "D:\Github\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(column));
             
             #line default
             #line hidden
             this.Write("\'\r\n");
             
-            #line 24 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
+            #line 45 "D:\Github\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
  }
             
             #line default
             #line hidden
-            this.Write(@"{%- endset -%}
+            this.Write("{%- endset -%}\r\n\r\n{% set metadata_dict = fromyaml(metadata_yaml) -%}\r\n{% set sour" +
+                    "ce_model = metadata_dict[\'source_model\'] -%}\r\n{% set src_pk = metadata_dict[\'src" +
+                    "_pk\'] -%}\r\n");
+            
+            #line 51 "D:\Github\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
 
-{% set metadata_dict = fromyaml(metadata_yaml) -%}
-{% set source_model = metadata_dict['source_model'] -%}
-{% set src_pk = metadata_dict['src_pk'] -%}
-{% set src_hashdiff = metadata_dict['src_hashdiff'] -%}
+if(SatTableMetadata.IsFIleTypeMAS)
+{
+            
+            #line default
+            #line hidden
+            this.Write("{% set src_cdk = metadata_dict[\'src_cdk\'] -%}\r\n");
+            
+            #line 55 "D:\Github\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
+ }
+
+            
+            #line default
+            #line hidden
+            this.Write(@"{% set src_hashdiff = metadata_dict['src_hashdiff'] -%}
 {% set src_payload = metadata_dict['src_payload'] -%}
 {% set src_eff = metadata_dict['src_eff'] -%}
 {% set src_ldts = metadata_dict['src_ldts'] -%}
 {% set src_source = metadata_dict['src_source'] -%}
 
-{{ dbtvault.sat(src_pk=src_pk, 
-                src_hashdiff=src_hashdiff, 
-                src_payload=src_payload,
-                src_eff=src_eff, 
-                src_ldts=src_ldts,
-                src_source=src_source,
-                source_model=source_model) }}");
+{{ dbtvault.");
+            
+            #line 63 "D:\Github\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
+if(SatTableMetadata.IsFIleTypeMAS){
+            
+            #line default
+            #line hidden
+            this.Write("ma_");
+            
+            #line 63 "D:\Github\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
+ }
+            
+            #line default
+            #line hidden
+            this.Write("sat(src_pk=src_pk, \r\n");
+            
+            #line 64 "D:\Github\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
+
+if(SatTableMetadata.IsFIleTypeMAS)
+{
+            
+            #line default
+            #line hidden
+            this.Write("                src_cdk=src_cdk,\r\n");
+            
+            #line 68 "D:\Github\ddl2dbt\ddl2dbt\Templates\SatFileTemplate.tt"
+ }
+
+            
+            #line default
+            #line hidden
+            this.Write("                src_hashdiff=src_hashdiff, \r\n                src_payload=src_payl" +
+                    "oad,\r\n                src_eff=src_eff, \r\n                src_ldts=src_ldts,\r\n   " +
+                    "             src_source=src_source,\r\n                source_model=source_model) " +
+                    "}}");
             return this.GenerationEnvironment.ToString();
         }
     }

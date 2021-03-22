@@ -1,7 +1,7 @@
 {{ config(tags = ['tag']) }}
 
 {%- set metadata_yaml -%}
-source_model: 'stg_sat_cust_nation_details'
+source_model: 'stg_source_model_1'
 src_pk: 'NATION_DETAILS_HK'
 src_hashdiff: 'HASHDIFF'
 src_eff: 'EFFECTIVE_TIMESTAMP'

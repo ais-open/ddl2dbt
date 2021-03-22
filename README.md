@@ -47,7 +47,7 @@ ADD PRIMARY KEY (CUSTOMER_HK);
 ```
 
 ### CSV File:
-It is not required to run the ddl2dbt applications, but without the csv the stage files cannot be generated. For Hub, Lnk and Sat files the csv is used only to populate tags so if no csv is provided then the hub, lnk and sat files will still be generated with '???' for the tags.  
+It is not required to run the ddl2dbt applications, but without the csv the stage files cannot be generated. For Hub, Lnk and Sat files the csv is used only to populate tags and source_model so if no csv is provided then the hub, lnk and sat files will still be generated with '???' for the tags and source_model.  
 Eg:
 |Table Name|Tags|Table Definition|Column Name|HASHDIFF|Column Definition|Source Model|Derived/Hashed Columns|
 | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
@@ -65,10 +65,10 @@ Eg:
 | Column Name | This column specifies the different columns present |
 | HASHDIFF | This column contains a boolean value if found to be 'True' then only its corresponding 'Column Name' will be used to populate the HASHDIFF part fo the stage file.
 | Column Definition | This column specifies the Column Definition. It will be used to populate column details in the yaml file |
-| Source Model | This column is used to populate 'source_model' for the stage files |
+| Source Model | For each unique value in this column a new stage file will be generated. This column is also used to populate 'source_model' for the all kinds of files |
 | Derived/Hashed Columns | This column is used to populate derived and hashed columns of the stage file |
 
-**If  you want to use a csv with different column names then the new column names can be specified in the appSettings.json file.**
+**If  you want to use a csv with different column names then the new column names can be specified in the 'FieldValue' property of the appSettings.json file. The appSettings.json file is part of the release and needs to be in the same directory as ddl2dbt.exe.**
   
 ## Output Files:
 **1) hub_customer.sql**
@@ -76,7 +76,7 @@ Eg:
 {{ config(tags = ['tag']) }}
 
 {%- set metadata_yaml -%}
-source_model: 'stg_hub_customer'
+source_model: 'stg_source_model_1'
 src_pk: 'CUSTOMER_HK'
 src_nk: 'CUSTOMER_NO'
 src_ldts: 'LOAD_TIMESTAMP'
@@ -121,13 +121,13 @@ models:
       - name: CUSTOMER_NO
         description: ""
 ```
-**3) stg_hub_customer.sql**
+**3) stg_source_model_1.sql**
 ```sh
 {{ config(tags = ['tag']) }}
 
 {%- set metadata_yaml -%}
 source_model:
-  STG.SOURCE.MODEL_1: 'CUSTOMER'
+  STG: 'Model_1'
 include_source_columns: true
 derived_columns:
   RECORD_SOURCE: '!CUST'

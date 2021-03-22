@@ -12,8 +12,6 @@ namespace ddl2dbt.TemplateModels
 
         public List<LabelListPair> DerivedColumns { get; set; }
 
-        //public List<LabelValuePair> HashedColumns { get; set; }
-
         public List<LabelListPair> HashedColumns { get; set; }
 
         public bool HashDiff { get; set; }
@@ -22,9 +20,5 @@ namespace ddl2dbt.TemplateModels
         public List<string> Columns { get; set; }
 
         public string[] Tags { get; set; }
-        public bool hasDerivedColumns { get; set; }
-        public string PrimaryKey { get; set; }
-        public List<string> Compositekeys { get; set; }
-        public bool CompositeKeysPresent { get; set; }
     }
 }

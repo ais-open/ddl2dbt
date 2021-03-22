@@ -2,15 +2,24 @@
 
 {%- set metadata_yaml -%}
 source_model:
-  STG.SOURCE.MODEL_1: 'NATION'
+  STG: 'MODEL_1'
 include_source_columns: true
 derived_columns:
   RECORD_SOURCE: '!CUST'
+  EFFECTIVE_TIMESTAMP: 'TO_TIMESTAMP(EFFECTIVEDATE)'
 hashed_columns:
-  CUSTOMER_NATION_HK: 'SampleColumn1'
-  NATION_DETAILS_HK: 
-    - 'CUSTOMER_HK'
-    - 'CUSTOMER_NATION_HK'
+  CUSTOMER_HK: 'CUSTOMER_NO'
+  NATION_DETAILS_HK: 'CUSTOMER_NO'
+  HASHDIFF:
+    is_hashdiff: true
+    columns:
+      - 'CUSTOMER_HK'
+      - 'LOAD_TIMESTAMP'
+      - 'RECORD_SOURCE'
+      - 'CUSTOMER_NO'
+      - 'SampleColumn1'
+      - 'SampleColumn2'
+      - 'NATION_DETAILS_HK'
 {%- endset -%}
 
 {% set metadata_dict = fromyaml(metadata_yaml) -%}

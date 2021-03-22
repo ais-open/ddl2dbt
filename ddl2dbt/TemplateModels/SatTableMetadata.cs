@@ -9,7 +9,7 @@ namespace ddl2dbt.TemplateModels
     {
         public string TableName { get; set; }
 
-        public string SourceModel { get; set; }
+        public List<string> SourceModel { get; set; }
 
         public string SrcPk { get; set; }
 
@@ -23,13 +23,14 @@ namespace ddl2dbt.TemplateModels
 
         public List<string> SrcPayload { get; set; }
 
-        public List<string> SrcFk { get; set; }
-
         public List<ColumnDetail> Columns { get; set; }
 
         public string[] Tags { get; set; }
 
         public List<string> PrimaryKeys { get; set; }
+        public List<string> Compositekeys { get; set; }
+        public bool CompositeKeysPresent { get; set; }
+        public bool IsFIleTypeMAS { get; set; }
 
     }
 

@@ -8,7 +8,7 @@ namespace ddl2dbt.TemplateModels
         public string SrcLdts { get; set; }
         public string SrcSource { get; set; }
         public string SrcPk { get; set; }
-        public string SourceModel { get; set; }
+        public List<string> SourceModel { get; set; }
         public List<string> SrcFk { get; set; }
 
         public List<ColumnDetail> Columns { get; set; }

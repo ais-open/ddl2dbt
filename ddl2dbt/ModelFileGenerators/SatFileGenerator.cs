@@ -29,10 +29,15 @@ namespace ddl2dbt.ModelFileGenerators
                 satTableMetadata.SrcEff = Constants.SrcEff;
                 satTableMetadata.SrcLdts = Constants.LoadTimestamp;
                 satTableMetadata.SrcSource = Constants.RecordSource;
-                satTableMetadata.SrcFk = DDLParser.GetForeignKeys(sqlStatements, tableName);
                 satTableMetadata.SrcPayload = new List<string>();
+                satTableMetadata.IsFIleTypeMAS = false;
+                satTableMetadata.CompositeKeysPresent = false;
 
-
+                if (satTableMetadata.PrimaryKeys.Count() > 1)
+                {
+                    satTableMetadata.CompositeKeysPresent = true;
+                    satTableMetadata.Compositekeys = satTableMetadata.PrimaryKeys.Where(e => !e.Contains("_HK", StringComparison.OrdinalIgnoreCase)).ToList();
+                }
 
                 satTableMetadata.Tags = CsvParser.GetTags(records, tableName);
 
@@ -50,8 +55,15 @@ namespace ddl2dbt.ModelFileGenerators
                     {
                         satTableMetadata.SrcPayload.Add(column.Name);
                     }
-
-                satTableMetadata.SourceModel = "stg_" + tableName;
+                if (tableName.Contains("MAS", StringComparison.OrdinalIgnoreCase))
+                {
+                    satTableMetadata.SourceModel = new List<string> { Constants.NotFoundString };
+                    satTableMetadata.IsFIleTypeMAS = true;
+                }
+                else 
+                {
+                    satTableMetadata.SourceModel = CsvParser.GetSourceModel(records, tableName);
+                }
                 outputFilePath += "satellites";
                 Utility.CreateDirectoryIfDoesNotExists(outputFilePath);
                 var satFileTemplate = new SatFileTemplate(satTableMetadata);
@@ -64,7 +76,7 @@ namespace ddl2dbt.ModelFileGenerators
                 Utility.CreateDirectoryIfDoesNotExists(outputFilePath);
                 var pathStr = $"{outputFilePath}\\{satTableMetadata.TableName}.sql";
                 File.WriteAllText(pathStr, content);
-                Logger.LogInfo("Generating sat file for " + tableName);
+                Logger.LogInfo("Generated sat file for " + tableName);
 
             }
             catch (Exception e)

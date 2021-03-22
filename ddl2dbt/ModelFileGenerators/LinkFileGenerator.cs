@@ -29,7 +29,7 @@ namespace ddl2dbt.ModelFileGenerators
                 linkTableMetadata.SrcFk = DDLParser.GetForeignKeys(sqlStatements, tableName);
                 linkTableMetadata.Tags = CsvParser.GetTags(records, tableName);
 
-                linkTableMetadata.SourceModel = "stg_" + tableName;
+                linkTableMetadata.SourceModel = CsvParser.GetSourceModel(records, tableName);
                 outputFilePath += "links";
                 Utility.CreateDirectoryIfDoesNotExists(outputFilePath);
                 var linkFileTemplate = new LinkFileTemplate(linkTableMetadata);

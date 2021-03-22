@@ -10,8 +10,7 @@ namespace ddl2dbt.Tests
         public void GenerateModelFiles_WithAValidDDLFileForStgModelFilesGeneration_ShouldCreateStgTemplateFile()
         {
             //Arrange
-            var expectedStgFileNames = new List<string> { "stg_sat_cust_nation_details.sql", "stg_lnk_customer_nation.sql" };
-            //var expectedStgSatBrFilesNames = new List<string> { "stg_sat_br_file1.sql" };
+            var expectedStgFileNames = new List<string> { "stg_source_model_1.sql", "stg_source_model_2.sql" };
 
             //Act
             DbtManager.GenerateModelFiles(DDLFilePath, CsvFilePath, "*", OutPutFilePath);
@@ -20,7 +19,6 @@ namespace ddl2dbt.Tests
             Assert.Multiple(() =>
             {
                 AssertGeneratedModelFiles(expectedStgFileNames, "stage");
-                //AssertGeneratedModelFiles(expectedStgSatBrFilesNames, "stagebusinessrules");
             });
         }
 
@@ -28,8 +26,7 @@ namespace ddl2dbt.Tests
         public void GenerateModelFiles_WithAValidDDLFileForStgModelFilesGeneration_WithoutSpecifyingModels_ShouldCreateStgTemplateFile()
         {
             //Arrange
-            var expectedStgFileNames = new List<string> { "stg_sat_cust_nation_details.sql", "stg_lnk_customer_nation.sql" };
-            //var expectedStgSatBrFilesNames = new List<string> { "stg_sat_br_file1.sql" };
+            var expectedStgFileNames = new List<string> { "stg_source_model_1.sql", "stg_source_model_2.sql" };
 
             //Act
             DbtManager.GenerateModelFiles(DDLFilePath, CsvFilePath, string.Empty, OutPutFilePath);
@@ -38,7 +35,6 @@ namespace ddl2dbt.Tests
             Assert.Multiple(() =>
             {
                 AssertGeneratedModelFiles(expectedStgFileNames, "stage");
-                //AssertGeneratedModelFiles(expectedStgSatBrFilesNames, "stagebusinessrules");
             });
         }
 

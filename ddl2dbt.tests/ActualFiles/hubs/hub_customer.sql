@@ -1,7 +1,9 @@
 {{ config(tags = ['tag']) }}
 
 {%- set metadata_yaml -%}
-source_model: 'stg_hub_customer'
+source_model: 
+    - 'stg_source_model_1'
+    - 'stg_source_model_2'
 src_pk: 'CUSTOMER_HK'
 src_nk: 'CUSTOMER_NO'
 src_ldts: 'LOAD_TIMESTAMP'
