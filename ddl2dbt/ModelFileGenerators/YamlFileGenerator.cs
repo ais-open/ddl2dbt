@@ -55,7 +55,7 @@ namespace ddl2dbt.ModelFileGenerators
                 {
                     outputFilePath += "links";
                 }
-                if (tableName.Contains(Constants.SatFileName, StringComparison.OrdinalIgnoreCase))
+                if (tableName.Contains(Constants.SatFileName, StringComparison.OrdinalIgnoreCase) || tableName.Contains(Constants.MasFileName, StringComparison.OrdinalIgnoreCase))
                 {
                     if (tableName.Contains(Constants.SatBrFileName, StringComparison.OrdinalIgnoreCase))
                     {

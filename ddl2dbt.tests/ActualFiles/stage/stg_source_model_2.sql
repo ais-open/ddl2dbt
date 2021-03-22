@@ -1,13 +1,17 @@
-{{ config(tags = ['tag']) }}
+{{ config(tags = ['tag','tag_1']) }}
 
 {%- set metadata_yaml -%}
 source_model:
-  STG.SOURCE.MODEL_2: 'CUSTOMER'
+  STG: 'MODEL_2'
 include_source_columns: true
 derived_columns:
   RECORD_SOURCE: '!CUST'
 hashed_columns:
   CUSTOMER_HK: 'CUSTOMER_NO'
+  CUSTOMER_NATION_HK: 'SampleColumn1'
+  NATION_DETAILS_HK: 
+    - 'CUSTOMER_HK'
+    - 'CUSTOMER_NATION_HK'
 {%- endset -%}
 
 {% set metadata_dict = fromyaml(metadata_yaml) -%}

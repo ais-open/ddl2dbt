@@ -10,21 +10,31 @@
                     }#>]) }}
 
 {%- set metadata_yaml -%}
-source_model: '<#= HubTableMetadata.SourceModel #>'
-src_pk: '<#=HubTableMetadata.srcPk#>'
-src_nk: <# if (HubTableMetadata.srcNk.Count == 1)
-        { #>'<#= HubTableMetadata.srcNk[0] #>'
+source_model: <# if (HubTableMetadata.SourceModel.Count == 1)
+        { #>'<#= HubTableMetadata.SourceModel[0] #>'
 <# } #><# else
         { #>
 
 <#
-    foreach (var key in HubTableMetadata.srcNk)
+    foreach (var model in HubTableMetadata.SourceModel)
+    {#>
+    - '<#= model #>'
+<# }#>
+<# } #>
+src_pk: '<#=HubTableMetadata.SrcPk#>'
+src_nk: <# if (HubTableMetadata.SrcNk.Count == 1)
+        { #>'<#= HubTableMetadata.SrcNk[0] #>'
+<# } #><# else
+        { #>
+
+<#
+    foreach (var key in HubTableMetadata.SrcNk)
     {#>
     - '<#= key #>'
 <# }#>
 <# } #>
-src_ldts: '<#= HubTableMetadata.srcLdts #>'
-src_source: '<#= HubTableMetadata.srcSource #>'
+src_ldts: '<#= HubTableMetadata.SrcLdts #>'
+src_source: '<#= HubTableMetadata.SrcSource #>'
 {%- endset -%}
 
 {% set metadata_dict = fromyaml(metadata_yaml) -%}

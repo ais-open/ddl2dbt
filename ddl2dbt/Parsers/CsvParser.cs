@@ -66,5 +66,42 @@ namespace ddl2dbt.Parsers
 
         }
 
+        public static List<string> GetSourceModel(List<CsvDataSource> csvDataSources, string tableName)
+        {
+            List<string> sourceModels = new List<string>();
+
+            if (csvDataSources != null)
+            {
+                foreach (var csvDataSource in csvDataSources)
+                {
+                    if (csvDataSource.TableName.Equals(tableName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (!string.IsNullOrWhiteSpace(csvDataSource.SourceModel))
+                        {
+                            var sourceModel = csvDataSource.SourceModel;
+                            if (sourceModel.Contains("."))
+                            {
+                                var index = sourceModel.LastIndexOf(".");
+                                index = sourceModel.Substring(0, index - 1).LastIndexOf(".");
+                                if (index != -1)
+                                {
+                                    sourceModel = sourceModel.Substring(index + 1).Replace(".", "_").ToLower();
+                                }
+                            }
+                            sourceModel = "stg_" + sourceModel;
+                            sourceModels.Add(sourceModel);
+                        }
+                    }
+                }
+            }
+
+            if (!sourceModels.Any())
+            {
+                sourceModels.Add(Constants.NotFoundString);
+                Logger.LogWarning($"Could not find Source Model for table: {tableName}");
+            }
+            return sourceModels.Distinct().ToList();
+        }
+
     }
 }

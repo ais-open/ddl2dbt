@@ -5,6 +5,7 @@
         public const string HubFileName = "hub";
         public const string LnkFileName = "lnk";
         public const string SatFileName = "sat";
+        public const string MasFileName = "mas";
         public const string SatBrFileName = "sat_br";
         public const string LoadTimestamp = "LOAD_TIMESTAMP";
         public const string SrcHashDiff = "HASHDIFF";

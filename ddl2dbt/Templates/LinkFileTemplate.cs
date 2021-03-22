@@ -18,7 +18,7 @@ namespace ddl2dbt.Templates
     /// Class to produce the template output
     /// </summary>
     
-    #line 1 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
+    #line 1 "D:\Github\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "16.0.0.0")]
     public partial class LinkFileTemplate : LinkFileTemplateBase
     {
@@ -30,7 +30,7 @@ namespace ddl2dbt.Templates
         {
             this.Write("{{ config(tags = [");
             
-            #line 6 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
+            #line 6 "D:\Github\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
 for(int count=0; count < LinkTableMetadata.Tags.Count(); count++)
                    {
             
@@ -38,14 +38,14 @@ for(int count=0; count < LinkTableMetadata.Tags.Count(); count++)
             #line hidden
             this.Write("\'");
             
-            #line 7 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
+            #line 7 "D:\Github\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(LinkTableMetadata.Tags[count]));
             
             #line default
             #line hidden
             this.Write("\'");
             
-            #line 7 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
+            #line 7 "D:\Github\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
 
                     if(count != LinkTableMetadata.Tags.Count()-1)
                         {
@@ -54,56 +54,42 @@ for(int count=0; count < LinkTableMetadata.Tags.Count(); count++)
             #line hidden
             this.Write(",");
             
-            #line 9 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
+            #line 9 "D:\Github\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
 }
             
             #line default
             #line hidden
             
-            #line 9 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
+            #line 9 "D:\Github\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
 
                     }
             
             #line default
             #line hidden
-            this.Write("]) }}\r\n\r\n{%- set metadata_yaml -%}\r\nsource_model: \'");
+            this.Write("]) }}\r\n\r\n{%- set metadata_yaml -%}\r\nsource_model: ");
             
-            #line 13 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(LinkTableMetadata.SourceModel));
-            
-            #line default
-            #line hidden
-            this.Write("\'\r\nsrc_pk: \'");
-            
-            #line 14 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(LinkTableMetadata.SrcPk));
-            
-            #line default
-            #line hidden
-            this.Write("\'\r\nsrc_fk:");
-            
-            #line 15 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
- if (LinkTableMetadata.SrcFk.Count == 1)
+            #line 13 "D:\Github\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
+ if (LinkTableMetadata.SourceModel.Count == 1)
         { 
             
             #line default
             #line hidden
             this.Write("\'");
             
-            #line 16 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(LinkTableMetadata.SrcFk[0]));
+            #line 14 "D:\Github\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(LinkTableMetadata.SourceModel[0]));
             
             #line default
             #line hidden
             this.Write("\'\r\n");
             
-            #line 17 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
+            #line 15 "D:\Github\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
  } 
             
             #line default
             #line hidden
             
-            #line 17 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
+            #line 15 "D:\Github\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
  else
         { 
             
@@ -111,7 +97,72 @@ for(int count=0; count < LinkTableMetadata.Tags.Count(); count++)
             #line hidden
             this.Write("\r\n");
             
-            #line 20 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
+            #line 18 "D:\Github\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
+
+    foreach (var model in LinkTableMetadata.SourceModel)
+    {
+            
+            #line default
+            #line hidden
+            this.Write("    - \'");
+            
+            #line 21 "D:\Github\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(model));
+            
+            #line default
+            #line hidden
+            this.Write("\'\r\n");
+            
+            #line 22 "D:\Github\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
+ }
+            
+            #line default
+            #line hidden
+            
+            #line 23 "D:\Github\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            this.Write("src_pk: \'");
+            
+            #line 24 "D:\Github\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(LinkTableMetadata.SrcPk));
+            
+            #line default
+            #line hidden
+            this.Write("\'\r\nsrc_fk:");
+            
+            #line 25 "D:\Github\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
+ if (LinkTableMetadata.SrcFk.Count == 1)
+        { 
+            
+            #line default
+            #line hidden
+            this.Write("\'");
+            
+            #line 26 "D:\Github\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(LinkTableMetadata.SrcFk[0]));
+            
+            #line default
+            #line hidden
+            this.Write("\'\r\n");
+            
+            #line 27 "D:\Github\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            
+            #line 27 "D:\Github\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
+ else
+        { 
+            
+            #line default
+            #line hidden
+            this.Write("\r\n");
+            
+            #line 30 "D:\Github\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
 
     foreach (var key in LinkTableMetadata.SrcFk)
     {
@@ -120,34 +171,34 @@ for(int count=0; count < LinkTableMetadata.Tags.Count(); count++)
             #line hidden
             this.Write("  - \'");
             
-            #line 23 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
+            #line 33 "D:\Github\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(key));
             
             #line default
             #line hidden
             this.Write("\'\r\n");
             
-            #line 24 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
+            #line 34 "D:\Github\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
  }
             
             #line default
             #line hidden
             
-            #line 25 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
+            #line 35 "D:\Github\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
  } 
             
             #line default
             #line hidden
             this.Write("src_ldts: \'");
             
-            #line 26 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
+            #line 36 "D:\Github\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(LinkTableMetadata.SrcLdts));
             
             #line default
             #line hidden
             this.Write("\'\r\nsrc_source: \'");
             
-            #line 27 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
+            #line 37 "D:\Github\ddl2dbt\ddl2dbt\Templates\LinkFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(LinkTableMetadata.SrcSource));
             
             #line default

@@ -11,114 +11,91 @@ namespace ddl2dbt.ModelFileGenerators
 {
     internal class StgFileGenerator
     {
-        public static void GenerateFile(string tableName, List<CsvDataSource> csvDataSource,
-            string outputFilePath, List<string> primaryKeys)
+        public static void GenerateFile(List<CsvDataSource> csvDataSource, string outputFilePath)
         {
             var stgMetadata = new StgMetadata();
-            try
+            
+            //get unique source models
+            var sourceModels = csvDataSource.Select(e => e.SourceModel).Distinct().ToList();
+            //remove empty spaces if any
+            sourceModels = sourceModels.Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToList();
+            if (sourceModels == null || !sourceModels.Any())
             {
+                Logger.LogInfo("Could not find any valid Source Model in the csv");
+                return;
+            }
 
-                //get the records related to the table
-                List<CsvDataSource> tableRecords = csvDataSource.Where(e => e.TableName.Equals(tableName, StringComparison.OrdinalIgnoreCase)).ToList();
+            outputFilePath += "stage";
+            Utility.CreateDirectoryIfDoesNotExists(outputFilePath);
 
-                if (tableRecords == null || !tableRecords.Any())
+            foreach (var sourceModel in sourceModels)
+            {
+                try
                 {
-                    Logger.LogInfo("Could not find records for table " + tableName+ " in the csv");
-                    return;
-                }
+                    //get the records related to the source model
+                    List<CsvDataSource> tableRecords = csvDataSource.Where(e => e.SourceModel.Equals(sourceModel, StringComparison.OrdinalIgnoreCase)).ToList();
 
-                Logger.LogInfo("Generating stage file for " + tableName);
-
-                stgMetadata.SourceModelLabel = Constants.NotFoundString;
-                stgMetadata.SourceModelValue = Constants.NotFoundString;
-                stgMetadata.TableName = tableName;
-                stgMetadata.HashDiff = false;
-                stgMetadata.CompositeKeysPresent = false;
-                stgMetadata.IsFIleTypeBR = false;
-
-                foreach (var tableRecord in tableRecords)
-                {
-                    if (tableRecord.ColumnName.Equals(Constants.SrcHashDiff, StringComparison.OrdinalIgnoreCase))
-                        stgMetadata.HashDiff = true;
-
-                }
-                //composite keys for hash diff columns.
-                if (primaryKeys.Count > 1)
-                {
-                    stgMetadata.PrimaryKey =
-                        primaryKeys.Single(e => e.Contains("_HK", StringComparison.OrdinalIgnoreCase));
-                    stgMetadata.Compositekeys = primaryKeys.Where((key) => key != stgMetadata.PrimaryKey).ToList();
-                    stgMetadata.CompositeKeysPresent = true;
-                }
-
-                var pFrom = tableName.LastIndexOf('_');
-                var sourceModels = GetSourceModel(tableRecords);
-                stgMetadata.SourceModelValue = tableName.Substring(pFrom + 1).ToUpperInvariant();
-                stgMetadata.HashedColumns = GetHashedColumns(tableRecords);
-                stgMetadata.DerivedColumns = GetDerivedColumns(tableRecords);
-                stgMetadata.Columns = GetHashDiffColumns(tableRecords);
-                stgMetadata.Tags = CsvParser.GetTags(csvDataSource, tableName);
-
-                //TODO : Revisit this for lnk  we are populating ??? for now
-                //if (tableName.Contains("lnk", StringComparison.OrdinalIgnoreCase))
-                //{
-                //    stgMetadata.SourceModelLabel = Constants.NotFoundString;
-                //    stgMetadata.SourceModelValue = Constants.NotFoundString;
-                //}
-
-                outputFilePath += "stage";
-                if (tableName.StartsWith(Constants.SatBrFileName, StringComparison.OrdinalIgnoreCase))
-                {
-                    outputFilePath += "businessrules";
-                    Utility.CreateDirectoryIfDoesNotExists(outputFilePath);
-                    stgMetadata.IsFIleTypeBR = true;
-                }
-                Utility.CreateDirectoryIfDoesNotExists(outputFilePath);
-                //Getting rid of empty values if any
-                if (sourceModels.Count > 1) 
-                { 
-                    sourceModels = sourceModels.Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToList(); 
-                }
-                //Creating multiple stg files for all the unique Source Models
-                if (sourceModels.Count > 1)
-                {
-                    foreach (var SourceModel in sourceModels)
+                    if (tableRecords == null || !tableRecords.Any())
                     {
-                        stgMetadata.SourceModelLabel = SourceModel;
-                        var stgTemplate = new StgTemplate(stgMetadata);
-                        var content = stgTemplate.TransformText();
-                        // Getting the last two segment of source table, seperated with an underscore
-                        var fileName = SourceModel;
-                        var index = fileName.LastIndexOf(".");
-                        index = fileName.Substring(0, index-1).LastIndexOf(".");
-                        fileName = fileName.Substring(index + 1).Replace(".", "_").ToLower();
-
-                        var pathStr = $"{outputFilePath}\\stg_{tableName}_{fileName}.sql";
-                        File.WriteAllText(pathStr, content);
-                        Logger.LogInfo("Generated stage file for " + tableName);
+                        Logger.LogInfo("Could not find records for Source Model " + sourceModel + " in the csv");
+                        break;
                     }
-                }
-                else 
-                {
+
+                    Logger.LogInfo("Generating stage file for " + sourceModel);
+
+                    if (sourceModel.Contains("."))
+                    {
+                        stgMetadata.SourceModelLabel = sourceModel.Substring(0,sourceModel.IndexOf("."));
+                        stgMetadata.SourceModelValue = sourceModel.Substring(sourceModel.LastIndexOf(".")+1);
+                    }
+                    else 
+                    {
+                        stgMetadata.SourceModelLabel = Constants.NotFoundString;
+                        stgMetadata.SourceModelValue = Constants.NotFoundString;
+                    }
                     
-                    if (!string.IsNullOrWhiteSpace(sourceModels[0]))
+                    stgMetadata.HashDiff = false;
+                    stgMetadata.IsFIleTypeBR = false;
+
+                    foreach (var tableRecord in tableRecords)
                     {
-                        stgMetadata.SourceModelLabel = sourceModels[0];
+                        if (tableRecord.ColumnName.Equals(Constants.SrcHashDiff, StringComparison.OrdinalIgnoreCase))
+                            stgMetadata.HashDiff = true;
+
                     }
+
+                    stgMetadata.HashedColumns = GetHashedColumns(tableRecords);
+                    stgMetadata.DerivedColumns = GetDerivedColumns(tableRecords);
+                    stgMetadata.Columns = GetHashDiffColumns(tableRecords);
+                    stgMetadata.Tags = GetTags(tableRecords, sourceModel).Select(i => i.ToString()).ToArray();
+
+                    // getting the stage file name
+                    var fileName = sourceModel;
+                    if (fileName.Contains("."))
+                    {
+                        var index = fileName.LastIndexOf(".");
+                        index = fileName.Substring(0, index - 1).LastIndexOf(".");
+                        if (index != -1)
+                        {
+                            fileName = fileName.Substring(index + 1).Replace(".", "_").ToLower();
+                        }
+                    }
+                    
                     var stgTemplate = new StgTemplate(stgMetadata);
                     var content = stgTemplate.TransformText();
 
-                    var pathStr = $"{outputFilePath}\\stg_{tableName}.sql";
+                    var pathStr = $"{outputFilePath}\\stg_{fileName}.sql";
                     File.WriteAllText(pathStr, content);
-                    Logger.LogInfo("Generated stage file for " + tableName);
+                    Logger.LogInfo("Generated stage file for Soure Model: " + sourceModel);
+                    
+                }
+                catch (Exception e)
+                {
+                    Logger.LogError(e, Utility.ErrorGeneratingFileForSourceModel("STG", sourceModel ,e.Message), "{@StgMetadata}", stgMetadata);
                 }
 
-
             }
-            catch (Exception e)
-            {
-                Logger.LogError(e, Utility.ErrorGeneratingFileForTable("STG", tableName, e.Message), "{@StgMetadata}", stgMetadata);
-            }
+            
         }
 
         private static List<string> GetHashDiffColumns(List<CsvDataSource> tableRecords)
@@ -132,8 +109,29 @@ namespace ddl2dbt.ModelFileGenerators
                     hasDiffColumns.Add(record.ColumnName);
                 }
             }
-
+            if (hasDiffColumns == null || !hasDiffColumns.Any())
+            {
+                hasDiffColumns = new List<string> { Constants.NotFoundString };
+            }
             return hasDiffColumns.Distinct().ToList();
+        }
+
+        private static List<string> GetTags(List<CsvDataSource> tableRecords, string sourceModel)
+        {
+            var tags = new List<string>();
+            foreach (var tableRecord in tableRecords) 
+            {
+                var tag = tableRecord.Tags;
+                tags.AddRange(tag.Split(",").ToList());
+            }
+            //remove empty spaces if any
+            tags = tags.Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToList();
+            if (tags == null || !tags.Any())
+            {
+                Logger.LogWarning("Could not find tags in the csv file for Source Model: "+ sourceModel);
+                tags = new List<string> { Constants.NotFoundString };
+            }
+            return tags;
         }
 
 
@@ -220,11 +218,6 @@ namespace ddl2dbt.ModelFileGenerators
 
         }
 
-        private static List<string> GetSourceModel(List<CsvDataSource> tableRecords)
-        {
-            var SourceModels =tableRecords.Select(e => e.SourceModel).Distinct().ToList();
-            return SourceModels;
-        }
 
     }
 }

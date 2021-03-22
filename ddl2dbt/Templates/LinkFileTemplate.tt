@@ -10,7 +10,17 @@
                     }#>]) }}
 
 {%- set metadata_yaml -%}
-source_model: '<#= LinkTableMetadata.SourceModel #>'
+source_model: <# if (LinkTableMetadata.SourceModel.Count == 1)
+        { #>'<#= LinkTableMetadata.SourceModel[0] #>'
+<# } #><# else
+        { #>
+
+<#
+    foreach (var model in LinkTableMetadata.SourceModel)
+    {#>
+    - '<#= model #>'
+<# }#>
+<# } #>
 src_pk: '<#=LinkTableMetadata.SrcPk#>'
 src_fk:<# if (LinkTableMetadata.SrcFk.Count == 1)
         { #>'<#= LinkTableMetadata.SrcFk[0] #>'

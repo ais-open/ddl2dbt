@@ -29,7 +29,6 @@ namespace ddl2dbt.ModelFileGenerators
                 hubTableMetadata.SrcNk = new List<string>();
                 hubTableMetadata.Tags = CsvParser.GetTags(records, tableName);
 
-
                 foreach (var column in hubTableMetadata.Columns)
                     if (
                         hubTableMetadata.PrimaryKeys.Any(s => s.Equals(column.Name, StringComparison.OrdinalIgnoreCase)) ||
@@ -44,7 +43,7 @@ namespace ddl2dbt.ModelFileGenerators
 
                
 
-                hubTableMetadata.SourceModel = "stg_" + tableName;
+                hubTableMetadata.SourceModel = CsvParser.GetSourceModel(records, tableName);
                 outputFilePath += "hubs";
                 Utility.CreateDirectoryIfDoesNotExists(outputFilePath);
                 var hubFileTemplate = new HubFileTemplate(hubTableMetadata);

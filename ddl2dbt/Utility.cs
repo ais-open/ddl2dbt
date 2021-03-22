@@ -8,6 +8,10 @@ namespace ddl2dbt
         {
             return $"Error generating {modelName} file for table: {tableName}, Error Details: {exceptionMessage}, Please verify the logs for more details.";
         }
+        public static string ErrorGeneratingFileForSourceModel(string modelName, string sourceModel, string exceptionMessage)
+        {
+            return $"Error generating {modelName} file for Source Model: {sourceModel}, Error Details: {exceptionMessage}, Please verify the logs for more details.";
+        }
 
         public static string ErrorInTheApplication(string exceptionMessage)
         {

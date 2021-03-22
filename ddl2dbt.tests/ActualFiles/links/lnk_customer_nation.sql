@@ -1,7 +1,7 @@
-{{ config(tags = ['tag']) }}
+{{ config(tags = ['tag_1']) }}
 
 {%- set metadata_yaml -%}
-source_model: 'stg_lnk_customer_nation'
+source_model: 'stg_source_model_2'
 src_pk: 'CUSTOMER_NATION_HK'
 src_fk:'CUSTOMER_HK'
 src_ldts: 'LOAD_TIMESTAMP'

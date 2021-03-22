@@ -71,7 +71,6 @@ namespace ddl2dbt
                        var hubTableMetadata = HubFileGenerator.GenerateFile(sqlStatement, sqlStatements, outputFilePath, records);
                        YamlFileGenerator.GenerateFile(sqlStatement, outputFilePath, hubTableMetadata.TableName, records);
                        DocFileGenerator.GenerateFile(outputFilePath, hubTableMetadata.TableName);
-                       GenerateStgFile(outputFilePath, fileNameArr, records, hubTableMetadata.TableName, hubTableMetadata.PrimaryKeys); ;
                    }
 
                if (Array.Exists(fileNameArr, element => string.Equals(element, Constants.LnkFileName, StringComparison.OrdinalIgnoreCase) ||
@@ -81,31 +80,26 @@ namespace ddl2dbt
                        var linkTableMetadata = LinkFileGenerator.GenerateFile(sqlStatement, sqlStatements, outputFilePath, records);
                        YamlFileGenerator.GenerateFile(sqlStatement, outputFilePath, linkTableMetadata.TableName, records);
                        DocFileGenerator.GenerateFile(outputFilePath, linkTableMetadata.TableName);
-                       GenerateStgFile(outputFilePath, fileNameArr, records, linkTableMetadata.TableName, linkTableMetadata.PrimaryKeys);
                    }
 
                if (Array.Exists(fileNameArr, element => string.Equals(element, Constants.SatFileName, StringComparison.OrdinalIgnoreCase) ||
                                                         string.Equals(element, "*", StringComparison.OrdinalIgnoreCase)))
-                   if (sqlStatement.Contains("CREATE TABLE SAT", StringComparison.OrdinalIgnoreCase))
+                   if (sqlStatement.Contains("CREATE TABLE SAT", StringComparison.OrdinalIgnoreCase) || sqlStatement.Contains("CREATE TABLE MAS", StringComparison.OrdinalIgnoreCase))
                    {
                        var satTableMetadata = SatFileGenerator.GenerateFile(sqlStatement, sqlStatements, outputFilePath, records);
                        YamlFileGenerator.GenerateFile(sqlStatement, outputFilePath, satTableMetadata.TableName, records);
                        DocFileGenerator.GenerateFile(outputFilePath, satTableMetadata.TableName);
-                       GenerateStgFile(outputFilePath, fileNameArr, records, satTableMetadata.TableName, satTableMetadata.PrimaryKeys);
+                       //GenerateStgFile(outputFilePath, fileNameArr, records, satTableMetadata.TableName, satTableMetadata.PrimaryKeys);
                    }
            }
-            
-        }
 
-        private static void GenerateStgFile(string outputFilePath, string[] fileNameArr, List<CsvDataSource> records, string tableName, List<string> primaryKeys)
-        {
             if (records != null && Array.Exists(fileNameArr,
-                element => string.Equals(element, "stg", StringComparison.OrdinalIgnoreCase) ||
-                           string.Equals(element, "*", StringComparison.OrdinalIgnoreCase)))
+                 element => string.Equals(element, "stg", StringComparison.OrdinalIgnoreCase) ||
+                            string.Equals(element, "*", StringComparison.OrdinalIgnoreCase)))
             {
-                StgFileGenerator.GenerateFile(tableName, records,
-                    outputFilePath, primaryKeys);
+                StgFileGenerator.GenerateFile( records, outputFilePath);
             }
+
         }
     }
 }
