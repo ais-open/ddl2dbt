@@ -18,7 +18,7 @@ namespace ddl2dbt.Templates
     /// Class to produce the template output
     /// </summary>
     
-    #line 1 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\YamlFileTemplate.tt"
+    #line 1 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\YamlFileTemplate.tt"
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "16.0.0.0")]
     public partial class YamlFileTemplate : YamlFileTemplateBase
     {
@@ -30,56 +30,57 @@ namespace ddl2dbt.Templates
         {
             this.Write("version: 2\r\nmodels:\r\n  - name: ");
             
-            #line 8 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\YamlFileTemplate.tt"
+            #line 8 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\YamlFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(YamlFileMetadata.TableName));
             
             #line default
             #line hidden
             this.Write(" \r\n    description: \"");
             
-            #line 9 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\YamlFileTemplate.tt"
+            #line 9 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\YamlFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(YamlFileMetadata.TableDefinition));
             
             #line default
             #line hidden
             this.Write("\"\r\n    columns:\r\n");
             
-            #line 11 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\YamlFileTemplate.tt"
+            #line 11 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\YamlFileTemplate.tt"
  foreach (var LabelValuePair in YamlFileMetadata.ColumnDefinition){ 
             
             #line default
             #line hidden
             this.Write("      - name: ");
             
-            #line 12 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\YamlFileTemplate.tt"
+            #line 12 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\YamlFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(LabelValuePair.Label));
             
             #line default
             #line hidden
             this.Write("\r\n        description: \"");
             
-            #line 13 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\YamlFileTemplate.tt"
+            #line 13 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\YamlFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(LabelValuePair.Value));
             
             #line default
             #line hidden
             this.Write("\"\r\n");
             
-            #line 14 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\YamlFileTemplate.tt"
+            #line 14 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\YamlFileTemplate.tt"
  if (LabelValuePair.Label.Contains("_HK", StringComparison.OrdinalIgnoreCase) || LabelValuePair.Label.Equals("LOAD_TIMESTAMP",StringComparison.OrdinalIgnoreCase) || LabelValuePair.Label.Equals("RECORD_SOURCE", StringComparison.OrdinalIgnoreCase)) { 
             
             #line default
             #line hidden
             this.Write("        tests:\r\n          - unique\r\n          - not_null\r\n");
             
-            #line 18 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\YamlFileTemplate.tt"
- } 
+            #line 18 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\YamlFileTemplate.tt"
+ } else { if(YamlFileMetadata.ColumnsWithNotNullTest.Contains(LabelValuePair.Label)){ 
             
             #line default
             #line hidden
+            this.Write("        tests:\r\n          - not_null\r\n");
             
-            #line 19 "D:\testing\naming convention\ddl2dbt\ddl2dbt\Templates\YamlFileTemplate.tt"
- } 
+            #line 21 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\YamlFileTemplate.tt"
+ }}} 
             
             #line default
             #line hidden

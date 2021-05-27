@@ -19,6 +19,9 @@ namespace ddl2dbt.Parsers
         public string SourceModel { get; set; }
 
         public string StageColumns { get; set; }
+        public string NullOption { get; set; }
+        public string PrimaryKey { get; set; }
+        public string ForeignKey { get; set; }
 
     }
 }

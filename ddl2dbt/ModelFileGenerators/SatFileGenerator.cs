@@ -23,8 +23,15 @@ namespace ddl2dbt.ModelFileGenerators
                 Logger.LogInfo("Generating sat file for " + tableName);
                 satTableMetadata.TableName = tableName;
                 satTableMetadata.Columns = DDLParser.GetDdlStatementColumns(sqlStatement);
-                satTableMetadata.PrimaryKeys = DDLParser.GetPrimaryKey(sqlStatements, tableName);
-                satTableMetadata.SrcPk = satTableMetadata.PrimaryKeys.Single(e => e.Contains("_HK", StringComparison.OrdinalIgnoreCase));
+                satTableMetadata.PrimaryKeys = DDLParser.GetPrimaryKey(sqlStatements, tableName, records);
+                if (satTableMetadata.PrimaryKeys.Contains(Constants.NotFoundString) && satTableMetadata.PrimaryKeys.Count == 1)
+                {
+                    satTableMetadata.SrcPk = Constants.NotFoundString;
+                }
+                else
+                {
+                    satTableMetadata.SrcPk = satTableMetadata.PrimaryKeys.Single(e => e.Contains("_HK", StringComparison.OrdinalIgnoreCase));
+                }
                 satTableMetadata.SrcHashDiff = Constants.SrcHashDiff;
                 satTableMetadata.SrcEff = Constants.SrcEff;
                 satTableMetadata.SrcLdts = Constants.LoadTimestamp;

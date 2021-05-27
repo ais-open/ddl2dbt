@@ -7,9 +7,9 @@ The sequence of parsing the ddl is described below.
 1. Once the ddl is loaded, we split the file contents using a &quot;;+newline&quot; characters, to get a list of individual statements.
 2. From the individual statements we search for the string &quot;_CREATE TABLE_&quot; HUB or SAT or LNK, when we find a statement, we do the following operations
   - -  **Extract table name** : the string is split based on the first occurrence of the char &quot;(&quot; and the length of the &quot;CREATE TABLE&quot;, which will give us the name of the table.
-  - -  **Extract the primary keys:** Once we have the table name, to retrieve the primary keys we search for the following string in the ddl statements, _ALTER TABLE {tableName}&quot; +_ newline _+ &quot;ADD PRIMARY KEY&quot; with_ the table name retrieved from the above step. We extract the values between the &#39;(&#39; and &#39;)&#39; and do a string split using &#39;,&#39; to check if it&#39;s a composite key and add it to a collection.
+  - -  **Extract the primary keys:** Once we have the table name, to retrieve the primary keys we search the CSV and take the "Column Name" where the "Table Name" is current table and "Primary Key" is TRUE.
 
-  - -  **Extract the foreign keys** : **:** Once we have the table name, to retrieve the foreign keys we search for the following string in the ddl statements, &quot;_ALTER TABLE {tableName} +_ newline&quot;and then the string _&quot;FOREIGN KEY&quot;_ retrieve a collection of foreign key ddl statements for a particular table name, then for each ddl statement we extract the values between the &#39;(&#39; and &#39;)&#39; and add it to a collection.
+  - -  **Extract the foreign keys** : **:** Once we have the table name, to retrieve the foreign keys we search the CSV and take the "Column Name" where the "Table Name" is current table and "Foreign Key" is TRUE.
 
   - -  **Extract the column name and datatypes:** we extract the contents between the &#39;(&#39; and &#39;)&#39; in the create table statement and split the result using _&#39;,&#39;+newline character_ and trim the result, this will result in a list of strings containing both the column and data type. We then find the first occurrence of a space char in the string and then retrieve the substring from the beginning of the string to index of the space char, which will give us the column name, and then rest of the string contain the data type and a trim is performed on both he name and data types to remove any space chars.
 
@@ -90,3 +90,5 @@ Each hub, sat and lnk table in the ddl will have a corresponding yaml file.
 - Columns with 'Columns Name' equals 'LOAD_TIMESTAMP', 'RECORD_SOURCE' or contains '_HK' will have the following tests: - 
 - - not_null
 - - unique
+- Columns that have the value "Not Null" inside the "Null Option" column of the CSV will have the following tests: - 
+- - not_null

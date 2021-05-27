@@ -18,11 +18,26 @@ namespace ddl2dbt.ModelFileGenerators
             yamlFileMetadata.TableDefinition = "";
             yamlFileMetadata.TableName = tableName;
             List<CsvDataSource> tableRecords = null;
+            yamlFileMetadata.ColumnsWithNotNullTest = new List<string>();
+            var nullOptionsPresent = false;
             try
             {
                 if(csvDataSource!=null)
                 {
                     tableRecords = csvDataSource.Where(e => e.TableName.Equals(tableName, StringComparison.OrdinalIgnoreCase)).ToList();
+                    foreach (var record in tableRecords)
+                    {
+                        if (record.NullOption != null)
+                        {
+                            nullOptionsPresent = true;
+                            break;
+                        }
+                    }
+                    if (nullOptionsPresent)
+                        {
+                        var NotNullRecords = tableRecords.Where(e => e.NullOption.Equals("Not Null", StringComparison.OrdinalIgnoreCase)).ToList();
+                        yamlFileMetadata.ColumnsWithNotNullTest = NotNullRecords.Select(e => e.ColumnName).Distinct().ToList();
+                    }
                 }
                 
                 var columns = DDLParser.GetDdlStatementColumns(sqlStatement);
