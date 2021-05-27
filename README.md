@@ -47,14 +47,14 @@ ADD PRIMARY KEY (CUSTOMER_HK);
 ```
 
 ### CSV File:
-It is not required to run the ddl2dbt applications, but without the csv the stage files cannot be generated. For Hub, Lnk and Sat files the csv is used only to populate tags and source_model so if no csv is provided then the hub, lnk and sat files will still be generated with '???' for the tags and source_model.  
+It is not required to run the ddl2dbt applications, but without the csv the stage files cannot be generated. For Hub, Lnk and Sat files the csv is used  to populate tags, primary key, foreign key and source_model so if no csv is provided then the hub, lnk and sat files will still be generated with '???' for all those values. 
 Eg:
-|Table Name|Tags|Table Definition|Column Name|HASHDIFF|Column Definition|Source Model|Derived/Hashed Columns|
-| ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
-|HUB_CUSTOMER|tag|This is HUB_Customer table definition|CUSTOMER_HK|TRUE|"This is ""CUSTOMER_HK"" column description"|STG.SOURCE.MODEL_1|MD5(CUSTOMER_NO)|
-|HUB_CUSTOMER|tag|This is HUB_Customer table definition|LOAD_TIMESTAMP|TRUE||STG.SOURCE.MODEL_1|CURRENT_TIMESTAMP()|
-|HUB_CUSTOMER|tag|This is HUB_Customer table definition|RECORD_SOURCE|TRUE||STG.SOURCE.MODEL_1|CUST|
-|HUB_CUSTOMER|tag|This is HUB_Customer table definition|CUSTOMER_NO|TRUE||STG.SOURCE.MODEL_1|
+|Table Name|Tags|Table Definition|Column Name|Primary Key|Foreign Key|HASHDIFF|Column Definition|Source Model|Derived/Hashed Columns|
+| ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
+|HUB_CUSTOMER|tag|This is HUB_Customer table definition|CUSTOMER_HK|TRUE|FALSE|TRUE|"This is ""CUSTOMER_HK"" column description"|STG.SOURCE.MODEL_1|MD5(CUSTOMER_NO)|
+|HUB_CUSTOMER|tag|This is HUB_Customer table definition|LOAD_TIMESTAMP|FALSE|FALSE|TRUE||STG.SOURCE.MODEL_1|CURRENT_TIMESTAMP()|
+|HUB_CUSTOMER|tag|This is HUB_Customer table definition|RECORD_SOURCE|FALSE|FALSE|TRUE||STG.SOURCE.MODEL_1|CUST|
+|HUB_CUSTOMER|tag|This is HUB_Customer table definition|CUSTOMER_NO|FALSE|TRUE|TRUE||STG.SOURCE.MODEL_1|
 
 #### CSV Columns:
 | Columns | Use |
@@ -67,6 +67,9 @@ Eg:
 | Column Definition | This column specifies the Column Definition. It will be used to populate column details in the yaml file |
 | Source Model | For each unique value in this column a new stage file will be generated. This column is also used to populate 'source_model' for the all kinds of files |
 | Derived/Hashed Columns | This column is used to populate derived and hashed columns of the stage file |
+| Primary Key | This column specifies the Primary Key columns |
+| Foreign Key | This column specifies the Foreign Key columns |
+| Null Option | This column is used to populate "Not Null" test in the Yml file |
 
 **If  you want to use a csv with different column names then the new column names can be specified in the 'FieldValue' property of the appSettings.json file. The appSettings.json file is part of the release and needs to be in the same directory as ddl2dbt.exe.**
   

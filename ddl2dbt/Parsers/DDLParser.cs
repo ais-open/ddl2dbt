@@ -9,34 +9,29 @@ namespace ddl2dbt.Parsers
 {
     internal static class DDLParser
     {
-        public static List<string> GetPrimaryKey(List<string> sqlStatements, string tableName)
+        public static List<string> GetPrimaryKey(List<string> sqlStatements, string tableName, List<CsvDataSource> records)
         {
-            var primaryKeySearchString = $"ALTER TABLE {tableName}" + Environment.NewLine + "ADD PRIMARY KEY";
-            var primaryKeyStatement = sqlStatements.Single(e => e.Contains(primaryKeySearchString,StringComparison.OrdinalIgnoreCase));
             var primaryKeys = new List<string>();
-
-
-            if (!string.IsNullOrWhiteSpace(primaryKeyStatement))
+            var tableRecords = new List<CsvDataSource>();
+            if (records != null && records.Any())
             {
-                var pFrom = primaryKeyStatement.IndexOf("(", StringComparison.Ordinal) + 1;
-                var pTo = primaryKeyStatement.IndexOf(")", StringComparison.Ordinal);
-                var primaryKey = primaryKeyStatement.Substring(pFrom, pTo - pFrom);
-
-
-                if (primaryKey.Contains(","))
+                tableRecords = records.Where(e => e.TableName.Equals(tableName, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+             foreach (var record in tableRecords)
+            {
+                if (record.PrimaryKey.Equals("TRUE", StringComparison.OrdinalIgnoreCase))
                 {
-                    var primaryKeyArray = primaryKey.Split(",").ToList();
-
-                    foreach (var key in primaryKeyArray) primaryKeys.Add(key);
-                }
-
-                else
-                {
-                    primaryKeys.Add(primaryKey);
+                    primaryKeys.Add(record.ColumnName);
                 }
             }
 
-            return primaryKeys;
+            if (primaryKeys == null || !primaryKeys.Any())
+            {
+                Logger.LogWarning("Could not find Primary Key in the csv file for Table: " + tableName);
+                primaryKeys = new List<string> { Constants.NotFoundString };
+            }
+
+            return primaryKeys.Distinct().ToList();
         }
 
         public static List<string> BuildDdlStatementsCollection(string ddlFilePath)
@@ -66,23 +61,29 @@ namespace ddl2dbt.Parsers
             return sqlStatements;
         }
 
-        public static List<string> GetForeignKeys(List<string> sqlStatements, string tableName)
+        public static List<string> GetForeignKeys(List<string> sqlStatements, string tableName, List<CsvDataSource> records)
         {
-            var foreignKeyStatements = sqlStatements.Where(e =>
-                e.Contains($"ALTER TABLE {tableName}" + Environment.NewLine,StringComparison.OrdinalIgnoreCase) && e.Contains("FOREIGN KEY")).ToList();
-
             var foreignKeys = new List<string>();
-
-            foreach (var foreignKeyStatement in foreignKeyStatements)
-                if (!string.IsNullOrWhiteSpace(foreignKeyStatement))
+            var tableRecords = new List<CsvDataSource>();
+            if (records != null && records.Any())
+            {
+                tableRecords = records.Where(e => e.TableName.Equals(tableName, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+            foreach (var record in tableRecords)
+            {
+                if (record.ForeignKey.Equals("TRUE", StringComparison.OrdinalIgnoreCase))
                 {
-                    var pFrom = foreignKeyStatement.IndexOf("(", StringComparison.Ordinal) + 1;
-                    var pTo = foreignKeyStatement.IndexOf(")", StringComparison.Ordinal);
-                    var foreignKey = foreignKeyStatement.Substring(pFrom, pTo - pFrom);
-                    foreignKeys.Add(foreignKey);
+                    foreignKeys.Add(record.ColumnName);
                 }
+            }
 
-            return foreignKeys;
+            if (foreignKeys == null || !foreignKeys.Any())
+            {
+                Logger.LogWarning("Could not find Foreign Key in the csv file for Table: " + tableName);
+                foreignKeys = new List<string> { Constants.NotFoundString };
+            }
+
+            return foreignKeys.Distinct().ToList();
         }
 
         public static List<ColumnDetail> GetDdlStatementColumns(string str)

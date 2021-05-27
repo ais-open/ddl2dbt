@@ -21,6 +21,9 @@ namespace ddl2dbt.Parsers
             Map(m => m.ColumnDefinition).Name(_config.CSVFileSettings.Single(e => string.Equals(e.FieldName, "Column Description", StringComparison.OrdinalIgnoreCase)).FieldValue);
             Map(m => m.SourceModel).Name(_config.CSVFileSettings.Single(e => string.Equals(e.FieldName, "Source-Model", StringComparison.OrdinalIgnoreCase)).FieldValue);
             Map(m => m.StageColumns).Name(_config.CSVFileSettings.Single(e => string.Equals(e.FieldName, "Stage-Columns", StringComparison.OrdinalIgnoreCase)).FieldValue);
+            Map(m => m.NullOption).Name(_config.CSVFileSettings.Single(e => string.Equals(e.FieldName, "Null-Option", StringComparison.OrdinalIgnoreCase)).FieldValue).Optional();
+            Map(m => m.PrimaryKey).Name(_config.CSVFileSettings.Single(e => string.Equals(e.FieldName, "Primary-Key", StringComparison.OrdinalIgnoreCase)).FieldValue);
+            Map(m => m.ForeignKey).Name(_config.CSVFileSettings.Single(e => string.Equals(e.FieldName, "Foreign-Key", StringComparison.OrdinalIgnoreCase)).FieldValue);
         }
     }
 }

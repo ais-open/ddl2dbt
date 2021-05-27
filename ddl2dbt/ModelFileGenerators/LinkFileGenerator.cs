@@ -22,11 +22,18 @@ namespace ddl2dbt.ModelFileGenerators
                 Logger.LogInfo("Generating link file for " + tableName);
                 linkTableMetadata.TableName = tableName;
                 linkTableMetadata.Columns = DDLParser.GetDdlStatementColumns(sqlStatement);
-                linkTableMetadata.PrimaryKeys = DDLParser.GetPrimaryKey(sqlStatements, tableName);
-                linkTableMetadata.SrcPk = linkTableMetadata.PrimaryKeys.Single(e => e.Contains("_HK", StringComparison.OrdinalIgnoreCase));
+                linkTableMetadata.PrimaryKeys = DDLParser.GetPrimaryKey(sqlStatements, tableName, records);
+                if (linkTableMetadata.PrimaryKeys.Contains(Constants.NotFoundString) && linkTableMetadata.PrimaryKeys.Count == 1)
+                {
+                    linkTableMetadata.SrcPk = Constants.NotFoundString;
+                }
+                else
+                {
+                    linkTableMetadata.SrcPk = linkTableMetadata.PrimaryKeys.Single(e => e.Contains("_HK", StringComparison.OrdinalIgnoreCase));
+                }
                 linkTableMetadata.SrcLdts = Constants.LoadTimestamp;
                 linkTableMetadata.SrcSource = Constants.RecordSource;
-                linkTableMetadata.SrcFk = DDLParser.GetForeignKeys(sqlStatements, tableName);
+                linkTableMetadata.SrcFk = DDLParser.GetForeignKeys(sqlStatements, tableName, records);
                 linkTableMetadata.Tags = CsvParser.GetTags(records, tableName);
 
                 linkTableMetadata.SourceModel = CsvParser.GetSourceModel(records, tableName);

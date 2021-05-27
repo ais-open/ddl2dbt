@@ -22,8 +22,15 @@ namespace ddl2dbt.ModelFileGenerators
                 Logger.LogInfo("Generating hub file for " + tableName);
                 hubTableMetadata.TableName = tableName;
                 hubTableMetadata.Columns = DDLParser.GetDdlStatementColumns(sqlStatement);
-                hubTableMetadata.PrimaryKeys = DDLParser.GetPrimaryKey(sqlStatements, tableName);
-                hubTableMetadata.SrcPk = hubTableMetadata.PrimaryKeys.Single(e => e.Contains("_HK", StringComparison.OrdinalIgnoreCase));
+                hubTableMetadata.PrimaryKeys = DDLParser.GetPrimaryKey(sqlStatements, tableName, records);
+                if (hubTableMetadata.PrimaryKeys.Contains(Constants.NotFoundString) && hubTableMetadata.PrimaryKeys.Count == 1)
+                {
+                    hubTableMetadata.SrcPk = Constants.NotFoundString;
+                }
+                else 
+                {
+                    hubTableMetadata.SrcPk = hubTableMetadata.PrimaryKeys.Single(e => e.Contains("_HK", StringComparison.OrdinalIgnoreCase));
+                }
                 hubTableMetadata.SrcLdts = Constants.LoadTimestamp;
                 hubTableMetadata.SrcSource = Constants.RecordSource;
                 hubTableMetadata.SrcNk = new List<string>();
