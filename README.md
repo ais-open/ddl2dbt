@@ -70,7 +70,7 @@ Eg:
 | Primary Key | This column specifies the Primary Key columns |
 | Foreign Key | This column specifies the Foreign Key columns |
 | Null Option | This column is used to populate "Not Null" test in the Yml file. This column is optional. |
-| Masking Rule | This column is used to add the masking rules to columns in the sql files. Only taken if it's value is not-enpty and not equal to "Confidential". This column is optional. |
+| Masking Rule | This column is used to add the masking rules to columns in the sql files. Only taken if it's value is not-empty and not equal to "Confidential". This column is optional. |
 
 **If  you want to use a csv with different column names then the new column names can be specified in the 'FieldValue' property of the appSettings.json file. The appSettings.json file is part of the release and needs to be in the same directory as ddl2dbt.exe.**
   
@@ -78,7 +78,7 @@ Eg:
 **1) hub_customer.sql**
 ```sh
 {{ config(tags = ['tag'],
-   post_hook = ["{{ masking_policy('LOAD_TIMESTAMP', 'Rule-101') }}"                
+   post_hook = ["{{ masking_policy('CUSTOMER_NO', 'Rule-101') }}"                
                ]
 )}}
 
