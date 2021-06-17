@@ -36,6 +36,32 @@ namespace ddl2dbt.ModelFileGenerators
                 hubTableMetadata.SrcNk = new List<string>();
                 hubTableMetadata.Tags = CsvParser.GetTags(records, tableName);
 
+                hubTableMetadata.MaskedColumns = new List<LabelValuePair>();
+                hubTableMetadata.MaskedColumnsPresent = false;
+
+                List<CsvDataSource> tableRecords = null;
+                if (records != null)
+                {
+                    tableRecords = records.Where(e => e.TableName.Equals(tableName, StringComparison.OrdinalIgnoreCase)).ToList();
+                    foreach (var record in tableRecords)
+                    {
+                        if (!string.IsNullOrWhiteSpace(record.SpiClassification) && !record.SpiClassification.Equals("Confidential", StringComparison.OrdinalIgnoreCase))
+                        {
+                            hubTableMetadata.MaskedColumnsPresent = true;
+                            break;
+                        }
+                    }
+                    if (hubTableMetadata.MaskedColumnsPresent)
+                    {
+                        var MaskedRecords = tableRecords.Where(e => !e.SpiClassification.Equals("Confidential", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrWhiteSpace(e.SpiClassification)).ToList();
+                        foreach (var Maskedrecord in MaskedRecords)
+                        {
+                            var MaskedRecord = new LabelValuePair { Label = Maskedrecord.ColumnName, Value = Maskedrecord.SpiClassification };
+                            hubTableMetadata.MaskedColumns.Add(MaskedRecord);
+                        }
+                    }
+                }
+
                 foreach (var column in hubTableMetadata.Columns)
                     if (
                         hubTableMetadata.PrimaryKeys.Any(s => s.Equals(column.Name, StringComparison.OrdinalIgnoreCase)) ||

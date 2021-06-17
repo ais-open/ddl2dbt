@@ -56,7 +56,7 @@ namespace ddl2dbt.Tests
 
                 foreach (var fileName in expectedSatFileNameList.Where(e => e.EndsWith(".sql")))
                 {
-                    StringAssert.Contains("{{ config(tags = ['???']) }}",
+                    StringAssert.Contains("{{ config(tags = ['???'])}}",
                         File.ReadAllText(OutPutFilePath + @"satellites\" + fileName));
                 }
             });

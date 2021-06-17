@@ -24,6 +24,7 @@ namespace ddl2dbt.Parsers
             Map(m => m.NullOption).Name(_config.CSVFileSettings.Single(e => string.Equals(e.FieldName, "Null-Option", StringComparison.OrdinalIgnoreCase)).FieldValue).Optional();
             Map(m => m.PrimaryKey).Name(_config.CSVFileSettings.Single(e => string.Equals(e.FieldName, "Primary-Key", StringComparison.OrdinalIgnoreCase)).FieldValue);
             Map(m => m.ForeignKey).Name(_config.CSVFileSettings.Single(e => string.Equals(e.FieldName, "Foreign-Key", StringComparison.OrdinalIgnoreCase)).FieldValue);
+            Map(m => m.SpiClassification).Name(_config.CSVFileSettings.Single(e => string.Equals(e.FieldName, "Masking-Rule", StringComparison.OrdinalIgnoreCase)).FieldValue).Optional();
         }
     }
 }

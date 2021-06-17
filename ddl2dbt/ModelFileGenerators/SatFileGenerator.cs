@@ -39,7 +39,34 @@ namespace ddl2dbt.ModelFileGenerators
                 satTableMetadata.SrcPayload = new List<string>();
                 satTableMetadata.IsFIleTypeMAS = false;
                 satTableMetadata.CompositeKeysPresent = false;
+                
+                satTableMetadata.SrcCdk = new List<string>();
+                satTableMetadata.MaskedColumns = new List<LabelValuePair>();
+                satTableMetadata.MaskedColumnsPresent = false;
 
+                List<CsvDataSource> tableRecords = null;
+                if (records != null)
+                {
+                    tableRecords = records.Where(e => e.TableName.Equals(tableName, StringComparison.OrdinalIgnoreCase)).ToList();
+                    foreach (var record in tableRecords)
+                    {
+                        if ( !string.IsNullOrWhiteSpace(record.SpiClassification)  && !record.SpiClassification.Equals("Confidential", StringComparison.OrdinalIgnoreCase))
+                        {
+                            satTableMetadata.MaskedColumnsPresent = true;
+                            break;
+                        }
+                    }
+                    if (satTableMetadata.MaskedColumnsPresent)
+                    {
+                        var MaskedRecords = tableRecords.Where(e => !e.SpiClassification.Equals("Confidential", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrWhiteSpace(e.SpiClassification)).ToList();
+                        foreach (var Maskedrecord in MaskedRecords)
+                        {
+                            var MaskedRecord = new LabelValuePair { Label = Maskedrecord.ColumnName, Value = Maskedrecord.SpiClassification};
+                            satTableMetadata.MaskedColumns.Add(MaskedRecord);
+                        }
+                    }
+                }
+                
                 if (satTableMetadata.PrimaryKeys.Count() > 1)
                 {
                     satTableMetadata.CompositeKeysPresent = true;
@@ -48,10 +75,33 @@ namespace ddl2dbt.ModelFileGenerators
 
                 satTableMetadata.Tags = CsvParser.GetTags(records, tableName);
 
+                if (tableName.Contains("MAS", StringComparison.OrdinalIgnoreCase))
+                {
+                    satTableMetadata.SourceModel = new List<string> { Constants.NotFoundString };
+                    satTableMetadata.IsFIleTypeMAS = true;
+                }
+                else
+                {
+                    satTableMetadata.SourceModel = CsvParser.GetSourceModel(records, tableName);
+                }
+
+                if (satTableMetadata.IsFIleTypeMAS) 
+                {
+                    satTableMetadata.SrcCdk = satTableMetadata.Compositekeys;
+                    if (satTableMetadata.SrcCdk == null || !satTableMetadata.SrcCdk.Any())
+                    {
+                        satTableMetadata.SrcCdk = new List<string> { Constants.NotFoundString };
+                    }
+                    //if (satTableMetadata.SrcCdk.Contains(Constants.LoadTimestamp)) 
+                    //{
+                    //    satTableMetadata.SrcCdk.Remove(Constants.LoadTimestamp);
+                    //}
+                }
+
                 foreach (var column in satTableMetadata.Columns)
                     if (
                         string.Equals(column.Name, satTableMetadata.SrcPk, StringComparison.OrdinalIgnoreCase) ||
-                        //satTableMetadata.PrimaryKeys.Any(s => s.Equals(column.Name, StringComparison.OrdinalIgnoreCase)) ||
+                        satTableMetadata.SrcCdk.Any(s => s.Equals(column.Name, StringComparison.OrdinalIgnoreCase)) ||
                         string.Equals(column.Name, satTableMetadata.SrcHashDiff, StringComparison.OrdinalIgnoreCase) ||
                         string.Equals(column.Name, satTableMetadata.SrcEff, StringComparison.OrdinalIgnoreCase) ||
                         string.Equals(column.Name, satTableMetadata.SrcLdts, StringComparison.OrdinalIgnoreCase) ||
@@ -62,15 +112,7 @@ namespace ddl2dbt.ModelFileGenerators
                     {
                         satTableMetadata.SrcPayload.Add(column.Name);
                     }
-                if (tableName.Contains("MAS", StringComparison.OrdinalIgnoreCase))
-                {
-                    satTableMetadata.SourceModel = new List<string> { Constants.NotFoundString };
-                    satTableMetadata.IsFIleTypeMAS = true;
-                }
-                else 
-                {
-                    satTableMetadata.SourceModel = CsvParser.GetSourceModel(records, tableName);
-                }
+                
                 outputFilePath += "satellites";
                 Utility.CreateDirectoryIfDoesNotExists(outputFilePath);
                 var satFileTemplate = new SatFileTemplate(satTableMetadata);

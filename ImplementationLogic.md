@@ -1,8 +1,8 @@
 ## Ddl2dbt
 
-**DDL parsing**
+**DDL/CSV parsing**
 
-The sequence of parsing the ddl is described below.
+The sequence of parsing the ddl and csv is described below.
 
 1. Once the ddl is loaded, we split the file contents using a &quot;;+newline&quot; characters, to get a list of individual statements.
 2. From the individual statements we search for the string &quot;_CREATE TABLE_&quot; HUB or SAT or LNK, when we find a statement, we do the following operations
@@ -45,7 +45,9 @@ It contains all the column names whose corresponding. &quot;HASHDIFF&quot; value
 Inside the ddl file, For each table starting with &quot;CREATE TABLE HUB&quot; will have a corresponding hub file.
 The following are the sections of a hub files and the description involves on how the populate them.
 
-1. tags: tags: tags are populated from the &quot;Tags&quot; column present in the csv file.
+1. config: Its has two parts:
+    1. Tags: Tags are populated from the &quot;Tags&quot; column present in the csv file.
+    2. Masking Rules: Masking rules are populated if in the csv file a column has a non-empty value in the "Masking Rule" column and It's not equal to "Confidential".
 2. source\_model: It is the concatenation of the keyword &quot;stg\_&quot; with all the unique 'Source Models' present for the current table in the csv.
 3. src\_pk: It contains the primary key for the current table. The Primary Key columns are extracted using the logic defined in the DDL Parsing file. Out of the extracted column names only the one ending with &#39;\_HK&#39; is taken and populated with src\_pk.
 4. src\_nk: All the columns of the table are extracted and out of those, the ones that are not present in the primary key list (retrieved using the logic in the ddl paraser) and are not &#39;RECORD\_SOURCE&#39; or &#39;LOAD\_TIMESTAMP&#39; are populated with the src\_nk.
@@ -57,7 +59,9 @@ The following are the sections of a hub files and the description involves on ho
 Inside the ddl file, For each table starting with &quot;LNK&quot; will have a corresponding lnk file.
 The following are the sections of a lnk files and the description involves on how the populate them.
 
-1. tags: tags are populated from the &quot;Tags&quot; column present in the csv file.
+1. config: Its has two parts:
+    1. Tags: Tags are populated from the &quot;Tags&quot; column present in the csv file.
+    2. Masking Rules: Masking rules are populated if in the csv file a column has a non-empty value in the "Masking Rule" column and It's not equal to "Confidential".
 2. source\_model: It is the concatenation of the keyword &quot;stg\_&quot; with all the unique 'Source Models' present for the current table in the csv.
 3. src\_pk: It contains the primary key for the current table. The Primary Key columns are extracted using the logic defined in the DDL Parsing file. Out of the extracted column names only the one ending with &#39;\_HK&#39; is taken and populated with src\_pk.
 4. src\_fk: It contains the foreign key for the current table. The Foreign Key columns are extracted using the logic defined in the DDL Parsing file. These extracted columns are populated with src\_fk.
@@ -69,7 +73,9 @@ The following are the sections of a lnk files and the description involves on ho
 Inside the ddl file, For each table starting with "SAT" or "MAS" will have a corresponding sat file.
 Mentioned below are the sections and the description for generating the sat files.
 
-1. tags: tags are populated from the &quot;Tags&quot; column present in the csv file.
+1. config: Its has two parts:
+    1. Tags: Tags are populated from the &quot;Tags&quot; column present in the csv file.
+    2. Masking Rules: Masking rules are populated if in the csv file a column has a non-empty value in the "Masking Rule" column and It's not equal to "Confidential".
 2. source\_model: It is the concatenation of the keyword &quot;stg\_&quot; with all the unique 'Source Models' present for the current table in the csv.
 3. Src\_pk: It contains the primary key for the current table. The Primary Key columns are extracted using the logic defined in the DDL Parsing file. Out of the extracted column names only the one ending with &#39;\_HK&#39; is taken and populated with src\_pk.
 4. Src_cdk: This is only populated for MAS tables. It contails all the primary keys except for the one used to populate Src_pk
@@ -77,7 +83,7 @@ Mentioned below are the sections and the description for generating the sat file
 6. Src\_eff: This field has a fixed value of &#39;EFFECTIVE\_TIMESTAMP&#39;.
 7. Src\_ldts: This field has a fixed value of &#39;LOAD\_TIMESTAMP&#39;.
 8. Src\_source: This field has a fixed value of &#39;RECORD\_SOURCE&#39;.
-9. Src\_payload: The src\_payload is a list of columns present inside the ddl file which are not part of Src\_pk, Src\_hashdiff, Src\_eff, Src\_ldts and Src\_source.
+9. Src\_payload: The src\_payload is a list of columns present inside the ddl file which are not part of Src\_pk, Src\_hashdiff, Src\_eff, Src\_ldts, Src\_cdk and Src\_source.
 
 **Building yaml files:**
 

@@ -1,4 +1,7 @@
-{{ config(tags = ['tag']) }}
+{{ config(tags = ['tag'],
+   post_hook = ["{{ masking_policy('LOAD_TIMESTAMP', 'Rule-101') }}"                
+               ]
+)}}
 
 {%- set metadata_yaml -%}
 source_model: 'stg_source_model_1'

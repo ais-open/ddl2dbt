@@ -18,7 +18,7 @@ namespace ddl2dbt.Templates
     /// Class to produce the template output
     /// </summary>
     
-    #line 1 "D:\Github\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
+    #line 1 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "16.0.0.0")]
     public partial class HubFileTemplate : HubFileTemplateBase
     {
@@ -30,7 +30,7 @@ namespace ddl2dbt.Templates
         {
             this.Write("{{ config(tags = [");
             
-            #line 6 "D:\Github\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
+            #line 6 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
 for(int count=0; count < HubTableMetadata.Tags.Count(); count++)
                    {
             
@@ -38,37 +38,99 @@ for(int count=0; count < HubTableMetadata.Tags.Count(); count++)
             #line hidden
             this.Write("\'");
             
-            #line 7 "D:\Github\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
+            #line 7 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(HubTableMetadata.Tags[count]));
             
             #line default
             #line hidden
             this.Write("\'");
             
-            #line 7 "D:\Github\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
+            #line 7 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
 
                     if(count != HubTableMetadata.Tags.Count()-1)
                         {
             
             #line default
             #line hidden
-            this.Write(",");
+            this.Write(", ");
             
-            #line 9 "D:\Github\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
+            #line 9 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
 }
             
             #line default
             #line hidden
             
-            #line 9 "D:\Github\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
+            #line 9 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
 
                     }
             
             #line default
             #line hidden
-            this.Write("]) }}\r\n\r\n{%- set metadata_yaml -%}\r\nsource_model: ");
+            this.Write("]");
             
-            #line 13 "D:\Github\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
+            #line 10 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
+ if(HubTableMetadata.MaskedColumnsPresent){ 
+            
+            #line default
+            #line hidden
+            this.Write(",\r\n   post_hook = [");
+            
+            #line 11 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
+
+                    for(int count=0; count < HubTableMetadata.MaskedColumns.Count(); count++)
+                        {
+                            
+            
+            #line default
+            #line hidden
+            this.Write("\"{{ masking_policy(\'");
+            
+            #line 14 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(HubTableMetadata.MaskedColumns[count].Label));
+            
+            #line default
+            #line hidden
+            this.Write("\', \'");
+            
+            #line 14 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(HubTableMetadata.MaskedColumns[count].Value));
+            
+            #line default
+            #line hidden
+            this.Write("\') }}\"");
+            
+            #line 14 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
+
+                    if(count != HubTableMetadata.MaskedColumns.Count()-1)
+                        {
+            
+            #line default
+            #line hidden
+            this.Write(",\r\n");
+            
+            #line 17 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
+}
+            
+            #line default
+            #line hidden
+            this.Write("                ");
+            
+            #line 17 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
+
+                        }
+            
+            #line default
+            #line hidden
+            this.Write("\r\n               ]\r\n");
+            
+            #line 21 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
+}
+            
+            #line default
+            #line hidden
+            this.Write(")}}\r\n\r\n{%- set metadata_yaml -%}\r\nsource_model: ");
+            
+            #line 24 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
  if (HubTableMetadata.SourceModel.Count == 1)
         { 
             
@@ -76,20 +138,20 @@ for(int count=0; count < HubTableMetadata.Tags.Count(); count++)
             #line hidden
             this.Write("\'");
             
-            #line 14 "D:\Github\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
+            #line 25 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(HubTableMetadata.SourceModel[0]));
             
             #line default
             #line hidden
             this.Write("\'\r\n");
             
-            #line 15 "D:\Github\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
+            #line 26 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
  } 
             
             #line default
             #line hidden
             
-            #line 15 "D:\Github\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
+            #line 26 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
  else
         { 
             
@@ -97,7 +159,7 @@ for(int count=0; count < HubTableMetadata.Tags.Count(); count++)
             #line hidden
             this.Write("\r\n");
             
-            #line 18 "D:\Github\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
+            #line 29 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
 
     foreach (var model in HubTableMetadata.SourceModel)
     {
@@ -106,34 +168,34 @@ for(int count=0; count < HubTableMetadata.Tags.Count(); count++)
             #line hidden
             this.Write("    - \'");
             
-            #line 21 "D:\Github\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
+            #line 32 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(model));
             
             #line default
             #line hidden
             this.Write("\'\r\n");
             
-            #line 22 "D:\Github\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
+            #line 33 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
  }
             
             #line default
             #line hidden
             
-            #line 23 "D:\Github\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
+            #line 34 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
  } 
             
             #line default
             #line hidden
             this.Write("src_pk: \'");
             
-            #line 24 "D:\Github\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
+            #line 35 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(HubTableMetadata.SrcPk));
             
             #line default
             #line hidden
             this.Write("\'\r\nsrc_nk: ");
             
-            #line 25 "D:\Github\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
+            #line 36 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
  if (HubTableMetadata.SrcNk.Count == 1)
         { 
             
@@ -141,20 +203,20 @@ for(int count=0; count < HubTableMetadata.Tags.Count(); count++)
             #line hidden
             this.Write("\'");
             
-            #line 26 "D:\Github\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
+            #line 37 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(HubTableMetadata.SrcNk[0]));
             
             #line default
             #line hidden
             this.Write("\'\r\n");
             
-            #line 27 "D:\Github\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
+            #line 38 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
  } 
             
             #line default
             #line hidden
             
-            #line 27 "D:\Github\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
+            #line 38 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
  else
         { 
             
@@ -162,7 +224,7 @@ for(int count=0; count < HubTableMetadata.Tags.Count(); count++)
             #line hidden
             this.Write("\r\n");
             
-            #line 30 "D:\Github\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
+            #line 41 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
 
     foreach (var key in HubTableMetadata.SrcNk)
     {
@@ -171,34 +233,34 @@ for(int count=0; count < HubTableMetadata.Tags.Count(); count++)
             #line hidden
             this.Write("    - \'");
             
-            #line 33 "D:\Github\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
+            #line 44 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(key));
             
             #line default
             #line hidden
             this.Write("\'\r\n");
             
-            #line 34 "D:\Github\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
+            #line 45 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
  }
             
             #line default
             #line hidden
             
-            #line 35 "D:\Github\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
+            #line 46 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
  } 
             
             #line default
             #line hidden
             this.Write("src_ldts: \'");
             
-            #line 36 "D:\Github\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
+            #line 47 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(HubTableMetadata.SrcLdts));
             
             #line default
             #line hidden
             this.Write("\'\r\nsrc_source: \'");
             
-            #line 37 "D:\Github\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
+            #line 48 "D:\ddl2dbt cr\ddl2dbt\ddl2dbt\Templates\HubFileTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(HubTableMetadata.SrcSource));
             
             #line default
