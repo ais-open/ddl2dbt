@@ -7,7 +7,18 @@
                    {#>'<#= SatTableMetadata.Tags[count] #>'<#
                     if(count != SatTableMetadata.Tags.Count()-1)
                         {#>, <#}#><#
-                    }#>]) }}
+                    }#>]<# if(SatTableMetadata.MaskedColumnsPresent){ #>,
+   post_hook = [<#
+                    for(int count=0; count < SatTableMetadata.MaskedColumns.Count(); count++)
+                        {
+                            #>"{{ masking_policy('<#= SatTableMetadata.MaskedColumns[count].Label #>', '<#= SatTableMetadata.MaskedColumns[count].Value #>') }}"<#
+                    if(count != SatTableMetadata.MaskedColumns.Count()-1)
+                        {#>,
+<#}#>                <#
+                        }#>
+
+               ]
+<#}#>)}}
 
 {%- set metadata_yaml -%}
 source_model: <# if (SatTableMetadata.SourceModel.Count == 1)
@@ -27,11 +38,10 @@ if(SatTableMetadata.IsFIleTypeMAS)
 {#>
 src_cdk:
 <#
-    if(SatTableMetadata.CompositeKeysPresent){
-    foreach (var key in SatTableMetadata.Compositekeys)
+    foreach (var key in SatTableMetadata.SrcCdk)
     {#>
   - '<#= key #>'
-<# }}}
+<# }}
 #>
 src_hashdiff: '<#= SatTableMetadata.SrcHashDiff #>'
 src_eff: '<#= SatTableMetadata.SrcEff #>'

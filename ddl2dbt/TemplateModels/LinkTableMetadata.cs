@@ -16,6 +16,8 @@ namespace ddl2dbt.TemplateModels
         public string[] Tags { get; set; }
 
         public List<string> PrimaryKeys { get; set; }
+        public bool MaskedColumnsPresent { get; set; }
+        public List<LabelValuePair> MaskedColumns { get; set; }
 
     }
 }

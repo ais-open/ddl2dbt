@@ -6,8 +6,19 @@
 {{ config(tags = [<#for(int count=0; count < LinkTableMetadata.Tags.Count(); count++)
                    {#>'<#= LinkTableMetadata.Tags[count] #>'<#
                     if(count != LinkTableMetadata.Tags.Count()-1)
-                        {#>,<#}#><#
-                    }#>]) }}
+                        {#>, <#}#><#
+                    }#>]<# if(LinkTableMetadata.MaskedColumnsPresent){ #>,
+   post_hook = [<#
+                    for(int count=0; count < LinkTableMetadata.MaskedColumns.Count(); count++)
+                        {
+                            #>"{{ masking_policy('<#= LinkTableMetadata.MaskedColumns[count].Label #>', '<#= LinkTableMetadata.MaskedColumns[count].Value #>') }}"<#
+                    if(count != LinkTableMetadata.MaskedColumns.Count()-1)
+                        {#>,
+<#}#>                <#
+                        }#>
+
+               ]
+<#}#>)}}
 
 {%- set metadata_yaml -%}
 source_model: <# if (LinkTableMetadata.SourceModel.Count == 1)

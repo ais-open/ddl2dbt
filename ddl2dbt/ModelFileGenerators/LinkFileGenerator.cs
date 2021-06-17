@@ -36,6 +36,32 @@ namespace ddl2dbt.ModelFileGenerators
                 linkTableMetadata.SrcFk = DDLParser.GetForeignKeys(sqlStatements, tableName, records);
                 linkTableMetadata.Tags = CsvParser.GetTags(records, tableName);
 
+                linkTableMetadata.MaskedColumns = new List<LabelValuePair>();
+                linkTableMetadata.MaskedColumnsPresent = false;
+
+                List<CsvDataSource> tableRecords = null;
+                if (records != null)
+                {
+                    tableRecords = records.Where(e => e.TableName.Equals(tableName, StringComparison.OrdinalIgnoreCase)).ToList();
+                    foreach (var record in tableRecords)
+                    {
+                        if (!string.IsNullOrWhiteSpace(record.SpiClassification) && !record.SpiClassification.Equals("Confidential", StringComparison.OrdinalIgnoreCase))
+                        {
+                            linkTableMetadata.MaskedColumnsPresent = true;
+                            break;
+                        }
+                    }
+                    if (linkTableMetadata.MaskedColumnsPresent)
+                    {
+                        var MaskedRecords = tableRecords.Where(e => !e.SpiClassification.Equals("Confidential", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrWhiteSpace(e.SpiClassification)).ToList();
+                        foreach (var Maskedrecord in MaskedRecords)
+                        {
+                            var MaskedRecord = new LabelValuePair { Label = Maskedrecord.ColumnName, Value = Maskedrecord.SpiClassification };
+                            linkTableMetadata.MaskedColumns.Add(MaskedRecord);
+                        }
+                    }
+                }
+
                 linkTableMetadata.SourceModel = CsvParser.GetSourceModel(records, tableName);
                 outputFilePath += "links";
                 Utility.CreateDirectoryIfDoesNotExists(outputFilePath);

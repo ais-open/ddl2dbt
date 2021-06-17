@@ -1,4 +1,4 @@
-{{ config(tags = ['tag']) }}
+{{ config(tags = ['tag'])}}
 
 {%- set metadata_yaml -%}
 source_model: 

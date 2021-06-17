@@ -22,6 +22,7 @@ namespace ddl2dbt.Parsers
         public string NullOption { get; set; }
         public string PrimaryKey { get; set; }
         public string ForeignKey { get; set; }
+        public string SpiClassification { get; set; }
 
     }
 }

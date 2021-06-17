@@ -2,7 +2,7 @@
   "profiles": {
     "DDL2Dbt": {
       "commandName": "Project",
-      "commandLineArgs": "-m * -d \"D:\\ddl2dbt cr\\DDL.DDL\" -o D:/Models -c \"D:\\ddl2dbt cr\\csvfile.csv\""
+      "commandLineArgs": "-m * -d \"D:\\ddl2dbt cr\\DDL.DDL\" -o D:/Models2 -c \"D:\\ddl2dbt cr\\csvfile.csv\""
     }
   }
 }

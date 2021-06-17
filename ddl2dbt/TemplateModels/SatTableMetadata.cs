@@ -29,8 +29,11 @@ namespace ddl2dbt.TemplateModels
 
         public List<string> PrimaryKeys { get; set; }
         public List<string> Compositekeys { get; set; }
+        public List<string> SrcCdk { get; set; }
         public bool CompositeKeysPresent { get; set; }
         public bool IsFIleTypeMAS { get; set; }
+        public bool MaskedColumnsPresent { get; set; }
+        public List<LabelValuePair> MaskedColumns { get; set; }
 
     }
 

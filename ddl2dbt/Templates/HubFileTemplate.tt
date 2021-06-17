@@ -6,8 +6,19 @@
 {{ config(tags = [<#for(int count=0; count < HubTableMetadata.Tags.Count(); count++)
                    {#>'<#= HubTableMetadata.Tags[count] #>'<#
                     if(count != HubTableMetadata.Tags.Count()-1)
-                        {#>,<#}#><#
-                    }#>]) }}
+                        {#>, <#}#><#
+                    }#>]<# if(HubTableMetadata.MaskedColumnsPresent){ #>,
+   post_hook = [<#
+                    for(int count=0; count < HubTableMetadata.MaskedColumns.Count(); count++)
+                        {
+                            #>"{{ masking_policy('<#= HubTableMetadata.MaskedColumns[count].Label #>', '<#= HubTableMetadata.MaskedColumns[count].Value #>') }}"<#
+                    if(count != HubTableMetadata.MaskedColumns.Count()-1)
+                        {#>,
+<#}#>                <#
+                        }#>
+
+               ]
+<#}#>)}}
 
 {%- set metadata_yaml -%}
 source_model: <# if (HubTableMetadata.SourceModel.Count == 1)
